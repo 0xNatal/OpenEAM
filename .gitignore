@@ -1,0 +1,40 @@
+# Files Git should never track: installed deps, build output, caches, env files.
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+.next/
+.turbo/
+*.tsbuildinfo
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+!.vscode/extensions.json
+
+# Drizzle generated migrations (uncomment once first migration exists)
+# packages/db/drizzle/
+
+# Docker volumes (if mounted locally)
+.docker-data/
+
+# TanStack Router auto-generated route tree
+apps/web/src/routeTree.gen.ts

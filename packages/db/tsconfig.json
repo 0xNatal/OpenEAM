@@ -1,0 +1,13 @@
+// TypeScript config for @openeam/db. Emits CommonJS to dist/ (with .d.ts) so the
+// non-bundled Node API can require the compiled package at runtime.
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "ignoreDeprecations": "6.0",
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": ["src/**/*"]
+}

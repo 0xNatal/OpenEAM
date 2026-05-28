@@ -1,0 +1,18 @@
+// TypeScript config for the web SPA. Extends the shared base with browser/DOM
+// libs and JSX; Vite handles the actual bundling, so this is type-check only.
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ES2023",
+    "useDefineForClassFields": true,
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "experimentalDecorators": false,
+    "emitDecoratorMetadata": false
+  },
+  "include": ["src", "vite.config.ts"]
+}

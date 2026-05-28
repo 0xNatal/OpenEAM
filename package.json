@@ -1,0 +1,22 @@
+{
+  "name": "openeam",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Open-source Enterprise Architecture Management tool",
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@11.4.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @openeam/db build && pnpm --parallel -r run dev",
+    "build": "pnpm -r run build",
+    "typecheck": "pnpm -r run typecheck",
+    "lint": "biome check .",
+    "format": "biome format --write ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.16",
+    "typescript": "6.0.3"
+  }
+}

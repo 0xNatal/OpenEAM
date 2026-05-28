@@ -1,0 +1,16 @@
+// TypeScript config for the API. Overrides the shared base to emit CommonJS
+// into dist/, since NestJS runs as a non-bundled Node app (node dist/main.js).
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "ignoreDeprecations": "6.0",
+    "target": "ES2023",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "types": ["node"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

@@ -1,0 +1,12 @@
+# pnpm workspace definition: which directories are workspace packages, plus the
+# allowlist of dependencies permitted to run post-install build scripts.
+packages:
+  - "apps/*"
+  - "packages/*"
+
+# Allow post-install build scripts for trusted dependencies.
+# pnpm 10+ blocks these by default; we explicitly opt-in here.
+allowBuilds:
+  "@apollo/protobufjs": true
+  "@nestjs/core": true
+  esbuild: true
