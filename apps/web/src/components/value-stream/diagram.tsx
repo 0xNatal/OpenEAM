@@ -1,6 +1,6 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { cn } from '@/lib/utils';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { ValueStream } from '@/data/value-streams';
+import { cn } from '@/lib/utils';
 
 const ARROW = 18;
 
@@ -134,7 +134,7 @@ export function ValueStreamDiagram({ stream }: { stream: ValueStream }) {
   const [connectors, setConnectors] = useState<ConnectorPoint[]>([]);
   const [svgSize, setSvgSize] = useState({ w: 0, h: 0 });
 
-  const measure = () => {
+  const measure = useCallback(() => {
     const container = containerRef.current;
     if (!container) return;
     const cr = container.getBoundingClientRect();
@@ -159,19 +159,19 @@ export function ValueStreamDiagram({ stream }: { stream: ValueStream }) {
       });
     }
     setConnectors(pts);
-  };
+  }, [selectedId, selectedStage]);
 
   // Measure after selection changes (DOM has updated by then)
   useLayoutEffect(() => {
     measure();
-  }, [selectedId, selectedStage]);
+  }, [measure]);
 
   // Remeasure on resize
   useEffect(() => {
     const ro = new ResizeObserver(measure);
     if (containerRef.current) ro.observe(containerRef.current);
     return () => ro.disconnect();
-  }, [selectedId, selectedStage]);
+  }, [measure]);
 
   return (
     <div ref={containerRef} className="relative w-full">
@@ -208,7 +208,10 @@ export function ValueStreamDiagram({ stream }: { stream: ValueStream }) {
           </div>
 
           {/* Capability columns */}
-          <div className="grid gap-0 divide-x divide-violet-100" style={{ gridTemplateColumns: `repeat(${selectedStage.capabilities.length}, 1fr)` }}>
+          <div
+            className="grid gap-0 divide-x divide-violet-100"
+            style={{ gridTemplateColumns: `repeat(${selectedStage.capabilities.length}, 1fr)` }}
+          >
             {selectedStage.capabilities.map((cap) => (
               <div
                 key={cap.id}
