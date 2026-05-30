@@ -1,4 +1,5 @@
-import { Outlet } from '@tanstack/react-router'
+import { Outlet } from '@tanstack/react-router';
+import { EnterpriseSwitcher } from './enterprise-switcher';
 import {
   Sidebar,
   SidebarContent,
@@ -8,8 +9,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger,
-} from './ui/sidebar'
-import { EnterpriseSwitcher } from './enterprise-switcher'
+} from './ui/sidebar';
 
 export function AppShell() {
   return (
@@ -43,5 +43,5 @@ export function AppShell() {
         </main>
       </div>
     </SidebarProvider>
-  )
+  );
 }

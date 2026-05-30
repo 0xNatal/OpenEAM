@@ -1,10 +1,11 @@
 // Vite build/dev config for the web SPA: enables the TanStack Router (file-based
 // routes + code-splitting), React, and Tailwind plugins, and proxies /graphql
 // and /health to the API during development.
+
+import { resolve } from 'node:path';
 import tailwindcss from '@tailwindcss/vite';
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
-import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 
 const API_ORIGIN = process.env.VITE_DEV_API_ORIGIN ?? 'http://localhost:4000';
