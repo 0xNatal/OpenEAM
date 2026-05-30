@@ -9,13 +9,20 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from './ui/sidebar'
+import { EnterpriseSwitcher } from './enterprise-switcher'
 
 export function AppShell() {
   return (
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader className="px-4 py-3 font-semibold text-base">
-          OpenEAM
+          <EnterpriseSwitcher
+            enterprises={[
+              { id: '1', name: 'Enterprise 1' },
+              { id: '2', name: 'Enterprise 2' },
+            ]}
+            defaultEnterpriseId="1"
+          />
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu>
