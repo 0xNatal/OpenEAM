@@ -1,4 +1,4 @@
-import { Outlet } from '@tanstack/react-router';
+import { Link, Outlet, useRouterState } from '@tanstack/react-router';
 import { EnterpriseSwitcher } from './enterprise-switcher';
 import {
   Sidebar,
@@ -12,6 +12,10 @@ import {
 } from './ui/sidebar';
 
 export function AppShell() {
+  const isValueStreams = useRouterState({
+    select: (s) => s.location.pathname.startsWith('/value-streams'),
+  });
+
   return (
     <SidebarProvider>
       <Sidebar>
@@ -27,7 +31,9 @@ export function AppShell() {
         <SidebarContent>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton>Dashboard</SidebarMenuButton>
+              <SidebarMenuButton asChild isActive={isValueStreams}>
+                <Link to="/value-streams">Value Streams</Link>
+              </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarContent>
