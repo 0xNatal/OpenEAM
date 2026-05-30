@@ -1,11 +1,6 @@
-// Root route: the app shell/layout that wraps every page; child routes render
-// into <Outlet/>.
-import { createRootRoute, Outlet } from '@tanstack/react-router';
+import { createRootRoute } from '@tanstack/react-router';
+import { AppShell } from '../components/app-shell';
 
 export const Route = createRootRoute({
-  component: () => (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
-      <Outlet />
-    </div>
-  ),
+  component: AppShell,
 });
