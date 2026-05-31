@@ -40,7 +40,9 @@ export interface BusinessCapability {
 }
 
 type RawProcess = Pick<BusinessProcess, 'id' | 'name'>;
-type RawCapability = Omit<BusinessCapability, 'businessProcesses'> & { businessProcesses: RawProcess[] };
+type RawCapability = Omit<BusinessCapability, 'businessProcesses'> & {
+  businessProcesses: RawProcess[];
+};
 
 const RAW_BUSINESS_CAPABILITIES: RawCapability[] = [
   // Order to Cash
