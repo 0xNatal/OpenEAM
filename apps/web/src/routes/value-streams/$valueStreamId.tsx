@@ -28,7 +28,7 @@ function ValueStreamDetailRoute() {
       {/* Diagram */}
       <div className="rounded-2xl border border-slate-100 bg-slate-50/60 p-6 shadow-xs">
         <p className="mb-5 text-[11px] font-semibold uppercase tracking-widest text-slate-400">
-          Click a stage to explore its capabilities and processes
+          Click a stage to explore its business capabilities and business processes
         </p>
         <ValueStreamDiagram stream={stream} />
       </div>

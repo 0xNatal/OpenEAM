@@ -1,27 +1,10 @@
-import { CAPABILITIES } from './capabilities';
+import type { BusinessProcess, ProcessStep } from './capabilities';
+import { BUSINESS_CAPABILITIES } from './capabilities';
 
-export interface ProcessStep {
-  id: string;
-  name: string;
-}
+export type { BusinessProcess, ProcessStep };
 
-export interface BusinessProcess {
-  id: string;
-  name: string;
-  description?: string;
-  capabilityId: string;
-  trigger?: string;
-  outcome?: string;
-  steps: ProcessStep[];
-}
-
-export const BUSINESS_PROCESSES: BusinessProcess[] = CAPABILITIES.flatMap((cap) =>
-  cap.processes.map((p) => ({
-    id: p.id,
-    name: p.name,
-    capabilityId: cap.id,
-    steps: [],
-  })),
+export const BUSINESS_PROCESSES: BusinessProcess[] = BUSINESS_CAPABILITIES.flatMap(
+  (cap) => cap.businessProcesses,
 );
 
 const BUSINESS_PROCESSES_MAP = new Map(BUSINESS_PROCESSES.map((p) => [p.id, p]));

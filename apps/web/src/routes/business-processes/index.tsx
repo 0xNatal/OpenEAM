@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { BUSINESS_PROCESSES } from '@/data/business-processes';
-import { getCapability } from '@/data/capabilities';
+import { getBusinessCapability } from '@/data/capabilities';
 
 function BusinessProcessesIndexRoute() {
   const grouped = BUSINESS_PROCESSES.reduce<Record<string, typeof BUSINESS_PROCESSES>>(
@@ -24,7 +24,7 @@ function BusinessProcessesIndexRoute() {
 
       <div className="flex flex-col gap-6">
         {Object.entries(grouped).map(([capabilityId, processes]) => {
-          const cap = getCapability(capabilityId);
+          const cap = getBusinessCapability(capabilityId);
           return (
             <div key={capabilityId}>
               <h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">

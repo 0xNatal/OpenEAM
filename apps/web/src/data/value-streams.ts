@@ -1,7 +1,7 @@
-import type { Capability } from './capabilities';
-import { getCapability } from './capabilities';
+import type { BusinessCapability } from './capabilities';
+import { getBusinessCapability } from './capabilities';
 
-export type { Capability };
+export type { BusinessCapability };
 
 export interface Stage {
   id: string;
@@ -99,9 +99,9 @@ export function getValueStream(id: string): ValueStream | undefined {
   return VALUE_STREAMS.find((vs) => vs.id === id);
 }
 
-export function getStageCapabilities(stage: Stage): Capability[] {
+export function getStageBusinessCapabilities(stage: Stage): BusinessCapability[] {
   return stage.capabilityIds.flatMap((id) => {
-    const cap = getCapability(id);
+    const cap = getBusinessCapability(id);
     return cap ? [cap] : [];
   });
 }

@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from '@tanstack/react-router';
 import type { BusinessProcess } from '@/data/business-processes';
 import { getBusinessProcess } from '@/data/business-processes';
-import { getCapability } from '@/data/capabilities';
+import { getBusinessCapability } from '@/data/capabilities';
 
 function Section({
   title,
@@ -36,7 +36,7 @@ function EmptyState({ label }: { label: string }) {
 }
 
 function BusinessProcessDetail({ process }: { process: BusinessProcess }) {
-  const cap = getCapability(process.capabilityId);
+  const cap = getBusinessCapability(process.capabilityId);
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
@@ -49,7 +49,7 @@ function BusinessProcessDetail({ process }: { process: BusinessProcess }) {
 
       <div className="grid grid-cols-2 gap-4">
         <Section
-          title="Capability"
+          title="Business Capability"
           subtitle="The business capability this process contributes to"
         >
           {cap ? (
@@ -73,10 +73,7 @@ function BusinessProcessDetail({ process }: { process: BusinessProcess }) {
           )}
         </Section>
 
-        <Section
-          title="Steps"
-          subtitle="Ordered activities that make up this process"
-        >
+        <Section title="Steps" subtitle="Ordered activities that make up this process">
           {process.steps.length > 0 ? (
             process.steps.map((s) => <Item key={s.id} label={s.name} />)
           ) : (

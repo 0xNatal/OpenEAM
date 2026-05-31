@@ -1,6 +1,6 @@
 import { createFileRoute, notFound } from '@tanstack/react-router';
-import type { Capability } from '@/data/capabilities';
-import { getCapability } from '@/data/capabilities';
+import type { BusinessCapability } from '@/data/capabilities';
+import { getBusinessCapability } from '@/data/capabilities';
 
 function Quadrant({
   title,
@@ -34,7 +34,7 @@ function EmptyState({ label }: { label: string }) {
   return <p className="text-xs text-slate-400 italic">{label}</p>;
 }
 
-function CapabilityDetail({ cap }: { cap: Capability }) {
+function CapabilityDetail({ cap }: { cap: BusinessCapability }) {
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
       <div className="mb-8">
@@ -74,11 +74,11 @@ function CapabilityDetail({ cap }: { cap: Capability }) {
         </Quadrant>
 
         <Quadrant
-          title="Processes"
+          title="Business Processes"
           subtitle="Business processes through which this capability is delivered"
         >
-          {cap.processes.length > 0 ? (
-            cap.processes.map((p) => <Item key={p.id} label={p.name} />)
+          {cap.businessProcesses.length > 0 ? (
+            cap.businessProcesses.map((p) => <Item key={p.id} label={p.name} />)
           ) : (
             <EmptyState label="No processes defined yet" />
           )}
@@ -90,7 +90,7 @@ function CapabilityDetail({ cap }: { cap: Capability }) {
 
 function CapabilityRoute() {
   const { capabilityId } = Route.useParams();
-  const cap = getCapability(capabilityId);
+  const cap = getBusinessCapability(capabilityId);
   if (!cap) throw notFound();
   return <CapabilityDetail cap={cap} />;
 }

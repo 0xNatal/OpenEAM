@@ -1,6 +1,16 @@
-export interface Process {
+export interface ProcessStep {
   id: string;
   name: string;
+}
+
+export interface BusinessProcess {
+  id: string;
+  name: string;
+  description?: string;
+  capabilityId: string;
+  trigger?: string;
+  outcome?: string;
+  steps: ProcessStep[];
 }
 
 export interface Person {
@@ -19,17 +29,20 @@ export interface Information {
   name: string;
 }
 
-export interface Capability {
+export interface BusinessCapability {
   id: string;
   name: string;
   description?: string;
   people: Person[];
   resources: Resource[];
   information: Information[];
-  processes: Process[];
+  businessProcesses: BusinessProcess[];
 }
 
-export const CAPABILITIES: Capability[] = [
+type RawProcess = Pick<BusinessProcess, 'id' | 'name'>;
+type RawCapability = Omit<BusinessCapability, 'businessProcesses'> & { businessProcesses: RawProcess[] };
+
+const RAW_BUSINESS_CAPABILITIES: RawCapability[] = [
   // Order to Cash
   {
     id: 'channel-management',
@@ -37,7 +50,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'receive-order-request', name: 'Receive order request' },
       { id: 'validate-customer', name: 'Validate customer' },
     ],
@@ -48,7 +61,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'check-product-availability', name: 'Check product availability' },
       { id: 'apply-discounts', name: 'Apply discounts' },
     ],
@@ -59,7 +72,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'create-sales-order', name: 'Create sales order' },
       { id: 'validate-order', name: 'Validate order' },
       { id: 'route-order', name: 'Route order' },
@@ -71,7 +84,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'check-credit-limit', name: 'Check credit limit' },
       { id: 'approve-credit', name: 'Approve credit' },
     ],
@@ -82,7 +95,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'assess-risk', name: 'Assess risk' },
       { id: 'flag-exceptions', name: 'Flag exceptions' },
     ],
@@ -93,7 +106,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'receive-validate-order', name: 'Receive and validate customer order' },
       { id: 'process-payment', name: 'Process payment' },
       { id: 'generate-confirmation', name: 'Generate order confirmation' },
@@ -105,7 +118,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'check-product-avail', name: 'Check product availability' },
       { id: 'allocate-inventory', name: 'Allocate inventory for the order' },
       { id: 'update-inventory', name: 'Update inventory levels' },
@@ -117,7 +130,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'schedule-shipment', name: 'Schedule shipment' },
       { id: 'coordinate-logistics', name: 'Coordinate with logistics provider' },
       { id: 'track-shipment', name: 'Track shipment status' },
@@ -129,7 +142,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'dispatch-order', name: 'Dispatch order' },
       { id: 'track-delivery', name: 'Track delivery' },
       { id: 'handle-returns', name: 'Handle returns' },
@@ -141,7 +154,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'generate-invoice', name: 'Generate invoice' },
       { id: 'send-invoice', name: 'Send invoice to customer' },
     ],
@@ -152,7 +165,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'record-payment', name: 'Record payment receipt' },
       { id: 'reconcile-accounts', name: 'Reconcile accounts' },
       { id: 'manage-disputes', name: 'Manage disputes' },
@@ -164,7 +177,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'send-reminders', name: 'Send payment reminders' },
       { id: 'process-late-payments', name: 'Process late payments' },
       { id: 'escalate-overdue', name: 'Escalate overdue accounts' },
@@ -178,7 +191,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'post-job', name: 'Post job listing' },
       { id: 'screen-candidates', name: 'Screen candidates' },
       { id: 'conduct-interviews', name: 'Conduct interviews' },
@@ -190,7 +203,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'create-profile', name: 'Create employee profile' },
       { id: 'provision-access', name: 'Provision system access' },
       { id: 'assign-equipment', name: 'Assign equipment' },
@@ -202,7 +215,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'orientation', name: 'Conduct orientation' },
       { id: 'role-training', name: 'Role-specific training' },
     ],
@@ -213,7 +226,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'define-okrs', name: 'Define OKRs' },
       { id: 'align-objectives', name: 'Align with team objectives' },
     ],
@@ -224,7 +237,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'mid-year-review', name: 'Mid-year review' },
       { id: 'annual-review', name: 'Annual performance review' },
       { id: 'feedback-collection', name: 'Collect 360° feedback' },
@@ -236,7 +249,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'calculate-salary', name: 'Calculate salary' },
       { id: 'process-payroll', name: 'Process payroll' },
       { id: 'manage-deductions', name: 'Manage deductions' },
@@ -248,7 +261,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'exit-interview', name: 'Conduct exit interview' },
       { id: 'revoke-access', name: 'Revoke system access' },
       { id: 'process-final-pay', name: 'Process final payment' },
@@ -262,7 +275,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'gather-ideas', name: 'Gather ideas' },
       { id: 'evaluate-concepts', name: 'Evaluate concepts' },
     ],
@@ -273,7 +286,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'user-research', name: 'User research' },
       { id: 'create-prototypes', name: 'Create prototypes' },
       { id: 'usability-testing', name: 'Usability testing' },
@@ -285,7 +298,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'architecture-design', name: 'Architecture design' },
       { id: 'api-design', name: 'API design' },
     ],
@@ -296,7 +309,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'sprint-planning', name: 'Sprint planning' },
       { id: 'implementation', name: 'Implementation' },
       { id: 'code-review', name: 'Code review' },
@@ -308,7 +321,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'unit-testing', name: 'Unit testing' },
       { id: 'integration-testing', name: 'Integration testing' },
       { id: 'uat', name: 'User acceptance testing' },
@@ -320,7 +333,7 @@ export const CAPABILITIES: Capability[] = [
     people: [],
     resources: [],
     information: [],
-    processes: [
+    businessProcesses: [
       { id: 'marketing-campaign', name: 'Marketing campaign' },
       { id: 'sales-enablement', name: 'Sales enablement' },
       { id: 'product-launch', name: 'Product launch event' },
@@ -328,8 +341,13 @@ export const CAPABILITIES: Capability[] = [
   },
 ];
 
-const CAPABILITIES_MAP = new Map(CAPABILITIES.map((c) => [c.id, c]));
+export const BUSINESS_CAPABILITIES: BusinessCapability[] = RAW_BUSINESS_CAPABILITIES.map((cap) => ({
+  ...cap,
+  businessProcesses: cap.businessProcesses.map((p) => ({ ...p, capabilityId: cap.id, steps: [] })),
+}));
 
-export function getCapability(id: string): Capability | undefined {
-  return CAPABILITIES_MAP.get(id);
+const BUSINESS_CAPABILITIES_MAP = new Map(BUSINESS_CAPABILITIES.map((c) => [c.id, c]));
+
+export function getBusinessCapability(id: string): BusinessCapability | undefined {
+  return BUSINESS_CAPABILITIES_MAP.get(id);
 }

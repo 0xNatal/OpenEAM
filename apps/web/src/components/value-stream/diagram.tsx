@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { ValueStream } from '@/data/value-streams';
-import { getStageCapabilities } from '@/data/value-streams';
+import { getStageBusinessCapabilities } from '@/data/value-streams';
 import { cn } from '@/lib/utils';
 
 const ARROW = 18;
@@ -132,7 +132,7 @@ export function ValueStreamDiagram({ stream }: { stream: ValueStream }) {
     [stream.stages, selectedId],
   );
   const selectedCapabilities = useMemo(
-    () => (selectedStage ? getStageCapabilities(selectedStage) : []),
+    () => (selectedStage ? getStageBusinessCapabilities(selectedStage) : []),
     [selectedStage],
   );
 
@@ -240,9 +240,9 @@ export function ValueStreamDiagram({ stream }: { stream: ValueStream }) {
                   </Link>
                 </div>
 
-                {/* Processes */}
+                {/* Business Processes */}
                 <div className="flex flex-col gap-2 p-4 bg-violet-50/40">
-                  {cap.processes.map((proc) => (
+                  {cap.businessProcesses.map((proc) => (
                     <div
                       key={proc.id}
                       className="rounded-md border border-violet-100 bg-white px-3 py-2 text-xs text-slate-700 shadow-xs"
