@@ -18,6 +18,9 @@ export function AppShell() {
   const isCapabilities = useRouterState({
     select: (s) => s.location.pathname.startsWith('/capabilities'),
   });
+  const isBusinessProcesses = useRouterState({
+    select: (s) => s.location.pathname.startsWith('/business-processes'),
+  });
 
   return (
     <SidebarProvider>
@@ -41,6 +44,11 @@ export function AppShell() {
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={isCapabilities}>
                 <Link to="/capabilities">Business Capabilities</Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={isBusinessProcesses}>
+                <Link to="/business-processes">Business Processes</Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
