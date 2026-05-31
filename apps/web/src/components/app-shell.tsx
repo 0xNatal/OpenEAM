@@ -15,6 +15,9 @@ export function AppShell() {
   const isValueStreams = useRouterState({
     select: (s) => s.location.pathname.startsWith('/value-streams'),
   });
+  const isCapabilities = useRouterState({
+    select: (s) => s.location.pathname.startsWith('/capabilities'),
+  });
 
   return (
     <SidebarProvider>
@@ -33,6 +36,11 @@ export function AppShell() {
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={isValueStreams}>
                 <Link to="/value-streams">Value Streams</Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={isCapabilities}>
+                <Link to="/capabilities">Business Capabilities</Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

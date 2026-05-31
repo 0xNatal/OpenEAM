@@ -1,5 +1,7 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Link } from '@tanstack/react-router';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { ValueStream } from '@/data/value-streams';
+import { getStageCapabilities } from '@/data/value-streams';
 import { cn } from '@/lib/utils';
 
 const ARROW = 18;
@@ -125,7 +127,14 @@ function ConnectorSvg({
 
 export function ValueStreamDiagram({ stream }: { stream: ValueStream }) {
   const [selectedId, setSelectedId] = useState(stream.stages[0]?.id ?? '');
-  const selectedStage = stream.stages.find((s) => s.id === selectedId) ?? stream.stages[0];
+  const selectedStage = useMemo(
+    () => stream.stages.find((s) => s.id === selectedId) ?? stream.stages[0],
+    [stream.stages, selectedId],
+  );
+  const selectedCapabilities = useMemo(
+    () => (selectedStage ? getStageCapabilities(selectedStage) : []),
+    [selectedStage],
+  );
 
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRefs = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -147,7 +156,7 @@ export function ValueStreamDiagram({ stream }: { stream: ValueStream }) {
     const fromY = sr.bottom - cr.top;
 
     const pts: ConnectorPoint[] = [];
-    for (const cap of selectedStage?.capabilities ?? []) {
+    for (const cap of selectedCapabilities) {
       const capEl = capRefs.current[cap.id];
       if (!capEl) continue;
       const capr = capEl.getBoundingClientRect();
@@ -159,7 +168,7 @@ export function ValueStreamDiagram({ stream }: { stream: ValueStream }) {
       });
     }
     setConnectors(pts);
-  }, [selectedId, selectedStage]);
+  }, [selectedId, selectedCapabilities]);
 
   // Measure after selection changes (DOM has updated by then)
   useLayoutEffect(() => {
@@ -210,9 +219,9 @@ export function ValueStreamDiagram({ stream }: { stream: ValueStream }) {
           {/* Capability columns */}
           <div
             className="grid gap-0 divide-x divide-violet-100"
-            style={{ gridTemplateColumns: `repeat(${selectedStage.capabilities.length}, 1fr)` }}
+            style={{ gridTemplateColumns: `repeat(${selectedCapabilities.length}, 1fr)` }}
           >
-            {selectedStage.capabilities.map((cap) => (
+            {selectedCapabilities.map((cap) => (
               <div
                 key={cap.id}
                 ref={(el) => {
@@ -222,7 +231,13 @@ export function ValueStreamDiagram({ stream }: { stream: ValueStream }) {
               >
                 {/* Capability name */}
                 <div className="px-4 py-3 border-b border-violet-100 bg-white">
-                  <p className="text-sm font-semibold text-violet-800">{cap.name}</p>
+                  <Link
+                    to="/capabilities/$capabilityId"
+                    params={{ capabilityId: cap.id }}
+                    className="text-sm font-semibold text-violet-800 hover:text-violet-600 hover:underline"
+                  >
+                    {cap.name}
+                  </Link>
                 </div>
 
                 {/* Processes */}
