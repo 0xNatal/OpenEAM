@@ -1,7 +1,24 @@
+import { gql } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { BUSINESS_CAPABILITIES } from '@/data/capabilities';
+import type { NamedRef } from '@/lib/entities';
+
+const BUSINESS_CAPABILITIES_QUERY = gql`
+  query BusinessCapabilities {
+    businessCapabilities {
+      id
+      name
+    }
+  }
+`;
+
+interface BusinessCapabilitiesData {
+  businessCapabilities: NamedRef[];
+}
 
 function CapabilitiesIndexRoute() {
+  const { data, loading, error } = useQuery<BusinessCapabilitiesData>(BUSINESS_CAPABILITIES_QUERY);
+
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
       <div className="mb-8">
@@ -11,8 +28,11 @@ function CapabilitiesIndexRoute() {
         </p>
       </div>
 
+      {loading && <p className="text-sm text-slate-400">Loading…</p>}
+      {error && <p className="text-sm text-red-600">Failed to load capabilities.</p>}
+
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {BUSINESS_CAPABILITIES.map((cap) => (
+        {data?.businessCapabilities.map((cap) => (
           <Link
             key={cap.id}
             to="/capabilities/$capabilityId"

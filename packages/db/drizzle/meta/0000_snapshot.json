@@ -98,12 +98,8 @@
           "name": "business_processes_capability_id_business_capabilities_id_fk",
           "tableFrom": "business_processes",
           "tableTo": "business_capabilities",
-          "columnsFrom": [
-            "capability_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["capability_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -165,12 +161,8 @@
           "name": "process_steps_process_id_business_processes_id_fk",
           "tableFrom": "process_steps",
           "tableTo": "business_processes",
-          "columnsFrom": [
-            "process_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["process_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -226,12 +218,8 @@
           "name": "stage_capabilities_stage_id_value_stream_stages_id_fk",
           "tableFrom": "stage_capabilities",
           "tableTo": "value_stream_stages",
-          "columnsFrom": [
-            "stage_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["stage_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -239,12 +227,8 @@
           "name": "stage_capabilities_capability_id_business_capabilities_id_fk",
           "tableFrom": "stage_capabilities",
           "tableTo": "business_capabilities",
-          "columnsFrom": [
-            "capability_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["capability_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -252,10 +236,7 @@
       "compositePrimaryKeys": {
         "stage_capabilities_stage_id_capability_id_pk": {
           "name": "stage_capabilities_stage_id_capability_id_pk",
-          "columns": [
-            "stage_id",
-            "capability_id"
-          ]
+          "columns": ["stage_id", "capability_id"]
         }
       },
       "uniqueConstraints": {},
@@ -314,12 +295,8 @@
           "name": "value_stream_stages_value_stream_id_value_streams_id_fk",
           "tableFrom": "value_stream_stages",
           "tableTo": "value_streams",
-          "columnsFrom": [
-            "value_stream_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["value_stream_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }

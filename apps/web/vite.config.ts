@@ -1,6 +1,6 @@
 // Vite build/dev config for the web SPA: enables the TanStack Router (file-based
-// routes + code-splitting), React, and Tailwind plugins, and proxies /graphql
-// and /health to the API during development.
+// routes + code-splitting), React, and Tailwind plugins, and proxies /graphql,
+// /health, and /api to the API during development.
 
 import { resolve } from 'node:path';
 import tailwindcss from '@tailwindcss/vite';
@@ -21,6 +21,7 @@ export default defineConfig({
     proxy: {
       '/graphql': { target: API_ORIGIN, changeOrigin: true },
       '/health': { target: API_ORIGIN, changeOrigin: true },
+      '/api': { target: API_ORIGIN, changeOrigin: true },
     },
   },
   preview: {

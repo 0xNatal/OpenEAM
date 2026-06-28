@@ -3,8 +3,12 @@
 import { ApolloDriver, type ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
+import { BusinessCapabilitiesModule } from './business-capabilities/business-capabilities.module';
+import { BusinessProcessesModule } from './business-processes/business-processes.module';
+import { DataExchangeModule } from './data-exchange/data-exchange.module';
 import { DbModule } from './db.module';
 import { HealthModule } from './health/health.module';
+import { ValueStreamsModule } from './value-streams/value-streams.module';
 
 @Module({
   imports: [
@@ -19,6 +23,10 @@ import { HealthModule } from './health/health.module';
       graphiql: true,
     }),
     HealthModule,
+    BusinessCapabilitiesModule,
+    BusinessProcessesModule,
+    ValueStreamsModule,
+    DataExchangeModule,
   ],
 })
 export class AppModule {}

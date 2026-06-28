@@ -2,7 +2,67 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type BusinessCapability {
+  businessProcesses: [BusinessProcess!]!
+  description: String
+  id: String!
+  information: [Information!]!
+  name: String!
+  people: [Person!]!
+  resources: [Resource!]!
+}
+
+type BusinessProcess {
+  capabilityId: String!
+  description: String
+  id: String!
+  name: String!
+  outcome: String
+  steps: [ProcessStep!]!
+  triggerEvent: String
+}
+
+type Information {
+  id: String!
+  name: String!
+}
+
+type Person {
+  id: String!
+  name: String!
+}
+
+type ProcessStep {
+  id: String!
+  name: String!
+}
+
 type Query {
+  businessCapabilities: [BusinessCapability!]!
+  businessCapability(id: String!): BusinessCapability
+  businessProcess(id: String!): BusinessProcess
+  businessProcesses: [BusinessProcess!]!
+
   """Liveness smoke-test. Returns "pong"."""
   ping: String!
+  valueStream(id: String!): ValueStream
+  valueStreams: [ValueStream!]!
+}
+
+type Resource {
+  id: String!
+  name: String!
+}
+
+type ValueStream {
+  description: String
+  id: String!
+  name: String!
+  stages: [ValueStreamStage!]!
+}
+
+type ValueStreamStage {
+  capabilityIds: [String!]!
+  id: String!
+  name: String!
 }

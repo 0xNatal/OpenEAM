@@ -1,7 +1,10 @@
 import { Link } from '@tanstack/react-router';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { ValueStream } from '@/data/value-streams';
-import { getStageBusinessCapabilities } from '@/data/value-streams';
+import type {
+  BusinessCapabilityWithProcesses,
+  ValueStream,
+  ValueStreamStage,
+} from '@/lib/entities';
 import { cn } from '@/lib/utils';
 
 const ARROW = 18;
@@ -123,17 +126,39 @@ function ConnectorSvg({
   );
 }
 
+function getStageBusinessCapabilities(
+  stage: ValueStreamStage | undefined,
+  capabilitiesById: Map<string, BusinessCapabilityWithProcesses>,
+): BusinessCapabilityWithProcesses[] {
+  if (!stage) return [];
+  return stage.capabilityIds.flatMap((id) => {
+    const cap = capabilitiesById.get(id);
+    return cap ? [cap] : [];
+  });
+}
+
 // ---------- Main diagram ----------
 
-export function ValueStreamDiagram({ stream }: { stream: ValueStream }) {
+export function ValueStreamDiagram({
+  stream,
+  capabilities,
+}: {
+  stream: ValueStream;
+  capabilities: BusinessCapabilityWithProcesses[];
+}) {
+  const capabilitiesById = useMemo(
+    () => new Map(capabilities.map((cap) => [cap.id, cap])),
+    [capabilities],
+  );
+
   const [selectedId, setSelectedId] = useState(stream.stages[0]?.id ?? '');
   const selectedStage = useMemo(
     () => stream.stages.find((s) => s.id === selectedId) ?? stream.stages[0],
     [stream.stages, selectedId],
   );
   const selectedCapabilities = useMemo(
-    () => (selectedStage ? getStageBusinessCapabilities(selectedStage) : []),
-    [selectedStage],
+    () => getStageBusinessCapabilities(selectedStage, capabilitiesById),
+    [selectedStage, capabilitiesById],
   );
 
   const containerRef = useRef<HTMLDivElement>(null);

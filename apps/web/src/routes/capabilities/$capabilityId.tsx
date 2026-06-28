@@ -1,6 +1,37 @@
+import { gql } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { createFileRoute, notFound } from '@tanstack/react-router';
-import type { BusinessCapability } from '@/data/capabilities';
-import { getBusinessCapability } from '@/data/capabilities';
+import type { BusinessCapabilityDetail } from '@/lib/entities';
+
+const BUSINESS_CAPABILITY_QUERY = gql`
+  query BusinessCapability($id: String!) {
+    businessCapability(id: $id) {
+      id
+      name
+      description
+      people {
+        id
+        name
+      }
+      resources {
+        id
+        name
+      }
+      information {
+        id
+        name
+      }
+      businessProcesses {
+        id
+        name
+      }
+    }
+  }
+`;
+
+interface BusinessCapabilityData {
+  businessCapability: BusinessCapabilityDetail | null;
+}
 
 function Quadrant({
   title,
@@ -34,7 +65,7 @@ function EmptyState({ label }: { label: string }) {
   return <p className="text-xs text-slate-400 italic">{label}</p>;
 }
 
-function CapabilityDetail({ cap }: { cap: BusinessCapability }) {
+function CapabilityDetail({ cap }: { cap: BusinessCapabilityDetail }) {
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
       <div className="mb-8">
@@ -90,9 +121,15 @@ function CapabilityDetail({ cap }: { cap: BusinessCapability }) {
 
 function CapabilityRoute() {
   const { capabilityId } = Route.useParams();
-  const cap = getBusinessCapability(capabilityId);
-  if (!cap) throw notFound();
-  return <CapabilityDetail cap={cap} />;
+  const { data, loading, error } = useQuery<BusinessCapabilityData>(BUSINESS_CAPABILITY_QUERY, {
+    variables: { id: capabilityId },
+  });
+
+  if (loading) return <p className="px-6 py-10 text-sm text-slate-400">Loading…</p>;
+  if (error) return <p className="px-6 py-10 text-sm text-red-600">Failed to load capability.</p>;
+  if (!data?.businessCapability) throw notFound();
+
+  return <CapabilityDetail cap={data.businessCapability} />;
 }
 
 export const Route = createFileRoute('/capabilities/$capabilityId')({

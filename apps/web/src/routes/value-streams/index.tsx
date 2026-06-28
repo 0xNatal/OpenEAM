@@ -1,9 +1,37 @@
+import { gql } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { ArrowRight } from 'lucide-react';
 import { MiniChevronStrip } from '@/components/value-stream/diagram';
-import { VALUE_STREAMS } from '@/data/value-streams';
+
+const VALUE_STREAMS_QUERY = gql`
+  query ValueStreamsIndex {
+    valueStreams {
+      id
+      name
+      description
+      stages {
+        id
+        name
+      }
+    }
+  }
+`;
+
+interface ValueStreamSummary {
+  id: string;
+  name: string;
+  description?: string | null;
+  stages: { id: string; name: string }[];
+}
+
+interface ValueStreamsData {
+  valueStreams: ValueStreamSummary[];
+}
 
 function ValueStreamsIndexRoute() {
+  const { data, loading, error } = useQuery<ValueStreamsData>(VALUE_STREAMS_QUERY);
+
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
       <div className="mb-8">
@@ -13,8 +41,11 @@ function ValueStreamsIndexRoute() {
         </p>
       </div>
 
+      {loading && <p className="text-sm text-slate-400">Loading…</p>}
+      {error && <p className="text-sm text-red-600">Failed to load value streams.</p>}
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {VALUE_STREAMS.map((vs) => (
+        {data?.valueStreams.map((vs) => (
           <Link
             key={vs.id}
             to="/value-streams/$valueStreamId"

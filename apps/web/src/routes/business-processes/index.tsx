@@ -1,9 +1,36 @@
+import { gql } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { BUSINESS_PROCESSES } from '@/data/business-processes';
-import { getBusinessCapability } from '@/data/capabilities';
+import type { NamedRef } from '@/lib/entities';
+
+const BUSINESS_PROCESSES_QUERY = gql`
+  query BusinessProcessesIndex {
+    businessProcesses {
+      id
+      name
+      capabilityId
+    }
+    businessCapabilities {
+      id
+      name
+    }
+  }
+`;
+
+interface BusinessProcessRef extends NamedRef {
+  capabilityId: string;
+}
+
+interface BusinessProcessesData {
+  businessProcesses: BusinessProcessRef[];
+  businessCapabilities: NamedRef[];
+}
 
 function BusinessProcessesIndexRoute() {
-  const grouped = BUSINESS_PROCESSES.reduce<Record<string, typeof BUSINESS_PROCESSES>>(
+  const { data, loading, error } = useQuery<BusinessProcessesData>(BUSINESS_PROCESSES_QUERY);
+
+  const capabilitiesById = new Map((data?.businessCapabilities ?? []).map((c) => [c.id, c]));
+  const grouped = (data?.businessProcesses ?? []).reduce<Record<string, BusinessProcessRef[]>>(
     (acc, process) => {
       const key = process.capabilityId;
       if (!acc[key]) acc[key] = [];
@@ -22,9 +49,12 @@ function BusinessProcessesIndexRoute() {
         </p>
       </div>
 
+      {loading && <p className="text-sm text-slate-400">Loading…</p>}
+      {error && <p className="text-sm text-red-600">Failed to load business processes.</p>}
+
       <div className="flex flex-col gap-6">
         {Object.entries(grouped).map(([capabilityId, processes]) => {
-          const cap = getBusinessCapability(capabilityId);
+          const cap = capabilitiesById.get(capabilityId);
           return (
             <div key={capabilityId}>
               <h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">

@@ -1,7 +1,41 @@
+import { gql } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { createFileRoute, Link, notFound } from '@tanstack/react-router';
-import type { BusinessProcess } from '@/data/business-processes';
-import { getBusinessProcess } from '@/data/business-processes';
-import { getBusinessCapability } from '@/data/capabilities';
+import type { BusinessProcess, NamedRef } from '@/lib/entities';
+
+const BUSINESS_PROCESS_QUERY = gql`
+  query BusinessProcess($id: String!) {
+    businessProcess(id: $id) {
+      id
+      name
+      description
+      capabilityId
+      triggerEvent
+      outcome
+      steps {
+        id
+        name
+      }
+    }
+  }
+`;
+
+const CAPABILITY_NAME_QUERY = gql`
+  query CapabilityName($id: String!) {
+    businessCapability(id: $id) {
+      id
+      name
+    }
+  }
+`;
+
+interface BusinessProcessData {
+  businessProcess: BusinessProcess | null;
+}
+
+interface CapabilityNameData {
+  businessCapability: NamedRef | null;
+}
 
 function Section({
   title,
@@ -35,9 +69,7 @@ function EmptyState({ label }: { label: string }) {
   return <p className="text-xs text-slate-400 italic">{label}</p>;
 }
 
-function BusinessProcessDetail({ process }: { process: BusinessProcess }) {
-  const cap = getBusinessCapability(process.capabilityId);
-
+function BusinessProcessDetail({ process, cap }: { process: BusinessProcess; cap?: NamedRef }) {
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
       <div className="mb-8">
@@ -66,8 +98,8 @@ function BusinessProcessDetail({ process }: { process: BusinessProcess }) {
         </Section>
 
         <Section title="Trigger" subtitle="What initiates this process">
-          {process.trigger ? (
-            <Item label={process.trigger} />
+          {process.triggerEvent ? (
+            <Item label={process.triggerEvent} />
           ) : (
             <EmptyState label="No trigger defined yet" />
           )}
@@ -95,9 +127,26 @@ function BusinessProcessDetail({ process }: { process: BusinessProcess }) {
 
 function BusinessProcessRoute() {
   const { processId } = Route.useParams();
-  const process = getBusinessProcess(processId);
-  if (!process) throw notFound();
-  return <BusinessProcessDetail process={process} />;
+  const { data, loading, error } = useQuery<BusinessProcessData>(BUSINESS_PROCESS_QUERY, {
+    variables: { id: processId },
+  });
+
+  const capabilityId = data?.businessProcess?.capabilityId;
+  const { data: capData } = useQuery<CapabilityNameData>(CAPABILITY_NAME_QUERY, {
+    variables: { id: capabilityId },
+    skip: !capabilityId,
+  });
+
+  if (loading) return <p className="px-6 py-10 text-sm text-slate-400">Loading…</p>;
+  if (error) return <p className="px-6 py-10 text-sm text-red-600">Failed to load process.</p>;
+  if (!data?.businessProcess) throw notFound();
+
+  return (
+    <BusinessProcessDetail
+      process={data.businessProcess}
+      cap={capData?.businessCapability ?? undefined}
+    />
+  );
 }
 
 export const Route = createFileRoute('/business-processes/$processId')({
