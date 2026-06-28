@@ -13,7 +13,10 @@
     "build": "pnpm -r run build",
     "typecheck": "pnpm -r run typecheck",
     "lint": "biome check .",
-    "format": "biome format --write ."
+    "format": "biome format --write .",
+    "db:generate": "pnpm --filter @openeam/db generate",
+    "db:migrate": "pnpm --filter @openeam/db migrate",
+    "db:studio": "pnpm --filter @openeam/db studio"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.16",
