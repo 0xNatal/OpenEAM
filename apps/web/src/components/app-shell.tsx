@@ -21,6 +21,12 @@ export function AppShell() {
   const isBusinessProcesses = useRouterState({
     select: (s) => s.location.pathname.startsWith('/business-processes'),
   });
+  const isBuildingBlocks = useRouterState({
+    select: (s) => s.location.pathname.startsWith('/building-blocks'),
+  });
+  const isLandscape = useRouterState({
+    select: (s) => s.location.pathname.startsWith('/landscape'),
+  });
   const isDataExchange = useRouterState({
     select: (s) => s.location.pathname.startsWith('/data-exchange'),
   });
@@ -52,6 +58,16 @@ export function AppShell() {
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={isBusinessProcesses}>
                 <Link to="/business-processes">Business Processes</Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={isBuildingBlocks}>
+                <Link to="/building-blocks">Building Blocks</Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={isLandscape}>
+                <Link to="/landscape">Landscape</Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>

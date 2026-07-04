@@ -3,11 +3,14 @@
 import { ApolloDriver, type ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
+import { ArchitectureDomainsModule } from './architecture-domains/architecture-domains.module';
+import { BuildingBlocksModule } from './building-blocks/building-blocks.module';
 import { BusinessCapabilitiesModule } from './business-capabilities/business-capabilities.module';
 import { BusinessProcessesModule } from './business-processes/business-processes.module';
 import { DataExchangeModule } from './data-exchange/data-exchange.module';
 import { DbModule } from './db.module';
 import { HealthModule } from './health/health.module';
+import { OrganizationUnitsModule } from './organization-units/organization-units.module';
 import { ValueStreamsModule } from './value-streams/value-streams.module';
 
 @Module({
@@ -23,6 +26,9 @@ import { ValueStreamsModule } from './value-streams/value-streams.module';
       graphiql: true,
     }),
     HealthModule,
+    ArchitectureDomainsModule,
+    OrganizationUnitsModule,
+    BuildingBlocksModule,
     BusinessCapabilitiesModule,
     BusinessProcessesModule,
     ValueStreamsModule,

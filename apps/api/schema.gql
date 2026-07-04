@@ -2,6 +2,65 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type ArchitectureBuildingBlock implements BuildingBlock {
+  architectureDomainIds: [String!]!
+  architectureLevel: ArchitectureLevel
+  capabilityLinks: [CapabilityLink!]!
+  description: String
+  id: String!
+  lifecyclePhase: LifecyclePhase!
+  name: String!
+  organizationUnitLinks: [OrganizationUnitLink!]!
+  realizedBy: [RealizationLink!]!
+  validFrom: String
+  validTo: String
+}
+
+type ArchitectureDomain {
+  description: String
+  id: String!
+  isDefault: Boolean!
+  name: String!
+}
+
+"""
+TOGAF level of detail ("depth") of an architecture building block in the Architecture Landscape.
+"""
+enum ArchitectureLevel {
+  CAPABILITY
+  SEGMENT
+  STRATEGIC
+}
+
+interface BuildingBlock {
+  architectureDomainIds: [String!]!
+  description: String
+  id: String!
+  lifecyclePhase: LifecyclePhase!
+  name: String!
+  organizationUnitLinks: [OrganizationUnitLink!]!
+  validFrom: String
+  validTo: String
+}
+
+input BuildingBlockInput {
+  architectureDomainIds: [String!]!
+  architectureLevel: ArchitectureLevel
+  description: String
+  kind: BuildingBlockKind!
+  lifecyclePhase: LifecyclePhase!
+  name: String!
+  organizationUnitIds: [String!]!
+  validFrom: String
+  validTo: String
+}
+
+"""Whether a building block is an ABB (architecture) or SBB (solution)."""
+enum BuildingBlockKind {
+  ARCHITECTURE
+  SOLUTION
+}
+
 type BusinessCapability {
   businessProcesses: [BusinessProcess!]!
   description: String
@@ -22,9 +81,41 @@ type BusinessProcess {
   triggerEvent: String
 }
 
+type CapabilityLink {
+  capabilityId: String!
+  validFrom: String
+  validTo: String
+}
+
 type Information {
   id: String!
   name: String!
+}
+
+enum LifecyclePhase {
+  ACTIVE
+  PHASING_OUT
+  PLANNED
+  RETIRED
+}
+
+type Mutation {
+  createBuildingBlock(input: BuildingBlockInput!): BuildingBlock!
+  deleteBuildingBlock(id: String!): Boolean!
+  updateBuildingBlock(id: String!, input: BuildingBlockInput!): BuildingBlock!
+}
+
+type OrganizationUnit {
+  description: String
+  id: String!
+  name: String!
+  parentId: String
+}
+
+type OrganizationUnitLink {
+  organizationUnitId: String!
+  validFrom: String
+  validTo: String
 }
 
 type Person {
@@ -38,20 +129,60 @@ type ProcessStep {
 }
 
 type Query {
+  architectureDomain(id: String!): ArchitectureDomain
+  architectureDomains: [ArchitectureDomain!]!
+  architectureLandscape(
+    architectureDomainId: String
+    architectureLevel: ArchitectureLevel
+
+    """ISO date (YYYY-MM-DD)"""
+    asOf: String
+    organizationUnitId: String
+  ): [ArchitectureBuildingBlock!]!
+  buildingBlock(id: String!): BuildingBlock
+  buildingBlocks: [BuildingBlock!]!
   businessCapabilities: [BusinessCapability!]!
   businessCapability(id: String!): BusinessCapability
   businessProcess(id: String!): BusinessProcess
   businessProcesses: [BusinessProcess!]!
+  organizationUnit(id: String!): OrganizationUnit
+  organizationUnits: [OrganizationUnit!]!
 
   """Liveness smoke-test. Returns "pong"."""
   ping: String!
+  solutionsLandscape(
+    architectureDomainId: String
+
+    """ISO date (YYYY-MM-DD)"""
+    asOf: String
+    organizationUnitId: String
+  ): [SolutionBuildingBlock!]!
   valueStream(id: String!): ValueStream
   valueStreams: [ValueStream!]!
+}
+
+type RealizationLink {
+  architectureBuildingBlockId: String!
+  solutionBuildingBlockId: String!
+  validFrom: String
+  validTo: String
 }
 
 type Resource {
   id: String!
   name: String!
+}
+
+type SolutionBuildingBlock implements BuildingBlock {
+  architectureDomainIds: [String!]!
+  description: String
+  id: String!
+  lifecyclePhase: LifecyclePhase!
+  name: String!
+  organizationUnitLinks: [OrganizationUnitLink!]!
+  realizes: [RealizationLink!]!
+  validFrom: String
+  validTo: String
 }
 
 type ValueStream {

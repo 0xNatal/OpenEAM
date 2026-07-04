@@ -1,0 +1,433 @@
+{
+  "businessCapabilities": [
+    { "id": "data-capture", "name": "Data Capture", "description": null },
+    { "id": "storage-management", "name": "Storage Management", "description": null },
+    { "id": "backup-management", "name": "Backup Management", "description": null },
+    { "id": "data-retrieval", "name": "Data Retrieval", "description": null },
+    { "id": "media-discovery", "name": "Media Discovery", "description": null },
+    { "id": "content-request-handling", "name": "Content Request Handling", "description": null },
+    { "id": "streaming-delivery", "name": "Streaming Delivery", "description": null },
+    { "id": "playback-management", "name": "Playback Management", "description": null }
+  ],
+  "businessProcesses": [
+    {
+      "id": "import-file",
+      "name": "Import file/photo/document",
+      "description": null,
+      "capabilityId": "data-capture",
+      "triggerEvent": null,
+      "outcome": null
+    },
+    {
+      "id": "tag-metadata",
+      "name": "Tag metadata (date, source, type)",
+      "description": null,
+      "capabilityId": "data-capture",
+      "triggerEvent": null,
+      "outcome": null
+    },
+    {
+      "id": "allocate-storage",
+      "name": "Allocate storage location",
+      "description": null,
+      "capabilityId": "storage-management",
+      "triggerEvent": null,
+      "outcome": null
+    },
+    {
+      "id": "organize-files",
+      "name": "Organize into folders/albums",
+      "description": null,
+      "capabilityId": "storage-management",
+      "triggerEvent": null,
+      "outcome": null
+    },
+    {
+      "id": "schedule-backup",
+      "name": "Schedule recurring backup",
+      "description": null,
+      "capabilityId": "backup-management",
+      "triggerEvent": null,
+      "outcome": null
+    },
+    {
+      "id": "verify-backup-integrity",
+      "name": "Verify backup integrity",
+      "description": null,
+      "capabilityId": "backup-management",
+      "triggerEvent": null,
+      "outcome": null
+    },
+    {
+      "id": "search-files",
+      "name": "Search/browse for file",
+      "description": null,
+      "capabilityId": "data-retrieval",
+      "triggerEvent": null,
+      "outcome": null
+    },
+    {
+      "id": "restore-from-backup",
+      "name": "Restore from backup if missing",
+      "description": null,
+      "capabilityId": "data-retrieval",
+      "triggerEvent": null,
+      "outcome": null
+    },
+    {
+      "id": "browse-catalog",
+      "name": "Browse catalog/library",
+      "description": null,
+      "capabilityId": "media-discovery",
+      "triggerEvent": null,
+      "outcome": null
+    },
+    {
+      "id": "search-content",
+      "name": "Search for content",
+      "description": null,
+      "capabilityId": "media-discovery",
+      "triggerEvent": null,
+      "outcome": null
+    },
+    {
+      "id": "select-title",
+      "name": "Select title",
+      "description": null,
+      "capabilityId": "content-request-handling",
+      "triggerEvent": null,
+      "outcome": null
+    },
+    {
+      "id": "check-availability",
+      "name": "Check availability/licensing",
+      "description": null,
+      "capabilityId": "content-request-handling",
+      "triggerEvent": null,
+      "outcome": null
+    },
+    {
+      "id": "transcode-stream",
+      "name": "Transcode for target device",
+      "description": null,
+      "capabilityId": "streaming-delivery",
+      "triggerEvent": null,
+      "outcome": null
+    },
+    {
+      "id": "deliver-to-device",
+      "name": "Deliver stream to device",
+      "description": null,
+      "capabilityId": "streaming-delivery",
+      "triggerEvent": null,
+      "outcome": null
+    },
+    {
+      "id": "start-playback",
+      "name": "Start playback",
+      "description": null,
+      "capabilityId": "playback-management",
+      "triggerEvent": null,
+      "outcome": null
+    },
+    {
+      "id": "track-watch-progress",
+      "name": "Track watch/listen progress",
+      "description": null,
+      "capabilityId": "playback-management",
+      "triggerEvent": null,
+      "outcome": null
+    }
+  ],
+  "processSteps": [],
+  "valueStreams": [
+    {
+      "id": "preserve-retrieve-personal-data",
+      "name": "Preserve & Retrieve Personal Data",
+      "description": "Stakeholder: You/household. Trigger: A file/photo/document is created or needs to be stored. End state: Data is durably stored, backed up, and retrievable on demand."
+    },
+    {
+      "id": "consume-media-on-demand",
+      "name": "Consume Media on Demand",
+      "description": "Stakeholder: You/household. Trigger: Desire to watch/listen to something. End state: Content streams to the requested device."
+    }
+  ],
+  "valueStreamStages": [
+    {
+      "id": "capture",
+      "name": "Capture",
+      "valueStreamId": "preserve-retrieve-personal-data",
+      "position": 0
+    },
+    {
+      "id": "store",
+      "name": "Store",
+      "valueStreamId": "preserve-retrieve-personal-data",
+      "position": 1
+    },
+    {
+      "id": "protect",
+      "name": "Protect",
+      "valueStreamId": "preserve-retrieve-personal-data",
+      "position": 2
+    },
+    {
+      "id": "retrieve",
+      "name": "Retrieve",
+      "valueStreamId": "preserve-retrieve-personal-data",
+      "position": 3
+    },
+    {
+      "id": "discover",
+      "name": "Discover",
+      "valueStreamId": "consume-media-on-demand",
+      "position": 0
+    },
+    {
+      "id": "request",
+      "name": "Request",
+      "valueStreamId": "consume-media-on-demand",
+      "position": 1
+    },
+    { "id": "stream", "name": "Stream", "valueStreamId": "consume-media-on-demand", "position": 2 },
+    {
+      "id": "playback",
+      "name": "Playback",
+      "valueStreamId": "consume-media-on-demand",
+      "position": 3
+    }
+  ],
+  "stageCapabilities": [
+    { "stageId": "capture", "capabilityId": "data-capture", "position": 0 },
+    { "stageId": "store", "capabilityId": "storage-management", "position": 0 },
+    { "stageId": "protect", "capabilityId": "backup-management", "position": 0 },
+    { "stageId": "retrieve", "capabilityId": "data-retrieval", "position": 0 },
+    { "stageId": "discover", "capabilityId": "media-discovery", "position": 0 },
+    { "stageId": "request", "capabilityId": "content-request-handling", "position": 0 },
+    { "stageId": "stream", "capabilityId": "streaming-delivery", "position": 0 },
+    { "stageId": "playback", "capabilityId": "playback-management", "position": 0 }
+  ],
+  "architectureDomains": [
+    {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "name": "Business Architecture",
+      "description": "Business strategy, governance, organization, and key business processes.",
+      "isDefault": true
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000002",
+      "name": "Data Architecture",
+      "description": "Structure of logical and physical data assets and data management resources.",
+      "isDefault": true
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000003",
+      "name": "Application Architecture",
+      "description": "Individual applications, their interactions, and their relationships to business processes.",
+      "isDefault": true
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000004",
+      "name": "Technology Architecture",
+      "description": "Software and hardware capabilities required to support business, data, and application services.",
+      "isDefault": true
+    }
+  ],
+  "organizationUnits": [
+    { "id": "household", "name": "Household", "description": null, "parentId": null },
+    { "id": "living-room", "name": "Living Room", "description": null, "parentId": "household" },
+    { "id": "home-office", "name": "Home Office", "description": null, "parentId": "household" }
+  ],
+  "buildingBlocks": [
+    {
+      "id": "abb-durable-storage",
+      "kind": "architecture",
+      "name": "Durable Storage",
+      "description": "Needed capability: files must be stored redundantly and be recoverable if a device fails.",
+      "architectureLevel": "capability",
+      "lifecyclePhase": "active",
+      "validFrom": "2022-01-01",
+      "validTo": null
+    },
+    {
+      "id": "abb-media-streaming",
+      "kind": "architecture",
+      "name": "Media Streaming Platform",
+      "description": "Needed capability: browse a media library and stream it to any device in the household.",
+      "architectureLevel": "capability",
+      "lifecyclePhase": "active",
+      "validFrom": "2021-01-01",
+      "validTo": null
+    },
+    {
+      "id": "sbb-nas",
+      "kind": "solution",
+      "name": "Synology NAS",
+      "description": "On-premises RAID storage box in the home office.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2022-01-01",
+      "validTo": null
+    },
+    {
+      "id": "sbb-backblaze",
+      "kind": "solution",
+      "name": "Backblaze B2",
+      "description": "Off-site cloud backup target, added later for 3-2-1 backup compliance.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2024-06-01",
+      "validTo": null
+    },
+    {
+      "id": "sbb-plex",
+      "kind": "solution",
+      "name": "Plex",
+      "description": "Original media server, replaced by Jellyfin.",
+      "architectureLevel": null,
+      "lifecyclePhase": "retired",
+      "validFrom": "2021-01-01",
+      "validTo": "2023-01-01"
+    },
+    {
+      "id": "sbb-jellyfin",
+      "kind": "solution",
+      "name": "Jellyfin",
+      "description": "Self-hosted media server running on the NAS, in the living room's TV app.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2023-01-01",
+      "validTo": null
+    }
+  ],
+  "buildingBlockArchitectureDomains": [
+    {
+      "buildingBlockId": "abb-durable-storage",
+      "architectureDomainId": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "buildingBlockId": "abb-media-streaming",
+      "architectureDomainId": "00000000-0000-4000-8000-000000000003"
+    },
+    {
+      "buildingBlockId": "sbb-nas",
+      "architectureDomainId": "00000000-0000-4000-8000-000000000004"
+    },
+    {
+      "buildingBlockId": "sbb-backblaze",
+      "architectureDomainId": "00000000-0000-4000-8000-000000000004"
+    },
+    {
+      "buildingBlockId": "sbb-plex",
+      "architectureDomainId": "00000000-0000-4000-8000-000000000003"
+    },
+    {
+      "buildingBlockId": "sbb-jellyfin",
+      "architectureDomainId": "00000000-0000-4000-8000-000000000003"
+    }
+  ],
+  "buildingBlockOrganizationUnits": [
+    {
+      "id": "bbou-durable-storage-household",
+      "buildingBlockId": "abb-durable-storage",
+      "organizationUnitId": "household",
+      "validFrom": null,
+      "validTo": null
+    },
+    {
+      "id": "bbou-media-streaming-household",
+      "buildingBlockId": "abb-media-streaming",
+      "organizationUnitId": "household",
+      "validFrom": null,
+      "validTo": null
+    },
+    {
+      "id": "bbou-nas-home-office",
+      "buildingBlockId": "sbb-nas",
+      "organizationUnitId": "home-office",
+      "validFrom": "2022-01-01",
+      "validTo": null
+    },
+    {
+      "id": "bbou-plex-living-room",
+      "buildingBlockId": "sbb-plex",
+      "organizationUnitId": "living-room",
+      "validFrom": "2021-01-01",
+      "validTo": "2023-01-01"
+    },
+    {
+      "id": "bbou-jellyfin-living-room",
+      "buildingBlockId": "sbb-jellyfin",
+      "organizationUnitId": "living-room",
+      "validFrom": "2023-01-01",
+      "validTo": null
+    }
+  ],
+  "buildingBlockRealizations": [
+    {
+      "id": "real-nas",
+      "architectureBuildingBlockId": "abb-durable-storage",
+      "solutionBuildingBlockId": "sbb-nas",
+      "validFrom": "2022-01-01",
+      "validTo": null
+    },
+    {
+      "id": "real-backblaze",
+      "architectureBuildingBlockId": "abb-durable-storage",
+      "solutionBuildingBlockId": "sbb-backblaze",
+      "validFrom": "2024-06-01",
+      "validTo": null
+    },
+    {
+      "id": "real-plex",
+      "architectureBuildingBlockId": "abb-media-streaming",
+      "solutionBuildingBlockId": "sbb-plex",
+      "validFrom": "2021-01-01",
+      "validTo": "2023-01-01"
+    },
+    {
+      "id": "real-jellyfin",
+      "architectureBuildingBlockId": "abb-media-streaming",
+      "solutionBuildingBlockId": "sbb-jellyfin",
+      "validFrom": "2023-01-01",
+      "validTo": null
+    }
+  ],
+  "buildingBlockCapabilities": [
+    {
+      "id": "bbc-storage-1",
+      "buildingBlockId": "abb-durable-storage",
+      "capabilityId": "storage-management",
+      "validFrom": "2022-01-01",
+      "validTo": null
+    },
+    {
+      "id": "bbc-storage-2",
+      "buildingBlockId": "abb-durable-storage",
+      "capabilityId": "backup-management",
+      "validFrom": "2022-01-01",
+      "validTo": null
+    },
+    {
+      "id": "bbc-streaming-1",
+      "buildingBlockId": "abb-media-streaming",
+      "capabilityId": "media-discovery",
+      "validFrom": "2021-01-01",
+      "validTo": null
+    },
+    {
+      "id": "bbc-streaming-2",
+      "buildingBlockId": "abb-media-streaming",
+      "capabilityId": "streaming-delivery",
+      "validFrom": "2021-01-01",
+      "validTo": null
+    },
+    {
+      "id": "bbc-streaming-3",
+      "buildingBlockId": "abb-media-streaming",
+      "capabilityId": "playback-management",
+      "validFrom": "2021-01-01",
+      "validTo": null
+    }
+  ]
+}

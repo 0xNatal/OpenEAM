@@ -46,3 +46,38 @@ export interface ValueStream {
   description?: string | null;
   stages: ValueStreamStage[];
 }
+
+export type BuildingBlockKind = 'ARCHITECTURE' | 'SOLUTION';
+export type ArchitectureLevel = 'STRATEGIC' | 'SEGMENT' | 'CAPABILITY';
+export type LifecyclePhase = 'PLANNED' | 'ACTIVE' | 'PHASING_OUT' | 'RETIRED';
+
+export interface OrganizationUnitLink {
+  organizationUnitId: string;
+  validFrom?: string | null;
+  validTo?: string | null;
+}
+
+export interface BuildingBlock {
+  id: string;
+  name: string;
+  description?: string | null;
+  lifecyclePhase: LifecyclePhase;
+  validFrom?: string | null;
+  validTo?: string | null;
+  architectureDomainIds: string[];
+  organizationUnitLinks: OrganizationUnitLink[];
+  __typename: 'ArchitectureBuildingBlock' | 'SolutionBuildingBlock';
+  architectureLevel?: ArchitectureLevel | null;
+}
+
+export interface ArchitectureDomain {
+  id: string;
+  name: string;
+  isDefault: boolean;
+}
+
+export interface OrganizationUnit {
+  id: string;
+  name: string;
+  parentId?: string | null;
+}

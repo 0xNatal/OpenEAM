@@ -20,6 +20,8 @@ pnpm dev
 
 The apps aren't containerized yet (see [docs/IDEAS.md](docs/IDEAS.md)) — for now they run via the dev server with hot reload; only Postgres runs in Docker.
 
+Want to see it with data? `POST` [examples/household.json](examples/household.json) to `/api/data-exchange/import` — a small fictional household IT setup (storage, backup, media streaming) with dated building blocks, so `architectureLandscape`/`solutionsLandscape` timeline queries (`asOf`) have something to show.
+
 ## Stack
 
 NestJS + GraphQL (Apollo Server) · React + Vite + TanStack Router · Postgres + Drizzle · TypeScript · pnpm workspaces · Biome.
