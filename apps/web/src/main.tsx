@@ -6,6 +6,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { apolloClient } from './lib/apollo';
+import { ThemeProvider } from './lib/theme';
 import { routeTree } from './routeTree.gen';
 
 const router = createRouter({ routeTree });
@@ -23,8 +24,10 @@ if (!rootEl) {
 
 createRoot(rootEl).render(
   <StrictMode>
-    <ApolloProvider client={apolloClient}>
-      <RouterProvider router={router} />
-    </ApolloProvider>
+    <ThemeProvider>
+      <ApolloProvider client={apolloClient}>
+        <RouterProvider router={router} />
+      </ApolloProvider>
+    </ThemeProvider>
   </StrictMode>,
 );

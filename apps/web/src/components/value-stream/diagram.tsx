@@ -41,7 +41,7 @@ function Chevron({ label, isFirst, isLast, isSelected, onClick, refCallback }: C
         'relative flex flex-1 items-center justify-center min-h-[56px] py-3 text-[13px] font-medium text-center leading-snug transition-colors duration-150 cursor-pointer select-none',
         isSelected
           ? 'bg-violet-600 text-white'
-          : 'bg-violet-100 text-violet-900 hover:bg-violet-200',
+          : 'bg-violet-100 dark:bg-violet-950 text-violet-900 dark:text-violet-100 hover:bg-violet-200 dark:hover:bg-violet-900',
       )}
     >
       {label}
@@ -212,7 +212,7 @@ export function ValueStreamDiagram({
       <ConnectorSvg points={connectors} width={svgSize.w} height={svgSize.h} />
 
       {/* Row 1 — Stages */}
-      <div className="relative z-10 flex w-full rounded-lg overflow-hidden shadow-sm border border-violet-200">
+      <div className="relative z-10 flex w-full rounded-lg overflow-hidden shadow-sm border border-violet-200 dark:border-violet-800">
         {stream.stages.map((stage, i) => (
           <Chevron
             key={stage.id}
@@ -233,17 +233,17 @@ export function ValueStreamDiagram({
 
       {/* Row 2+3 — Capabilities & Processes */}
       {selectedStage && (
-        <div className="relative z-10 flex flex-col gap-0 rounded-xl border border-violet-200 bg-white overflow-hidden shadow-sm">
+        <div className="relative z-10 flex flex-col gap-0 rounded-xl border border-violet-200 dark:border-violet-800 bg-card overflow-hidden shadow-sm">
           {/* Row label */}
-          <div className="flex items-center gap-3 px-5 py-3 bg-violet-50 border-b border-violet-100">
-            <span className="text-xs font-semibold uppercase tracking-widest text-violet-500">
+          <div className="flex items-center gap-3 px-5 py-3 bg-violet-50 dark:bg-violet-950/50 border-b border-violet-100 dark:border-violet-900">
+            <span className="text-xs font-semibold uppercase tracking-widest text-violet-500 dark:text-violet-400">
               {selectedStage.name}
             </span>
           </div>
 
           {/* Capability columns */}
           <div
-            className="grid gap-0 divide-x divide-violet-100"
+            className="grid gap-0 divide-x divide-violet-100 dark:divide-violet-900"
             style={{ gridTemplateColumns: `repeat(${selectedCapabilities.length}, 1fr)` }}
           >
             {selectedCapabilities.map((cap) => (
@@ -255,22 +255,22 @@ export function ValueStreamDiagram({
                 className="flex flex-col"
               >
                 {/* Capability name */}
-                <div className="px-4 py-3 border-b border-violet-100 bg-white">
+                <div className="px-4 py-3 border-b border-violet-100 dark:border-violet-900 bg-card">
                   <Link
                     to="/capabilities/$capabilityId"
                     params={{ capabilityId: cap.id }}
-                    className="text-sm font-semibold text-violet-800 hover:text-violet-600 hover:underline"
+                    className="text-sm font-semibold text-violet-800 dark:text-violet-200 hover:text-violet-600 dark:hover:text-violet-400 hover:underline"
                   >
                     {cap.name}
                   </Link>
                 </div>
 
                 {/* Business Processes */}
-                <div className="flex flex-col gap-2 p-4 bg-violet-50/40">
+                <div className="flex flex-col gap-2 p-4 bg-violet-50/40 dark:bg-violet-950/30">
                   {cap.businessProcesses.map((proc) => (
                     <div
                       key={proc.id}
-                      className="rounded-md border border-violet-100 bg-white px-3 py-2 text-xs text-slate-700 shadow-xs"
+                      className="rounded-md border border-violet-100 dark:border-violet-900 bg-card px-3 py-2 text-xs text-foreground shadow-xs"
                     >
                       {proc.name}
                     </div>

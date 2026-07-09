@@ -79,8 +79,8 @@ function DataExchangeRoute() {
   return (
     <div className="mx-auto max-w-2xl px-6 py-10">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Data Exchange</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">Data Exchange</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           Export the full model (capabilities, processes, value streams) as a single JSON bundle, or
           import one to restore or move data between OpenEAM instances. Import replaces all existing
           data.
@@ -88,17 +88,19 @@ function DataExchangeRoute() {
       </div>
 
       <div className="flex flex-col gap-4">
-        <div className="rounded-xl border border-slate-200 bg-white p-5">
-          <p className="text-sm font-semibold text-slate-800">Export</p>
-          <p className="mt-0.5 text-xs text-slate-400">Download the current model as JSON.</p>
+        <div className="rounded-xl border border-border bg-card p-5">
+          <p className="text-sm font-semibold text-foreground">Export</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            Download the current model as JSON.
+          </p>
           <Button className="mt-3" onClick={handleExport} disabled={busy}>
             Export JSON
           </Button>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-5">
-          <p className="text-sm font-semibold text-slate-800">Import</p>
-          <p className="mt-0.5 text-xs text-slate-400">
+        <div className="rounded-xl border border-border bg-card p-5">
+          <p className="text-sm font-semibold text-foreground">Import</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">
             Upload a JSON bundle. This replaces all existing data.
           </p>
           <input
@@ -119,7 +121,9 @@ function DataExchangeRoute() {
         </div>
 
         {status.kind !== 'idle' && (
-          <p className={`text-sm ${status.kind === 'error' ? 'text-red-600' : 'text-emerald-600'}`}>
+          <p
+            className={`text-sm ${status.kind === 'error' ? 'text-destructive' : 'text-emerald-600 dark:text-emerald-400'}`}
+          >
             {status.message}
           </p>
         )}

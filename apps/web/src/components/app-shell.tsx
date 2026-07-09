@@ -1,8 +1,10 @@
 import { Link, Outlet, useRouterState } from '@tanstack/react-router';
 import { EnterpriseSwitcher } from './enterprise-switcher';
+import { ThemeToggle } from './theme-toggle';
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -77,6 +79,9 @@ export function AppShell() {
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarContent>
+        <SidebarFooter>
+          <ThemeToggle />
+        </SidebarFooter>
       </Sidebar>
 
       <div className="flex flex-1 flex-col min-h-screen">

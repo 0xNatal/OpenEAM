@@ -137,7 +137,7 @@ function BuildingBlockForm({
 
   return (
     <div className="flex flex-col gap-4 px-6 py-2">
-      <label className="flex flex-col gap-1 text-xs font-medium text-slate-600">
+      <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
         Kind
         <select
           className={selectClassName}
@@ -155,7 +155,10 @@ function BuildingBlockForm({
         </select>
       </label>
 
-      <label htmlFor="bb-name" className="flex flex-col gap-1 text-xs font-medium text-slate-600">
+      <label
+        htmlFor="bb-name"
+        className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
+      >
         Name
         <Input
           id="bb-name"
@@ -166,7 +169,7 @@ function BuildingBlockForm({
 
       <label
         htmlFor="bb-description"
-        className="flex flex-col gap-1 text-xs font-medium text-slate-600"
+        className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
       >
         Description
         <Input
@@ -177,7 +180,7 @@ function BuildingBlockForm({
       </label>
 
       {form.kind === 'ARCHITECTURE' && (
-        <label className="flex flex-col gap-1 text-xs font-medium text-slate-600">
+        <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
           Architecture level
           <select
             className={selectClassName}
@@ -194,7 +197,7 @@ function BuildingBlockForm({
         </label>
       )}
 
-      <label className="flex flex-col gap-1 text-xs font-medium text-slate-600">
+      <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
         Lifecycle phase
         <select
           className={selectClassName}
@@ -211,7 +214,7 @@ function BuildingBlockForm({
       <div className="grid grid-cols-2 gap-3">
         <label
           htmlFor="bb-valid-from"
-          className="flex flex-col gap-1 text-xs font-medium text-slate-600"
+          className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
         >
           Valid from
           <Input
@@ -223,7 +226,7 @@ function BuildingBlockForm({
         </label>
         <label
           htmlFor="bb-valid-to"
-          className="flex flex-col gap-1 text-xs font-medium text-slate-600"
+          className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
         >
           Valid to
           <Input
@@ -236,12 +239,12 @@ function BuildingBlockForm({
       </div>
 
       <fieldset className="flex flex-col gap-1">
-        <legend className="text-xs font-medium text-slate-600">
+        <legend className="text-xs font-medium text-muted-foreground">
           Architecture domains (at least one)
         </legend>
-        <div className="flex flex-col gap-1 rounded-md border border-slate-200 p-2">
+        <div className="flex flex-col gap-1 rounded-md border border-border p-2">
           {domains.map((domain) => (
-            <label key={domain.id} className="flex items-center gap-2 text-xs text-slate-700">
+            <label key={domain.id} className="flex items-center gap-2 text-xs text-foreground">
               <input
                 type="checkbox"
                 checked={form.architectureDomainIds.includes(domain.id)}
@@ -259,13 +262,13 @@ function BuildingBlockForm({
       </fieldset>
 
       <fieldset className="flex flex-col gap-1">
-        <legend className="text-xs font-medium text-slate-600">Organization units</legend>
-        <div className="flex flex-col gap-1 rounded-md border border-slate-200 p-2">
+        <legend className="text-xs font-medium text-muted-foreground">Organization units</legend>
+        <div className="flex flex-col gap-1 rounded-md border border-border p-2">
           {organizationUnits.length === 0 && (
-            <p className="text-xs text-slate-400">No organization units yet.</p>
+            <p className="text-xs text-muted-foreground">No organization units yet.</p>
           )}
           {organizationUnits.map((unit) => (
-            <label key={unit.id} className="flex items-center gap-2 text-xs text-slate-700">
+            <label key={unit.id} className="flex items-center gap-2 text-xs text-foreground">
               <input
                 type="checkbox"
                 checked={form.organizationUnitIds.includes(unit.id)}
@@ -344,8 +347,8 @@ function BuildingBlocksIndexRoute() {
     <div className="mx-auto max-w-5xl px-6 py-10">
       <div className="mb-8 flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Building Blocks</h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Building Blocks</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             Architecture building blocks (needed capabilities) and solution building blocks
             (implementations), assigned to architecture domains and organization units.
           </p>
@@ -353,13 +356,13 @@ function BuildingBlocksIndexRoute() {
         <Button onClick={openCreate}>New building block</Button>
       </div>
 
-      {loading && <p className="text-sm text-slate-400">Loading…</p>}
-      {error && <p className="text-sm text-red-600">Failed to load building blocks.</p>}
-      {mutationError && <p className="mb-4 text-sm text-red-600">{mutationError.message}</p>}
+      {loading && <p className="text-sm text-muted-foreground">Loading…</p>}
+      {error && <p className="text-sm text-destructive">Failed to load building blocks.</p>}
+      {mutationError && <p className="mb-4 text-sm text-destructive">{mutationError.message}</p>}
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
         <table className="w-full text-sm">
-          <thead className="border-b border-slate-200 bg-slate-50 text-left text-xs uppercase tracking-wider text-slate-500">
+          <thead className="border-b border-border bg-muted/50 text-left text-xs uppercase tracking-wider text-muted-foreground">
             <tr>
               <th className="px-4 py-2">Name</th>
               <th className="px-4 py-2">Kind</th>
@@ -371,14 +374,16 @@ function BuildingBlocksIndexRoute() {
           </thead>
           <tbody>
             {(data?.buildingBlocks ?? []).map((block) => (
-              <tr key={block.id} className="border-b border-slate-100 last:border-0">
-                <td className="px-4 py-2 font-medium text-slate-800">{block.name}</td>
-                <td className="px-4 py-2 text-slate-500">
+              <tr key={block.id} className="border-b border-border last:border-0">
+                <td className="px-4 py-2 font-medium text-foreground">{block.name}</td>
+                <td className="px-4 py-2 text-muted-foreground">
                   {block.__typename === 'ArchitectureBuildingBlock' ? 'ABB' : 'SBB'}
                 </td>
-                <td className="px-4 py-2 text-slate-500">{block.architectureLevel ?? '—'}</td>
-                <td className="px-4 py-2 text-slate-500">{block.lifecyclePhase}</td>
-                <td className="px-4 py-2 text-slate-500">
+                <td className="px-4 py-2 text-muted-foreground">
+                  {block.architectureLevel ?? '—'}
+                </td>
+                <td className="px-4 py-2 text-muted-foreground">{block.lifecyclePhase}</td>
+                <td className="px-4 py-2 text-muted-foreground">
                   {block.validFrom ?? '…'} – {block.validTo ?? '…'}
                 </td>
                 <td className="px-4 py-2 text-right">
@@ -393,7 +398,7 @@ function BuildingBlocksIndexRoute() {
             ))}
             {data?.buildingBlocks.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-6 text-center text-sm text-slate-400">
+                <td colSpan={6} className="px-4 py-6 text-center text-sm text-muted-foreground">
                   No building blocks yet.
                 </td>
               </tr>
