@@ -140,7 +140,7 @@ function BusinessProcessDetail({ process, cap }: { process: BusinessProcess; cap
           {process.steps.length > 0 ? (
             process.steps.map((s) => <Item key={s.id} label={s.name} />)
           ) : (
-            <EmptyState label="No steps defined yet" />
+            <EmptyState label="No steps yet — add named tasks to the diagram above" />
           )}
         </Section>
 
