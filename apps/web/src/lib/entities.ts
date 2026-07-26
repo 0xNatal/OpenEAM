@@ -44,6 +44,15 @@ export interface BusinessCapabilityDetail {
   valueStreamStages: ValueStreamStageLink[];
 }
 
+export interface BusinessCapabilitySummary {
+  id: string;
+  name: string;
+  description?: string | null;
+  businessProcesses: { id: string }[];
+  resources: { id: string }[];
+  valueStreamStages: ValueStreamStageLink[];
+}
+
 export interface ValueStreamCapability {
   id: string;
   name: string;
