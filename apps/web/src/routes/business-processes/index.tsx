@@ -7,11 +7,12 @@ import {
   ProcessFormSheet,
 } from '@/components/business-processes/process-form-sheet';
 import { Button } from '@/components/ui/button';
+import { useEnterprise } from '@/lib/enterprise';
 import type { NamedRef } from '@/lib/entities';
 
 const BUSINESS_PROCESSES_QUERY = gql`
-  query BusinessProcessesIndex {
-    businessProcesses {
+  query BusinessProcessesIndex($enterpriseId: String!) {
+    businessProcesses(enterpriseId: $enterpriseId) {
       id
       name
       description
@@ -20,7 +21,7 @@ const BUSINESS_PROCESSES_QUERY = gql`
       outcome
       bpmnXml
     }
-    businessCapabilities {
+    businessCapabilities(enterpriseId: $enterpriseId) {
       id
       name
     }
@@ -78,8 +79,11 @@ function ProcessCard({
 }
 
 function BusinessProcessesIndexRoute() {
-  const { data, loading, error, refetch } =
-    useQuery<BusinessProcessesData>(BUSINESS_PROCESSES_QUERY);
+  const { enterprise } = useEnterprise();
+  const { data, loading, error, refetch } = useQuery<BusinessProcessesData>(
+    BUSINESS_PROCESSES_QUERY,
+    { variables: { enterpriseId: enterprise?.id }, skip: !enterprise },
+  );
   const [deleteBusinessProcess] = useMutation(DELETE_BUSINESS_PROCESS, {
     update(cache, _result, { variables }) {
       if (!variables?.id) return;

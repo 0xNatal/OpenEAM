@@ -3,16 +3,19 @@ import { useQuery } from '@apollo/client/react';
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
+import { useEnterprise } from '@/lib/enterprise';
 import type { ArchitectureDomain, ArchitectureLevel, OrganizationUnit } from '@/lib/entities';
 
 const LANDSCAPE_QUERY = gql`
   query Landscape(
+    $enterpriseId: String!
     $asOf: String
     $architectureLevel: ArchitectureLevel
     $architectureDomainId: String
     $organizationUnitId: String
   ) {
     architectureLandscape(
+      enterpriseId: $enterpriseId
       asOf: $asOf
       architectureLevel: $architectureLevel
       architectureDomainId: $architectureDomainId
@@ -29,6 +32,7 @@ const LANDSCAPE_QUERY = gql`
       }
     }
     solutionsLandscape(
+      enterpriseId: $enterpriseId
       asOf: $asOf
       architectureDomainId: $architectureDomainId
       organizationUnitId: $organizationUnitId
@@ -39,15 +43,15 @@ const LANDSCAPE_QUERY = gql`
       validFrom
       validTo
     }
-    allBuildingBlocks: buildingBlocks {
+    allBuildingBlocks: buildingBlocks(enterpriseId: $enterpriseId) {
       id
       name
     }
-    architectureDomains {
+    architectureDomains(enterpriseId: $enterpriseId) {
       id
       name
     }
-    organizationUnits {
+    organizationUnits(enterpriseId: $enterpriseId) {
       id
       name
     }
@@ -84,13 +88,16 @@ function LandscapeRoute() {
   const [architectureDomainId, setArchitectureDomainId] = useState('');
   const [organizationUnitId, setOrganizationUnitId] = useState('');
 
+  const { enterprise } = useEnterprise();
   const { data, loading, error } = useQuery<LandscapeData>(LANDSCAPE_QUERY, {
     variables: {
+      enterpriseId: enterprise?.id,
       asOf: asOf || undefined,
       architectureLevel: architectureLevel || undefined,
       architectureDomainId: architectureDomainId || undefined,
       organizationUnitId: organizationUnitId || undefined,
     },
+    skip: !enterprise,
   });
 
   const namesById = new Map((data?.allBuildingBlocks ?? []).map((b) => [b.id, b.name]));

@@ -1,20 +1,24 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { useEnterprise } from '@/lib/enterprise';
 
 type Status =
   | { kind: 'idle' }
   | { kind: 'success'; message: string }
   | { kind: 'error'; message: string };
 
-async function downloadExport() {
-  const res = await fetch('/api/data-exchange/export');
+async function downloadExport(enterpriseId: string, enterpriseName: string) {
+  const res = await fetch(
+    `/api/data-exchange/export?enterpriseId=${encodeURIComponent(enterpriseId)}`,
+  );
   if (!res.ok) throw new Error(`Export failed (${res.status})`);
   const blob = await res.blob();
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
+  const slug = enterpriseName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
   a.href = url;
-  a.download = `openeam-export-${new Date().toISOString().slice(0, 10)}.json`;
+  a.download = `openeam-${slug}-${new Date().toISOString().slice(0, 10)}.json`;
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -34,16 +38,18 @@ async function uploadImport(file: File) {
 }
 
 function DataExchangeRoute() {
+  const { enterprise } = useEnterprise();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<Status>({ kind: 'idle' });
   const [busy, setBusy] = useState(false);
 
   const handleExport = async () => {
+    if (!enterprise) return;
     setBusy(true);
     setStatus({ kind: 'idle' });
     try {
-      await downloadExport();
-      setStatus({ kind: 'success', message: 'Export downloaded.' });
+      await downloadExport(enterprise.id, enterprise.name);
+      setStatus({ kind: 'success', message: `Exported "${enterprise.name}".` });
     } catch (err) {
       setStatus({ kind: 'error', message: err instanceof Error ? err.message : 'Export failed.' });
     } finally {
@@ -57,7 +63,7 @@ function DataExchangeRoute() {
     if (!file) return;
 
     const confirmed = window.confirm(
-      'Importing replaces ALL existing business capabilities, processes, and value streams. Continue?',
+      'Importing replaces the enterprises contained in the bundle (all their capabilities, processes, value streams, and building blocks). Other enterprises are not touched. Continue?',
     );
     if (!confirmed) return;
 
@@ -81,9 +87,9 @@ function DataExchangeRoute() {
       <div className="mb-8">
         <h1 className="text-2xl font-bold tracking-tight text-foreground">Data Exchange</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Export the full model (capabilities, processes, value streams) as a single JSON bundle, or
-          import one to restore or move data between OpenEAM instances. Import replaces all existing
-          data.
+          Export the current enterprise's model as a single JSON bundle, or import a bundle to
+          restore or move enterprises between OpenEAM instances. Import replaces the bundle's
+          enterprises and leaves all others untouched.
         </p>
       </div>
 
@@ -91,9 +97,9 @@ function DataExchangeRoute() {
         <div className="rounded-xl border border-border bg-card p-5">
           <p className="text-sm font-semibold text-foreground">Export</p>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            Download the current model as JSON.
+            Download {enterprise ? `"${enterprise.name}"` : 'the current enterprise'} as JSON.
           </p>
-          <Button className="mt-3" onClick={handleExport} disabled={busy}>
+          <Button className="mt-3" onClick={handleExport} disabled={busy || !enterprise}>
             Export JSON
           </Button>
         </div>

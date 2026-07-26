@@ -10,6 +10,7 @@ export interface ProcessStep {
 
 export interface BusinessProcess {
   id: string;
+  enterpriseId: string;
   name: string;
   description?: string | null;
   capabilityId: string;
@@ -35,6 +36,7 @@ export interface ValueStreamStageLink {
 
 export interface BusinessCapabilityDetail {
   id: string;
+  enterpriseId: string;
   name: string;
   description?: string | null;
   people: NamedRef[];

@@ -12,6 +12,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import { useEnterprise } from '@/lib/enterprise';
 import type {
   ArchitectureDomain,
   ArchitectureLevel,
@@ -22,8 +23,8 @@ import type {
 } from '@/lib/entities';
 
 const BUILDING_BLOCKS_QUERY = gql`
-  query BuildingBlocksIndex {
-    buildingBlocks {
+  query BuildingBlocksIndex($enterpriseId: String!) {
+    buildingBlocks(enterpriseId: $enterpriseId) {
       id
       name
       description
@@ -39,12 +40,12 @@ const BUILDING_BLOCKS_QUERY = gql`
         architectureLevel
       }
     }
-    architectureDomains {
+    architectureDomains(enterpriseId: $enterpriseId) {
       id
       name
       isDefault
     }
-    organizationUnits {
+    organizationUnits(enterpriseId: $enterpriseId) {
       id
       name
       parentId
@@ -289,7 +290,11 @@ function BuildingBlockForm({
 }
 
 function BuildingBlocksIndexRoute() {
-  const { data, loading, error, refetch } = useQuery<BuildingBlocksData>(BUILDING_BLOCKS_QUERY);
+  const { enterprise } = useEnterprise();
+  const { data, loading, error, refetch } = useQuery<BuildingBlocksData>(BUILDING_BLOCKS_QUERY, {
+    variables: { enterpriseId: enterprise?.id },
+    skip: !enterprise,
+  });
   const [createBuildingBlock, { error: createError }] = useMutation(CREATE_BUILDING_BLOCK);
   const [updateBuildingBlock, { error: updateError }] = useMutation(UPDATE_BUILDING_BLOCK);
   const [deleteBuildingBlock] = useMutation(DELETE_BUILDING_BLOCK);
@@ -314,7 +319,9 @@ function BuildingBlocksIndexRoute() {
   };
 
   const handleSubmit = async () => {
+    if (!enterprise) return;
     const input = {
+      enterpriseId: enterprise.id,
       kind: form.kind,
       name: form.name,
       description: form.description || null,
@@ -353,7 +360,9 @@ function BuildingBlocksIndexRoute() {
             (implementations), assigned to architecture domains and organization units.
           </p>
         </div>
-        <Button onClick={openCreate}>New building block</Button>
+        <Button onClick={openCreate} disabled={!enterprise}>
+          New building block
+        </Button>
       </div>
 
       {loading && <p className="text-sm text-muted-foreground">Loading…</p>}

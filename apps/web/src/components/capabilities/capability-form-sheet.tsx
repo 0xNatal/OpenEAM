@@ -54,11 +54,14 @@ export function CapabilityFormSheet({
   open,
   onOpenChange,
   capability,
+  enterpriseId,
   onSaved,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   capability: CapabilityFormValue | null;
+  // The enterprise a new capability is created in (edits keep their own).
+  enterpriseId: string;
   onSaved: () => void;
 }) {
   const [createBusinessCapability, { error: createError }] = useMutation(
@@ -78,7 +81,7 @@ export function CapabilityFormSheet({
   }, [open, capability]);
 
   const handleSubmit = async () => {
-    const input = { name: form.name, description: form.description || null };
+    const input = { enterpriseId, name: form.name, description: form.description || null };
     if (capability) {
       await updateBusinessCapability({ variables: { id: capability.id, input } });
     } else {

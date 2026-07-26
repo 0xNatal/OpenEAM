@@ -6,6 +6,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { apolloClient } from './lib/apollo';
+import { EnterpriseProvider } from './lib/enterprise';
 import { ThemeProvider } from './lib/theme';
 import { routeTree } from './routeTree.gen';
 
@@ -26,7 +27,9 @@ createRoot(rootEl).render(
   <StrictMode>
     <ThemeProvider>
       <ApolloProvider client={apolloClient}>
-        <RouterProvider router={router} />
+        <EnterpriseProvider>
+          <RouterProvider router={router} />
+        </EnterpriseProvider>
       </ApolloProvider>
     </ThemeProvider>
   </StrictMode>,

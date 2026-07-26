@@ -3,10 +3,11 @@ import { useQuery } from '@apollo/client/react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { ArrowRight } from 'lucide-react';
 import { MiniChevronStrip } from '@/components/value-stream/diagram';
+import { useEnterprise } from '@/lib/enterprise';
 
 const VALUE_STREAMS_QUERY = gql`
-  query ValueStreamsIndex {
-    valueStreams {
+  query ValueStreamsIndex($enterpriseId: String!) {
+    valueStreams(enterpriseId: $enterpriseId) {
       id
       name
       description
@@ -30,7 +31,11 @@ interface ValueStreamsData {
 }
 
 function ValueStreamsIndexRoute() {
-  const { data, loading, error } = useQuery<ValueStreamsData>(VALUE_STREAMS_QUERY);
+  const { enterprise } = useEnterprise();
+  const { data, loading, error } = useQuery<ValueStreamsData>(VALUE_STREAMS_QUERY, {
+    variables: { enterpriseId: enterprise?.id },
+    skip: !enterprise,
+  });
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">

@@ -38,13 +38,7 @@ export function AppShell() {
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader className="font-semibold text-base">
-          <EnterpriseSwitcher
-            enterprises={[
-              { id: '1', name: 'Enterprise 1' },
-              { id: '2', name: 'Enterprise 2' },
-            ]}
-            defaultEnterpriseId="1"
-          />
+          <EnterpriseSwitcher />
         </SidebarHeader>
         <SidebarContent>
           <SidebarGroup>

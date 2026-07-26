@@ -1,6 +1,9 @@
+import { gql } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { Check, ChevronsUpDown, Plus } from 'lucide-react';
 import * as React from 'react';
 
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,12 +11,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { type Enterprise, useEnterprise } from '@/lib/enterprise';
 
-export interface Enterprise {
-  id: string;
-  name: string;
-}
+const CREATE_ENTERPRISE = gql`
+  mutation CreateEnterprise($input: EnterpriseInput!) {
+    createEnterprise(input: $input) {
+      id
+    }
+  }
+`;
 
 function initials(name: string) {
   return name
@@ -24,17 +40,38 @@ function initials(name: string) {
     .toUpperCase();
 }
 
-export function EnterpriseSwitcher({
-  enterprises,
-  defaultEnterpriseId,
-}: {
-  enterprises: Enterprise[];
-  defaultEnterpriseId: string;
-}) {
-  const [activeId, setActiveId] = React.useState(defaultEnterpriseId);
-  const active = enterprises.find((e) => e.id === activeId) ?? enterprises[0];
+interface CreateEnterpriseData {
+  createEnterprise: { id: string };
+}
 
-  if (!active) return null;
+export function EnterpriseSwitcher() {
+  const { enterprises, enterprise, setEnterpriseId, refetch } = useEnterprise();
+  const [createEnterprise, { error: createError }] =
+    useMutation<CreateEnterpriseData>(CREATE_ENTERPRISE);
+
+  const [sheetOpen, setSheetOpen] = React.useState(false);
+  const [form, setForm] = React.useState({ name: '', description: '', goal: '' });
+
+  const openCreate = () => {
+    setForm({ name: '', description: '', goal: '' });
+    setSheetOpen(true);
+  };
+
+  const handleCreate = async () => {
+    const result = await createEnterprise({
+      variables: {
+        input: {
+          name: form.name,
+          description: form.description || null,
+          goal: form.goal || null,
+        },
+      },
+    });
+    setSheetOpen(false);
+    refetch();
+    const newId = result.data?.createEnterprise.id;
+    if (newId) setEnterpriseId(newId);
+  };
 
   return (
     <SidebarMenu>
@@ -46,31 +83,27 @@ export function EnterpriseSwitcher({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground text-xs font-semibold">
-                {initials(active.name)}
+                {enterprise ? initials(enterprise.name) : '?'}
               </div>
               <div className="flex flex-col gap-0.5 leading-none min-w-0">
                 <span className="text-xs text-muted-foreground">Enterprise</span>
-                <span className="font-medium truncate">{active.name}</span>
+                <span className="font-medium truncate">{enterprise?.name ?? 'No enterprise'}</span>
               </div>
               <ChevronsUpDown className="ml-auto shrink-0" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-(--radix-dropdown-menu-trigger-width)" align="start">
-            {enterprises.map((enterprise) => (
-              <DropdownMenuItem
-                key={enterprise.id}
-                onSelect={() => setActiveId(enterprise.id)}
-                className="gap-2"
-              >
+            {enterprises.map((e: Enterprise) => (
+              <DropdownMenuItem key={e.id} onSelect={() => setEnterpriseId(e.id)} className="gap-2">
                 <div className="flex aspect-square size-6 shrink-0 items-center justify-center rounded bg-sidebar-primary text-sidebar-primary-foreground text-xs font-semibold">
-                  {initials(enterprise.name)}
+                  {initials(e.name)}
                 </div>
-                <span className="truncate">{enterprise.name}</span>
-                {enterprise.id === activeId && <Check className="ml-auto shrink-0" />}
+                <span className="truncate">{e.name}</span>
+                {e.id === enterprise?.id && <Check className="ml-auto shrink-0" />}
               </DropdownMenuItem>
             ))}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2">
+            {enterprises.length > 0 && <DropdownMenuSeparator />}
+            <DropdownMenuItem className="gap-2" onSelect={openCreate}>
               <div className="flex size-6 items-center justify-center rounded border">
                 <Plus className="size-3.5" />
               </div>
@@ -79,6 +112,64 @@ export function EnterpriseSwitcher({
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
+
+      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+        <SheetContent className="overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>New enterprise</SheetTitle>
+            <SheetDescription>
+              The scope of an architecture effort: one or more organizations (or parts of them)
+              pursuing a shared goal — a company, a cross-company collaboration, a household.
+            </SheetDescription>
+          </SheetHeader>
+
+          <div className="flex flex-col gap-4 px-6 py-2">
+            <label
+              htmlFor="ent-name"
+              className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
+            >
+              Name
+              <Input
+                id="ent-name"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+              />
+            </label>
+
+            <label
+              htmlFor="ent-goal"
+              className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
+            >
+              Shared goal
+              <Input
+                id="ent-goal"
+                value={form.goal}
+                onChange={(e) => setForm({ ...form, goal: e.target.value })}
+              />
+            </label>
+
+            <label
+              htmlFor="ent-description"
+              className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
+            >
+              Description
+              <Input
+                id="ent-description"
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+              />
+            </label>
+          </div>
+
+          {createError && <p className="px-6 text-sm text-destructive">{createError.message}</p>}
+
+          <SheetFooter>
+            <Button onClick={handleCreate} disabled={!form.name}>
+              Create
+            </Button>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
     </SidebarMenu>
   );
 }

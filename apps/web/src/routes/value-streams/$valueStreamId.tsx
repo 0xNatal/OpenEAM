@@ -9,6 +9,7 @@ const VALUE_STREAM_QUERY = gql`
   query ValueStreamDetail($id: String!) {
     valueStream(id: $id) {
       id
+      enterpriseId
       name
       description
       stages {
@@ -17,7 +18,14 @@ const VALUE_STREAM_QUERY = gql`
         capabilityIds
       }
     }
-    businessCapabilities {
+  }
+`;
+
+// Scoped to the value stream's own enterprise, not the switcher's current one,
+// so a direct link renders correctly regardless of context.
+const STREAM_CAPABILITIES_QUERY = gql`
+  query ValueStreamCapabilities($enterpriseId: String!) {
+    businessCapabilities(enterpriseId: $enterpriseId) {
       id
       name
       description
@@ -26,7 +34,10 @@ const VALUE_STREAM_QUERY = gql`
 `;
 
 interface ValueStreamDetailData {
-  valueStream: ValueStream | null;
+  valueStream: (ValueStream & { enterpriseId: string }) | null;
+}
+
+interface StreamCapabilitiesData {
   businessCapabilities: ValueStreamCapability[];
 }
 
@@ -34,6 +45,11 @@ function ValueStreamDetailRoute() {
   const { valueStreamId } = Route.useParams();
   const { data, loading, error } = useQuery<ValueStreamDetailData>(VALUE_STREAM_QUERY, {
     variables: { id: valueStreamId },
+  });
+  const enterpriseId = data?.valueStream?.enterpriseId;
+  const { data: capsData } = useQuery<StreamCapabilitiesData>(STREAM_CAPABILITIES_QUERY, {
+    variables: { enterpriseId },
+    skip: !enterpriseId,
   });
 
   if (loading) return <p className="px-6 py-10 text-sm text-muted-foreground">Loading…</p>;
@@ -64,7 +80,7 @@ function ValueStreamDetailRoute() {
         <p className="mb-5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
           Click a stage to explore its business capabilities and business processes
         </p>
-        <ValueStreamDiagram stream={stream} capabilities={data.businessCapabilities} />
+        <ValueStreamDiagram stream={stream} capabilities={capsData?.businessCapabilities ?? []} />
       </div>
     </div>
   );

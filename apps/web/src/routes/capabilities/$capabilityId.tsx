@@ -13,6 +13,7 @@ const BUSINESS_CAPABILITY_QUERY = gql`
   query BusinessCapability($id: String!) {
     businessCapability(id: $id) {
       id
+      enterpriseId
       name
       description
       people {
@@ -232,6 +233,7 @@ function CapabilityRoute() {
         open={sheetOpen}
         onOpenChange={setSheetOpen}
         capability={data.businessCapability}
+        enterpriseId={data.businessCapability.enterpriseId}
         onSaved={refetch}
       />
     </>

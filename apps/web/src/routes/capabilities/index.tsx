@@ -7,11 +7,12 @@ import {
   DELETE_BUSINESS_CAPABILITY,
 } from '@/components/capabilities/capability-form-sheet';
 import { Button } from '@/components/ui/button';
+import { useEnterprise } from '@/lib/enterprise';
 import type { BusinessCapabilitySummary } from '@/lib/entities';
 
 const BUSINESS_CAPABILITIES_QUERY = gql`
-  query BusinessCapabilities {
-    businessCapabilities {
+  query BusinessCapabilities($enterpriseId: String!) {
+    businessCapabilities(enterpriseId: $enterpriseId) {
       id
       name
       description
@@ -97,8 +98,10 @@ function CapabilityCard({
 }
 
 function CapabilitiesIndexRoute() {
+  const { enterprise } = useEnterprise();
   const { data, loading, error, refetch } = useQuery<BusinessCapabilitiesData>(
     BUSINESS_CAPABILITIES_QUERY,
+    { variables: { enterpriseId: enterprise?.id }, skip: !enterprise },
   );
   const [deleteBusinessCapability] = useMutation(DELETE_BUSINESS_CAPABILITY, {
     update(cache, _result, { variables }) {
@@ -141,9 +144,14 @@ function CapabilitiesIndexRoute() {
             Business capabilities shared across value streams.
           </p>
         </div>
-        <Button onClick={openCreate}>New capability</Button>
+        <Button onClick={openCreate} disabled={!enterprise}>
+          New capability
+        </Button>
       </div>
 
+      {!enterprise && !loading && (
+        <p className="text-sm text-muted-foreground">Create an enterprise to get started.</p>
+      )}
       {loading && <p className="text-sm text-muted-foreground">Loading…</p>}
       {error && <p className="text-sm text-destructive">Failed to load capabilities.</p>}
 
@@ -161,12 +169,15 @@ function CapabilitiesIndexRoute() {
         )}
       </div>
 
-      <CapabilityFormSheet
-        open={sheetOpen}
-        onOpenChange={setSheetOpen}
-        capability={creating ? null : editingCap}
-        onSaved={refetch}
-      />
+      {enterprise && (
+        <CapabilityFormSheet
+          open={sheetOpen}
+          onOpenChange={setSheetOpen}
+          capability={creating ? null : editingCap}
+          enterpriseId={enterprise.id}
+          onSaved={refetch}
+        />
+      )}
     </div>
   );
 }

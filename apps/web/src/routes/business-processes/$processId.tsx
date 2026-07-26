@@ -16,6 +16,7 @@ const BUSINESS_PROCESS_QUERY = gql`
   query BusinessProcess($id: String!) {
     businessProcess(id: $id) {
       id
+      enterpriseId
       name
       description
       capabilityId
@@ -26,10 +27,6 @@ const BUSINESS_PROCESS_QUERY = gql`
         id
         name
       }
-    }
-    businessCapabilities {
-      id
-      name
     }
   }
 `;
@@ -43,13 +40,26 @@ const CAPABILITY_NAME_QUERY = gql`
   }
 `;
 
+// The edit sheet's capability dropdown, scoped to the process's enterprise.
+const ENTERPRISE_CAPABILITIES_QUERY = gql`
+  query EnterpriseCapabilities($enterpriseId: String!) {
+    businessCapabilities(enterpriseId: $enterpriseId) {
+      id
+      name
+    }
+  }
+`;
+
 interface BusinessProcessData {
   businessProcess: BusinessProcess | null;
-  businessCapabilities: NamedRef[];
 }
 
 interface CapabilityNameData {
   businessCapability: NamedRef | null;
+}
+
+interface EnterpriseCapabilitiesData {
+  businessCapabilities: NamedRef[];
 }
 
 function Section({
@@ -206,6 +216,12 @@ function BusinessProcessRoute() {
     skip: !capabilityId,
   });
 
+  const enterpriseId = data?.businessProcess?.enterpriseId;
+  const { data: capsData } = useQuery<EnterpriseCapabilitiesData>(ENTERPRISE_CAPABILITIES_QUERY, {
+    variables: { enterpriseId },
+    skip: !enterpriseId,
+  });
+
   const handleDelete = async () => {
     if (!window.confirm('Delete this business process?')) return;
     await deleteBusinessProcess({ variables: { id: processId } });
@@ -228,7 +244,7 @@ function BusinessProcessRoute() {
         open={sheetOpen}
         onOpenChange={setSheetOpen}
         process={data.businessProcess}
-        capabilities={data.businessCapabilities}
+        capabilities={capsData?.businessCapabilities ?? []}
         onSaved={refetch}
       />
     </>
