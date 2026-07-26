@@ -26,6 +26,13 @@ export interface CapabilityResource {
   __typename: 'ArchitectureBuildingBlock' | 'SolutionBuildingBlock';
 }
 
+export interface ValueStreamStageLink {
+  valueStreamId: string;
+  valueStreamName: string;
+  stageId: string;
+  stageName: string;
+}
+
 export interface BusinessCapabilityDetail {
   id: string;
   name: string;
@@ -34,6 +41,7 @@ export interface BusinessCapabilityDetail {
   resources: CapabilityResource[];
   information: NamedRef[];
   businessProcesses: NamedRef[];
+  valueStreamStages: ValueStreamStageLink[];
 }
 
 export interface ValueStreamCapability {

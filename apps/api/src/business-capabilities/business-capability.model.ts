@@ -14,6 +14,16 @@ export class Information {
   @Field() name!: string;
 }
 
+// Where this capability is used in a value stream (the reverse of
+// ValueStreamStage.capabilityIds in value-stream.model.ts).
+@ObjectType()
+export class ValueStreamStageLink {
+  @Field() valueStreamId!: string;
+  @Field() valueStreamName!: string;
+  @Field() stageId!: string;
+  @Field() stageName!: string;
+}
+
 @ObjectType()
 export class BusinessCapability {
   @Field() id!: string;
@@ -25,4 +35,5 @@ export class BusinessCapability {
   // ArchitectureBuildingBlock.capabilityLinks in building-block.model.ts).
   @Field(() => [BuildingBlock]) resources!: BuildingBlock[];
   @Field(() => [Information]) information!: Information[];
+  @Field(() => [ValueStreamStageLink]) valueStreamStages!: ValueStreamStageLink[];
 }

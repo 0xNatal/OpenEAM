@@ -27,6 +27,12 @@ const BUSINESS_CAPABILITY_QUERY = gql`
         id
         name
       }
+      valueStreamStages {
+        valueStreamId
+        valueStreamName
+        stageId
+        stageName
+      }
     }
   }
 `;
@@ -96,6 +102,23 @@ function CapabilityDetail({ cap }: { cap: BusinessCapabilityDetail }) {
       <div className="mb-8">
         <h1 className="text-2xl font-bold tracking-tight text-foreground">{cap.name}</h1>
         {cap.description && <p className="mt-1 text-sm text-muted-foreground">{cap.description}</p>}
+
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          {cap.valueStreamStages.length > 0 ? (
+            cap.valueStreamStages.map((link) => (
+              <Link
+                key={`${link.valueStreamId}-${link.stageId}`}
+                to="/value-streams/$valueStreamId"
+                params={{ valueStreamId: link.valueStreamId }}
+                className="rounded-full border border-border bg-muted/50 px-3 py-1 text-xs text-muted-foreground hover:border-violet-300 dark:hover:border-violet-700 hover:text-violet-700 dark:hover:text-violet-300 transition-colors"
+              >
+                {link.valueStreamName} <span className="opacity-60">›</span> {link.stageName}
+              </Link>
+            ))
+          ) : (
+            <p className="text-xs text-muted-foreground italic">Not part of any value stream yet</p>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">

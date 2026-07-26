@@ -69,6 +69,7 @@ type BusinessCapability {
   name: String!
   people: [Person!]!
   resources: [BuildingBlock!]!
+  valueStreamStages: [ValueStreamStageLink!]!
 }
 
 type BusinessProcess {
@@ -193,4 +194,11 @@ type ValueStreamStage {
   capabilityIds: [String!]!
   id: String!
   name: String!
+}
+
+type ValueStreamStageLink {
+  stageId: String!
+  stageName: String!
+  valueStreamId: String!
+  valueStreamName: String!
 }

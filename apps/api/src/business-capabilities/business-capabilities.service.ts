@@ -4,6 +4,7 @@ import type { MappedBuildingBlock } from '../building-blocks/building-blocks.ser
 import { toBuildingBlock, withAllLinks } from '../building-blocks/building-blocks.service';
 import type { BusinessProcess } from '../business-processes/business-process.model';
 import { DATABASE } from '../db.module';
+import type { ValueStreamStageLink } from './business-capability.model';
 
 export interface BusinessCapabilityRow {
   id: string;
@@ -11,6 +12,7 @@ export interface BusinessCapabilityRow {
   description: string | null;
   businessProcesses: BusinessProcess[];
   resources: MappedBuildingBlock[];
+  valueStreamStages: ValueStreamStageLink[];
 }
 
 @Injectable()
@@ -24,6 +26,7 @@ export class BusinessCapabilitiesService {
           with: { steps: { orderBy: (t, { asc }) => [asc(t.position)] } },
         },
         buildingBlockLinks: { with: { buildingBlock: { with: withAllLinks } } },
+        stageCapabilities: { with: { stage: { with: { valueStream: true } } } },
       },
     });
     return rows.map(toCapabilityRow);
@@ -37,6 +40,7 @@ export class BusinessCapabilitiesService {
           with: { steps: { orderBy: (t, { asc }) => [asc(t.position)] } },
         },
         buildingBlockLinks: { with: { buildingBlock: { with: withAllLinks } } },
+        stageCapabilities: { with: { stage: { with: { valueStream: true } } } },
       },
     });
     return row ? toCapabilityRow(row) : undefined;
@@ -49,6 +53,9 @@ function toCapabilityRow(row: {
   description: string | null;
   businessProcesses: BusinessProcess[];
   buildingBlockLinks: Array<{ buildingBlock: Parameters<typeof toBuildingBlock>[0] }>;
+  stageCapabilities: Array<{
+    stage: { id: string; name: string; valueStream: { id: string; name: string } };
+  }>;
 }): BusinessCapabilityRow {
   return {
     id: row.id,
@@ -56,5 +63,11 @@ function toCapabilityRow(row: {
     description: row.description,
     businessProcesses: row.businessProcesses,
     resources: row.buildingBlockLinks.map((link) => toBuildingBlock(link.buildingBlock)),
+    valueStreamStages: row.stageCapabilities.map((sc) => ({
+      valueStreamId: sc.stage.valueStream.id,
+      valueStreamName: sc.stage.valueStream.name,
+      stageId: sc.stage.id,
+      stageName: sc.stage.name,
+    })),
   };
 }
