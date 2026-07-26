@@ -16,7 +16,8 @@
       "description": null,
       "capabilityId": "data-capture",
       "triggerEvent": null,
-      "outcome": null
+      "outcome": null,
+      "bpmnXml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" id=\"Definitions_ImportFile\" targetNamespace=\"http://openeam.org/bpmn\"><bpmn:process id=\"Process_ImportFile\" isExecutable=\"false\"><bpmn:startEvent id=\"StartEvent_1\" name=\"File, photo, or document ready to import\"><bpmn:outgoing>Flow_1</bpmn:outgoing></bpmn:startEvent><bpmn:task id=\"Task_Select\" name=\"Select file\"><bpmn:incoming>Flow_1</bpmn:incoming><bpmn:outgoing>Flow_2</bpmn:outgoing></bpmn:task><bpmn:task id=\"Task_Validate\" name=\"Validate file format\"><bpmn:incoming>Flow_2</bpmn:incoming><bpmn:outgoing>Flow_3</bpmn:outgoing></bpmn:task><bpmn:task id=\"Task_Copy\" name=\"Copy file to storage location\"><bpmn:incoming>Flow_3</bpmn:incoming><bpmn:outgoing>Flow_4</bpmn:outgoing></bpmn:task><bpmn:endEvent id=\"EndEvent_1\" name=\"File imported\"><bpmn:incoming>Flow_4</bpmn:incoming></bpmn:endEvent><bpmn:sequenceFlow id=\"Flow_1\" sourceRef=\"StartEvent_1\" targetRef=\"Task_Select\"/><bpmn:sequenceFlow id=\"Flow_2\" sourceRef=\"Task_Select\" targetRef=\"Task_Validate\"/><bpmn:sequenceFlow id=\"Flow_3\" sourceRef=\"Task_Validate\" targetRef=\"Task_Copy\"/><bpmn:sequenceFlow id=\"Flow_4\" sourceRef=\"Task_Copy\" targetRef=\"EndEvent_1\"/></bpmn:process><bpmndi:BPMNDiagram id=\"BPMNDiagram_1\"><bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"Process_ImportFile\"><bpmndi:BPMNShape id=\"StartEvent_1_di\" bpmnElement=\"StartEvent_1\"><dc:Bounds x=\"152\" y=\"182\" width=\"36\" height=\"36\"/><bpmndi:BPMNLabel><dc:Bounds x=\"128\" y=\"225\" width=\"84\" height=\"40\"/></bpmndi:BPMNLabel></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Task_Select_di\" bpmnElement=\"Task_Select\"><dc:Bounds x=\"250\" y=\"160\" width=\"100\" height=\"80\"/></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Task_Validate_di\" bpmnElement=\"Task_Validate\"><dc:Bounds x=\"410\" y=\"160\" width=\"100\" height=\"80\"/></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Task_Copy_di\" bpmnElement=\"Task_Copy\"><dc:Bounds x=\"570\" y=\"160\" width=\"100\" height=\"80\"/></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"EndEvent_1_di\" bpmnElement=\"EndEvent_1\"><dc:Bounds x=\"732\" y=\"182\" width=\"36\" height=\"36\"/><bpmndi:BPMNLabel><dc:Bounds x=\"720\" y=\"225\" width=\"60\" height=\"27\"/></bpmndi:BPMNLabel></bpmndi:BPMNShape><bpmndi:BPMNEdge id=\"Flow_1_di\" bpmnElement=\"Flow_1\"><di:waypoint x=\"188\" y=\"200\"/><di:waypoint x=\"250\" y=\"200\"/></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_2_di\" bpmnElement=\"Flow_2\"><di:waypoint x=\"350\" y=\"200\"/><di:waypoint x=\"410\" y=\"200\"/></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_3_di\" bpmnElement=\"Flow_3\"><di:waypoint x=\"510\" y=\"200\"/><di:waypoint x=\"570\" y=\"200\"/></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_4_di\" bpmnElement=\"Flow_4\"><di:waypoint x=\"670\" y=\"200\"/><di:waypoint x=\"732\" y=\"200\"/></bpmndi:BPMNEdge></bpmndi:BPMNPlane></bpmndi:BPMNDiagram></bpmn:definitions>\n"
     },
     {
       "id": "tag-metadata",
@@ -139,7 +140,26 @@
       "outcome": null
     }
   ],
-  "processSteps": [],
+  "processSteps": [
+    {
+      "id": "import-file-step-1",
+      "name": "Select file",
+      "processId": "import-file",
+      "position": 0
+    },
+    {
+      "id": "import-file-step-2",
+      "name": "Validate file format",
+      "processId": "import-file",
+      "position": 1
+    },
+    {
+      "id": "import-file-step-3",
+      "name": "Copy file to storage location",
+      "processId": "import-file",
+      "position": 2
+    }
+  ],
   "valueStreams": [
     {
       "id": "preserve-retrieve-personal-data",
