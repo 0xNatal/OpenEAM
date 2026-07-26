@@ -2,7 +2,8 @@
 
 A parking lot for things deliberately left out of the init — possible directions, not a plan or a commitment, in no particular order. Each line notes roughly when it might become worth doing, so an idea isn't lost and the init stays small.
 
-- **Auth (Keycloak)** — with the first user-facing feature. Keycloak in Compose, OIDC on the API (passport-jwt + JWKS), OIDC client on the web.
+- **Links between enterprises** — when one enterprise's model needs to reference another's (same real-world system, data exchange, roll-up to a coarser scope), add link tables between their artifacts rather than sharing rows. Additive on top of the per-enterprise ownership already in place; see [VISION.md](VISION.md).
+- **Auth (Keycloak)** — with the first multi-user feature; enterprise scoping today is a modelling boundary, not access control. Keycloak in Compose, OIDC on the API (passport-jwt + JWKS), OIDC client on the web.
 - **First EAM entities** (Applications, Capabilities, Technologies) — once scope is agreed. Over GraphQL.
 - **REST facade** — only when a real third-party integrator needs it (CMDB sync, ServiceNow, iPaaS, scripts). REST + OpenAPI for core resources, sharing the service layer with GraphQL.
 - **TanStack Query** — when the frontend calls a REST endpoint other than /health.
