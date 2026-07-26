@@ -2,16 +2,21 @@ import { randomUUID } from 'node:crypto';
 import { relations } from 'drizzle-orm';
 import { type AnyPgColumn, index, pgTable, text } from 'drizzle-orm/pg-core';
 import { buildingBlockOrganizationUnits } from './building-blocks';
+import { enterprises } from './enterprises';
 import { timestamps } from './helpers';
 
 // The "breadth" dimension of the landscape: a hierarchical tree of
-// organization units (enterprise > division > department > ...).
+// organization units (division > department > team > ...) as modeled from
+// one enterprise's perspective.
 export const organizationUnits = pgTable(
   'organization_units',
   {
     id: text('id')
       .primaryKey()
       .$defaultFn(() => randomUUID()),
+    enterpriseId: text('enterprise_id')
+      .notNull()
+      .references(() => enterprises.id, { onDelete: 'cascade' }),
     name: text('name').notNull(),
     description: text('description'),
     parentId: text('parent_id').references((): AnyPgColumn => organizationUnits.id, {
@@ -19,7 +24,10 @@ export const organizationUnits = pgTable(
     }),
     ...timestamps,
   },
-  (t) => [index('organization_units_parent_id_idx').on(t.parentId)],
+  (t) => [
+    index('organization_units_parent_id_idx').on(t.parentId),
+    index('organization_units_enterprise_id_idx').on(t.enterpriseId),
+  ],
 );
 
 export const organizationUnitsRelations = relations(organizationUnits, ({ one, many }) => ({

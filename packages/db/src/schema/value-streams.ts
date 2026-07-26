@@ -2,16 +2,24 @@ import { randomUUID } from 'node:crypto';
 import { relations } from 'drizzle-orm';
 import { index, integer, pgTable, primaryKey, text } from 'drizzle-orm/pg-core';
 import { businessCapabilities } from './business-capabilities';
+import { enterprises } from './enterprises';
 import { timestamps } from './helpers';
 
-export const valueStreams = pgTable('value_streams', {
-  id: text('id')
-    .primaryKey()
-    .$defaultFn(() => randomUUID()),
-  name: text('name').notNull(),
-  description: text('description'),
-  ...timestamps,
-});
+export const valueStreams = pgTable(
+  'value_streams',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => randomUUID()),
+    enterpriseId: text('enterprise_id')
+      .notNull()
+      .references(() => enterprises.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    description: text('description'),
+    ...timestamps,
+  },
+  (t) => [index('value_streams_enterprise_id_idx').on(t.enterpriseId)],
+);
 
 export const valueStreamStages = pgTable(
   'value_stream_stages',

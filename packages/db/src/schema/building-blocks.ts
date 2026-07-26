@@ -3,6 +3,7 @@ import { relations } from 'drizzle-orm';
 import { date, index, pgEnum, pgTable, primaryKey, text } from 'drizzle-orm/pg-core';
 import { architectureDomains } from './architecture-domains';
 import { businessCapabilities } from './business-capabilities';
+import { enterprises } from './enterprises';
 import { timestamps } from './helpers';
 import { organizationUnits } from './organization-units';
 
@@ -27,19 +28,26 @@ export const lifecyclePhase = pgEnum('lifecycle_phase', [
 // for kind = 'architecture'; the service layer enforces that.
 // `validFrom`/`validTo` bound the block's existence on the timeline ("time"
 // dimension); null means unbounded on that side.
-export const buildingBlocks = pgTable('building_blocks', {
-  id: text('id')
-    .primaryKey()
-    .$defaultFn(() => randomUUID()),
-  kind: buildingBlockKind('kind').notNull(),
-  name: text('name').notNull(),
-  description: text('description'),
-  architectureLevel: architectureLevel('architecture_level'),
-  lifecyclePhase: lifecyclePhase('lifecycle_phase').notNull().default('planned'),
-  validFrom: date('valid_from'),
-  validTo: date('valid_to'),
-  ...timestamps,
-});
+export const buildingBlocks = pgTable(
+  'building_blocks',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => randomUUID()),
+    enterpriseId: text('enterprise_id')
+      .notNull()
+      .references(() => enterprises.id, { onDelete: 'cascade' }),
+    kind: buildingBlockKind('kind').notNull(),
+    name: text('name').notNull(),
+    description: text('description'),
+    architectureLevel: architectureLevel('architecture_level'),
+    lifecyclePhase: lifecyclePhase('lifecycle_phase').notNull().default('planned'),
+    validFrom: date('valid_from'),
+    validTo: date('valid_to'),
+    ...timestamps,
+  },
+  (t) => [index('building_blocks_enterprise_id_idx').on(t.enterpriseId)],
+);
 
 // Domain assignment is classification, not history — no validity interval.
 // "At least one domain per building block" is enforced in the service layer.

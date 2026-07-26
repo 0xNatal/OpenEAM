@@ -22,6 +22,13 @@
       "when": 1785015173204,
       "tag": "0002_free_chameleon",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1785083931526,
+      "tag": "0003_charming_star_brand",
+      "breakpoints": true
     }
   ]
 }

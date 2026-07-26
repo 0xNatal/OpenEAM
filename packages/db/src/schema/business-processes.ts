@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { relations } from 'drizzle-orm';
 import { index, integer, pgTable, text } from 'drizzle-orm/pg-core';
 import { businessCapabilities } from './business-capabilities';
+import { enterprises } from './enterprises';
 import { timestamps } from './helpers';
 
 export const businessProcesses = pgTable(
@@ -10,6 +11,11 @@ export const businessProcesses = pgTable(
     id: text('id')
       .primaryKey()
       .$defaultFn(() => randomUUID()),
+    // Kept in sync with the owning capability's enterprise by the service
+    // layer, so processes can be filtered by enterprise without a join.
+    enterpriseId: text('enterprise_id')
+      .notNull()
+      .references(() => enterprises.id, { onDelete: 'cascade' }),
     capabilityId: text('capability_id')
       .notNull()
       .references(() => businessCapabilities.id, { onDelete: 'cascade' }),
@@ -23,7 +29,10 @@ export const businessProcesses = pgTable(
     bpmnXml: text('bpmn_xml'),
     ...timestamps,
   },
-  (t) => [index('business_processes_capability_id_idx').on(t.capabilityId)],
+  (t) => [
+    index('business_processes_capability_id_idx').on(t.capabilityId),
+    index('business_processes_enterprise_id_idx').on(t.enterpriseId),
+  ],
 );
 
 export const processSteps = pgTable(
