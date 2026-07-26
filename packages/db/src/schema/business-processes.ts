@@ -17,6 +17,10 @@ export const businessProcesses = pgTable(
     description: text('description'),
     triggerEvent: text('trigger_event'),
     outcome: text('outcome'),
+    // BPMN 2.0 XML of the process diagram (bpmn-js native format); the
+    // diagram is the source of truth for process_steps, which are synced
+    // from it on every diagram save.
+    bpmnXml: text('bpmn_xml'),
     ...timestamps,
   },
   (t) => [index('business_processes_capability_id_idx').on(t.capabilityId)],

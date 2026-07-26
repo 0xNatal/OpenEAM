@@ -15,6 +15,13 @@
       "when": 1783201845553,
       "tag": "0001_fast_unus",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785015173204,
+      "tag": "0002_free_chameleon",
+      "breakpoints": true
     }
   ]
 }

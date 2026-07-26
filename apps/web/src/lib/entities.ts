@@ -15,6 +15,7 @@ export interface BusinessProcess {
   capabilityId: string;
   triggerEvent?: string | null;
   outcome?: string | null;
+  bpmnXml?: string | null;
   steps: ProcessStep[];
 }
 

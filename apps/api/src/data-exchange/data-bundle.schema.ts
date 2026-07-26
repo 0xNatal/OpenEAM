@@ -27,6 +27,8 @@ const businessProcessSchema = z.object({
   capabilityId: z.string(),
   triggerEvent: z.string().nullable(),
   outcome: z.string().nullable(),
+  // Optional so bundles exported before the diagram column existed still import.
+  bpmnXml: z.string().nullable().optional(),
   ...timestampFields,
 });
 

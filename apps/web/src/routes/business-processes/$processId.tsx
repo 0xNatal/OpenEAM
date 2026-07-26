@@ -1,7 +1,12 @@
 import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client/react';
 import { createFileRoute, Link, notFound } from '@tanstack/react-router';
+import { lazy, Suspense } from 'react';
+import { Button } from '@/components/ui/button';
 import type { BusinessProcess, NamedRef } from '@/lib/entities';
+
+// bpmn-js is heavy; only load it when a diagram is actually shown.
+const BpmnViewer = lazy(() => import('@/components/bpmn/bpmn-viewer'));
 
 const BUSINESS_PROCESS_QUERY = gql`
   query BusinessProcess($id: String!) {
@@ -12,6 +17,7 @@ const BUSINESS_PROCESS_QUERY = gql`
       capabilityId
       triggerEvent
       outcome
+      bpmnXml
       steps {
         id
         name
@@ -76,6 +82,31 @@ function BusinessProcessDetail({ process, cap }: { process: BusinessProcess; cap
         <h1 className="text-2xl font-bold tracking-tight text-foreground">{process.name}</h1>
         {process.description && (
           <p className="mt-1 text-sm text-muted-foreground">{process.description}</p>
+        )}
+      </div>
+
+      <div className="mb-4 rounded-xl border border-border bg-card p-5 flex flex-col gap-3">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-sm font-semibold text-foreground">Process Flow</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              BPMN diagram of this process; its tasks define the steps below
+            </p>
+          </div>
+          <Button asChild variant="outline">
+            <Link to="/business-processes/$processId/model" params={{ processId: process.id }}>
+              {process.bpmnXml ? 'Edit diagram' : 'Create diagram'}
+            </Link>
+          </Button>
+        </div>
+        {process.bpmnXml ? (
+          <Suspense
+            fallback={<p className="text-xs text-muted-foreground italic">Loading diagram…</p>}
+          >
+            <BpmnViewer xml={process.bpmnXml} />
+          </Suspense>
+        ) : (
+          <EmptyState label="No diagram modeled yet" />
         )}
       </div>
 

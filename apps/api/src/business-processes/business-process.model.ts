@@ -14,5 +14,6 @@ export class BusinessProcess {
   @Field() capabilityId!: string;
   @Field(() => String, { nullable: true }) triggerEvent?: string | null;
   @Field(() => String, { nullable: true }) outcome?: string | null;
+  @Field(() => String, { nullable: true }) bpmnXml?: string | null;
   @Field(() => [ProcessStep]) steps!: ProcessStep[];
 }
