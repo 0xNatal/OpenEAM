@@ -72,6 +72,11 @@ type BusinessCapability {
   valueStreamStages: [ValueStreamStageLink!]!
 }
 
+input BusinessCapabilityInput {
+  description: String
+  name: String!
+}
+
 type BusinessProcess {
   bpmnXml: String
   capabilityId: String!
@@ -103,8 +108,11 @@ enum LifecyclePhase {
 
 type Mutation {
   createBuildingBlock(input: BuildingBlockInput!): BuildingBlock!
+  createBusinessCapability(input: BusinessCapabilityInput!): BusinessCapability!
   deleteBuildingBlock(id: String!): Boolean!
+  deleteBusinessCapability(id: String!): Boolean!
   updateBuildingBlock(id: String!, input: BuildingBlockInput!): BuildingBlock!
+  updateBusinessCapability(id: String!, input: BusinessCapabilityInput!): BusinessCapability!
   updateBusinessProcessDiagram(bpmnXml: String!, id: String!): BusinessProcess!
 }
 

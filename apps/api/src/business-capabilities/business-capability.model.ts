@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { BuildingBlock } from '../building-blocks/building-block.model';
 import { BusinessProcess } from '../business-processes/business-process.model';
 
@@ -36,4 +36,10 @@ export class BusinessCapability {
   @Field(() => [BuildingBlock]) resources!: BuildingBlock[];
   @Field(() => [Information]) information!: Information[];
   @Field(() => [ValueStreamStageLink]) valueStreamStages!: ValueStreamStageLink[];
+}
+
+@InputType()
+export class BusinessCapabilityInput {
+  @Field() name!: string;
+  @Field(() => String, { nullable: true }) description?: string | null;
 }

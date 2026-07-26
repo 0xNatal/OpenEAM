@@ -1,10 +1,11 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import type { Database } from '@openeam/db';
+import { eq, schema } from '@openeam/db';
 import type { MappedBuildingBlock } from '../building-blocks/building-blocks.service';
 import { toBuildingBlock, withAllLinks } from '../building-blocks/building-blocks.service';
 import type { BusinessProcess } from '../business-processes/business-process.model';
 import { DATABASE } from '../db.module';
-import type { ValueStreamStageLink } from './business-capability.model';
+import type { BusinessCapabilityInput, ValueStreamStageLink } from './business-capability.model';
 
 export interface BusinessCapabilityRow {
   id: string;
@@ -44,6 +45,43 @@ export class BusinessCapabilitiesService {
       },
     });
     return row ? toCapabilityRow(row) : undefined;
+  }
+
+  async create(input: BusinessCapabilityInput): Promise<BusinessCapabilityRow> {
+    const [inserted] = await this.db
+      .insert(schema.businessCapabilities)
+      .values({ name: input.name, description: input.description ?? null })
+      .returning({ id: schema.businessCapabilities.id });
+
+    if (!inserted) throw new NotFoundException('Business capability insert returned no row');
+    const created = await this.findOne(inserted.id);
+    if (!created) {
+      throw new NotFoundException(`Business capability ${inserted.id} not found after creation`);
+    }
+    return created;
+  }
+
+  async update(id: string, input: BusinessCapabilityInput): Promise<BusinessCapabilityRow> {
+    const [updated] = await this.db
+      .update(schema.businessCapabilities)
+      .set({ name: input.name, description: input.description ?? null })
+      .where(eq(schema.businessCapabilities.id, id))
+      .returning({ id: schema.businessCapabilities.id });
+
+    if (!updated) throw new NotFoundException(`Business capability ${id} not found`);
+    const result = await this.findOne(id);
+    if (!result) {
+      throw new NotFoundException(`Business capability ${id} not found after update`);
+    }
+    return result;
+  }
+
+  async delete(id: string): Promise<boolean> {
+    const [deleted] = await this.db
+      .delete(schema.businessCapabilities)
+      .where(eq(schema.businessCapabilities.id, id))
+      .returning({ id: schema.businessCapabilities.id });
+    return Boolean(deleted);
   }
 }
 
