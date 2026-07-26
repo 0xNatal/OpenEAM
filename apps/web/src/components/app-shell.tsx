@@ -5,6 +5,7 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroup,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -36,7 +37,7 @@ export function AppShell() {
   return (
     <SidebarProvider>
       <Sidebar>
-        <SidebarHeader className="px-4 py-3 font-semibold text-base">
+        <SidebarHeader className="font-semibold text-base">
           <EnterpriseSwitcher
             enterprises={[
               { id: '1', name: 'Enterprise 1' },
@@ -46,38 +47,40 @@ export function AppShell() {
           />
         </SidebarHeader>
         <SidebarContent>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={isValueStreams}>
-                <Link to="/value-streams">Value Streams</Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={isCapabilities}>
-                <Link to="/capabilities">Business Capabilities</Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={isBusinessProcesses}>
-                <Link to="/business-processes">Business Processes</Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={isBuildingBlocks}>
-                <Link to="/building-blocks">Building Blocks</Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={isLandscape}>
-                <Link to="/landscape">Landscape</Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={isDataExchange}>
-                <Link to="/data-exchange">Data Exchange</Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
+          <SidebarGroup>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isValueStreams}>
+                  <Link to="/value-streams">Value Streams</Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isCapabilities}>
+                  <Link to="/capabilities">Business Capabilities</Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isBusinessProcesses}>
+                  <Link to="/business-processes">Business Processes</Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isBuildingBlocks}>
+                  <Link to="/building-blocks">Building Blocks</Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isLandscape}>
+                  <Link to="/landscape">Landscape</Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isDataExchange}>
+                  <Link to="/data-exchange">Data Exchange</Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
         </SidebarContent>
         <SidebarFooter>
           <ThemeToggle />
