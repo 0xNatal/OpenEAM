@@ -2,16 +2,11 @@ import { gql } from '@apollo/client';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet';
+  DELETE_BUSINESS_PROCESS,
+  ProcessFormSheet,
+} from '@/components/business-processes/process-form-sheet';
+import { Button } from '@/components/ui/button';
 import type { NamedRef } from '@/lib/entities';
 
 const BUSINESS_PROCESSES_QUERY = gql`
@@ -32,28 +27,6 @@ const BUSINESS_PROCESSES_QUERY = gql`
   }
 `;
 
-const CREATE_BUSINESS_PROCESS = gql`
-  mutation CreateBusinessProcess($input: BusinessProcessInput!) {
-    createBusinessProcess(input: $input) {
-      id
-    }
-  }
-`;
-
-const UPDATE_BUSINESS_PROCESS = gql`
-  mutation UpdateBusinessProcess($id: String!, $input: BusinessProcessInput!) {
-    updateBusinessProcess(id: $id, input: $input) {
-      id
-    }
-  }
-`;
-
-const DELETE_BUSINESS_PROCESS = gql`
-  mutation DeleteBusinessProcess($id: String!) {
-    deleteBusinessProcess(id: $id)
-  }
-`;
-
 interface BusinessProcessRef extends NamedRef {
   description?: string | null;
   capabilityId: string;
@@ -66,22 +39,6 @@ interface BusinessProcessesData {
   businessProcesses: BusinessProcessRef[];
   businessCapabilities: NamedRef[];
 }
-
-interface FormState {
-  name: string;
-  description: string;
-  capabilityId: string;
-  triggerEvent: string;
-  outcome: string;
-}
-
-const emptyForm = (defaultCapabilityId: string): FormState => ({
-  name: '',
-  description: '',
-  capabilityId: defaultCapabilityId,
-  triggerEvent: '',
-  outcome: '',
-});
 
 function ProcessCard({
   process,
@@ -120,96 +77,20 @@ function ProcessCard({
   );
 }
 
-function ProcessForm({
-  form,
-  setForm,
-  capabilities,
-}: {
-  form: FormState;
-  setForm: (form: FormState) => void;
-  capabilities: NamedRef[];
-}) {
-  return (
-    <div className="flex flex-col gap-4 px-6 py-2">
-      <label
-        htmlFor="proc-name"
-        className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
-      >
-        Name
-        <Input
-          id="proc-name"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
-      </label>
-
-      <label
-        htmlFor="proc-description"
-        className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
-      >
-        Description
-        <Input
-          id="proc-description"
-          value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-        />
-      </label>
-
-      <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
-        Business capability
-        <select
-          className="h-7 w-full min-w-0 rounded-md border border-input bg-input/20 px-2 py-0.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
-          value={form.capabilityId}
-          onChange={(e) => setForm({ ...form, capabilityId: e.target.value })}
-        >
-          <option value="" disabled>
-            Select a capability
-          </option>
-          {capabilities.map((cap) => (
-            <option key={cap.id} value={cap.id}>
-              {cap.name}
-            </option>
-          ))}
-        </select>
-      </label>
-
-      <label
-        htmlFor="proc-trigger"
-        className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
-      >
-        Trigger
-        <Input
-          id="proc-trigger"
-          value={form.triggerEvent}
-          onChange={(e) => setForm({ ...form, triggerEvent: e.target.value })}
-        />
-      </label>
-
-      <label
-        htmlFor="proc-outcome"
-        className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
-      >
-        Outcome
-        <Input
-          id="proc-outcome"
-          value={form.outcome}
-          onChange={(e) => setForm({ ...form, outcome: e.target.value })}
-        />
-      </label>
-    </div>
-  );
-}
-
 function BusinessProcessesIndexRoute() {
   const { data, loading, error, refetch } =
     useQuery<BusinessProcessesData>(BUSINESS_PROCESSES_QUERY);
-  const [createBusinessProcess, { error: createError }] = useMutation(CREATE_BUSINESS_PROCESS);
-  const [updateBusinessProcess, { error: updateError }] = useMutation(UPDATE_BUSINESS_PROCESS);
-  const [deleteBusinessProcess] = useMutation(DELETE_BUSINESS_PROCESS);
+  const [deleteBusinessProcess] = useMutation(DELETE_BUSINESS_PROCESS, {
+    update(cache, _result, { variables }) {
+      if (!variables?.id) return;
+      cache.evict({ id: cache.identify({ __typename: 'BusinessProcess', id: variables.id }) });
+      cache.gc();
+    },
+  });
 
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingProcess, setEditingProcess] = useState<BusinessProcessRef | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [form, setForm] = useState<FormState>(emptyForm(''));
+  const [creating, setCreating] = useState(false);
 
   const capabilities = data?.businessCapabilities ?? [];
   const capabilitiesById = new Map(capabilities.map((c) => [c.id, c]));
@@ -227,39 +108,15 @@ function BusinessProcessesIndexRoute() {
   );
 
   const openCreate = () => {
-    setEditingId(null);
-    setForm(emptyForm(capabilities[0]?.id ?? ''));
+    setCreating(true);
+    setEditingProcess(null);
     setSheetOpen(true);
   };
 
   const openEdit = (process: BusinessProcessRef) => {
-    setEditingId(process.id);
-    setForm({
-      name: process.name,
-      description: process.description ?? '',
-      capabilityId: process.capabilityId,
-      triggerEvent: process.triggerEvent ?? '',
-      outcome: process.outcome ?? '',
-    });
+    setCreating(false);
+    setEditingProcess(process);
     setSheetOpen(true);
-  };
-
-  const handleSubmit = async () => {
-    const input = {
-      name: form.name,
-      description: form.description || null,
-      capabilityId: form.capabilityId,
-      triggerEvent: form.triggerEvent || null,
-      outcome: form.outcome || null,
-    };
-
-    if (editingId) {
-      await updateBusinessProcess({ variables: { id: editingId, input } });
-    } else {
-      await createBusinessProcess({ variables: { input } });
-    }
-    setSheetOpen(false);
-    await refetch();
   };
 
   const handleDelete = async (id: string) => {
@@ -267,8 +124,6 @@ function BusinessProcessesIndexRoute() {
     await deleteBusinessProcess({ variables: { id } });
     await refetch();
   };
-
-  const mutationError = createError ?? updateError;
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
@@ -286,7 +141,6 @@ function BusinessProcessesIndexRoute() {
 
       {loading && <p className="text-sm text-muted-foreground">Loading…</p>}
       {error && <p className="text-sm text-destructive">Failed to load business processes.</p>}
-      {mutationError && <p className="mb-4 text-sm text-destructive">{mutationError.message}</p>}
 
       <div className="flex flex-col gap-6">
         {groupedEntries.map(([capabilityId, processes]) => {
@@ -314,23 +168,13 @@ function BusinessProcessesIndexRoute() {
         )}
       </div>
 
-      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-        <SheetContent className="overflow-y-auto">
-          <SheetHeader>
-            <SheetTitle>{editingId ? 'Edit process' : 'New process'}</SheetTitle>
-            <SheetDescription>
-              An operational process that delivers a business capability. Its diagram and steps are
-              modeled separately.
-            </SheetDescription>
-          </SheetHeader>
-          <ProcessForm form={form} setForm={setForm} capabilities={capabilities} />
-          <SheetFooter>
-            <Button onClick={handleSubmit} disabled={!form.name || !form.capabilityId}>
-              {editingId ? 'Save changes' : 'Create'}
-            </Button>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
+      <ProcessFormSheet
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+        process={creating ? null : editingProcess}
+        capabilities={capabilities}
+        onSaved={refetch}
+      />
     </div>
   );
 }

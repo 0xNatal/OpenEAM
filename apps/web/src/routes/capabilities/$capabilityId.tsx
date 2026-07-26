@@ -1,6 +1,12 @@
 import { gql } from '@apollo/client';
-import { useQuery } from '@apollo/client/react';
-import { createFileRoute, Link, notFound } from '@tanstack/react-router';
+import { useMutation, useQuery } from '@apollo/client/react';
+import { createFileRoute, Link, notFound, useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
+import {
+  CapabilityFormSheet,
+  DELETE_BUSINESS_CAPABILITY,
+} from '@/components/capabilities/capability-form-sheet';
+import { Button } from '@/components/ui/button';
 import type { BusinessCapabilityDetail, CapabilityResource } from '@/lib/entities';
 
 const BUSINESS_CAPABILITY_QUERY = gql`
@@ -96,11 +102,29 @@ function ResourceItem({ resource }: { resource: CapabilityResource }) {
   );
 }
 
-function CapabilityDetail({ cap }: { cap: BusinessCapabilityDetail }) {
+function CapabilityDetail({
+  cap,
+  onEdit,
+  onDelete,
+}: {
+  cap: BusinessCapabilityDetail;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">{cap.name}</h1>
+        <div className="flex items-start justify-between gap-2">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">{cap.name}</h1>
+          <div className="flex shrink-0 gap-1">
+            <Button variant="ghost" size="sm" onClick={onEdit}>
+              Edit
+            </Button>
+            <Button variant="destructive" size="sm" onClick={onDelete}>
+              Delete
+            </Button>
+          </div>
+        </div>
         {cap.description && <p className="mt-1 text-sm text-muted-foreground">{cap.description}</p>}
 
         <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -172,16 +196,46 @@ function CapabilityDetail({ cap }: { cap: BusinessCapabilityDetail }) {
 
 function CapabilityRoute() {
   const { capabilityId } = Route.useParams();
-  const { data, loading, error } = useQuery<BusinessCapabilityData>(BUSINESS_CAPABILITY_QUERY, {
-    variables: { id: capabilityId },
+  const navigate = useNavigate();
+  const { data, loading, error, refetch } = useQuery<BusinessCapabilityData>(
+    BUSINESS_CAPABILITY_QUERY,
+    { variables: { id: capabilityId } },
+  );
+  const [deleteBusinessCapability] = useMutation(DELETE_BUSINESS_CAPABILITY, {
+    update(cache, _result, { variables }) {
+      if (!variables?.id) return;
+      cache.evict({ id: cache.identify({ __typename: 'BusinessCapability', id: variables.id }) });
+      cache.gc();
+    },
   });
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  const handleDelete = async () => {
+    if (!window.confirm('Delete this business capability?')) return;
+    await deleteBusinessCapability({ variables: { id: capabilityId } });
+    navigate({ to: '/capabilities' });
+  };
 
   if (loading) return <p className="px-6 py-10 text-sm text-muted-foreground">Loading…</p>;
   if (error)
     return <p className="px-6 py-10 text-sm text-destructive">Failed to load capability.</p>;
   if (!data?.businessCapability) throw notFound();
 
-  return <CapabilityDetail cap={data.businessCapability} />;
+  return (
+    <>
+      <CapabilityDetail
+        cap={data.businessCapability}
+        onEdit={() => setSheetOpen(true)}
+        onDelete={handleDelete}
+      />
+      <CapabilityFormSheet
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+        capability={data.businessCapability}
+        onSaved={refetch}
+      />
+    </>
+  );
 }
 
 export const Route = createFileRoute('/capabilities/$capabilityId')({

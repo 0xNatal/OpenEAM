@@ -2,16 +2,11 @@ import { gql } from '@apollo/client';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet';
+  CapabilityFormSheet,
+  DELETE_BUSINESS_CAPABILITY,
+} from '@/components/capabilities/capability-form-sheet';
+import { Button } from '@/components/ui/button';
 import type { BusinessCapabilitySummary } from '@/lib/entities';
 
 const BUSINESS_CAPABILITIES_QUERY = gql`
@@ -36,41 +31,8 @@ const BUSINESS_CAPABILITIES_QUERY = gql`
   }
 `;
 
-const CREATE_BUSINESS_CAPABILITY = gql`
-  mutation CreateBusinessCapability($input: BusinessCapabilityInput!) {
-    createBusinessCapability(input: $input) {
-      id
-    }
-  }
-`;
-
-const UPDATE_BUSINESS_CAPABILITY = gql`
-  mutation UpdateBusinessCapability($id: String!, $input: BusinessCapabilityInput!) {
-    updateBusinessCapability(id: $id, input: $input) {
-      id
-    }
-  }
-`;
-
-const DELETE_BUSINESS_CAPABILITY = gql`
-  mutation DeleteBusinessCapability($id: String!) {
-    deleteBusinessCapability(id: $id)
-  }
-`;
-
 interface BusinessCapabilitiesData {
   businessCapabilities: BusinessCapabilitySummary[];
-}
-
-interface FormState {
-  name: string;
-  description: string;
-}
-
-const emptyForm: FormState = { name: '', description: '' };
-
-function toFormState(cap: BusinessCapabilitySummary): FormState {
-  return { name: cap.name, description: cap.description ?? '' };
 }
 
 function CapabilityCard({
@@ -134,80 +96,32 @@ function CapabilityCard({
   );
 }
 
-function CapabilityForm({
-  form,
-  setForm,
-}: {
-  form: FormState;
-  setForm: (form: FormState) => void;
-}) {
-  return (
-    <div className="flex flex-col gap-4 px-6 py-2">
-      <label
-        htmlFor="cap-name"
-        className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
-      >
-        Name
-        <Input
-          id="cap-name"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
-      </label>
-
-      <label
-        htmlFor="cap-description"
-        className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
-      >
-        Description
-        <Input
-          id="cap-description"
-          value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-        />
-      </label>
-    </div>
-  );
-}
-
 function CapabilitiesIndexRoute() {
   const { data, loading, error, refetch } = useQuery<BusinessCapabilitiesData>(
     BUSINESS_CAPABILITIES_QUERY,
   );
-  const [createBusinessCapability, { error: createError }] = useMutation(
-    CREATE_BUSINESS_CAPABILITY,
-  );
-  const [updateBusinessCapability, { error: updateError }] = useMutation(
-    UPDATE_BUSINESS_CAPABILITY,
-  );
-  const [deleteBusinessCapability] = useMutation(DELETE_BUSINESS_CAPABILITY);
+  const [deleteBusinessCapability] = useMutation(DELETE_BUSINESS_CAPABILITY, {
+    update(cache, _result, { variables }) {
+      if (!variables?.id) return;
+      cache.evict({ id: cache.identify({ __typename: 'BusinessCapability', id: variables.id }) });
+      cache.gc();
+    },
+  });
 
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingCap, setEditingCap] = useState<BusinessCapabilitySummary | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [form, setForm] = useState<FormState>(emptyForm);
+  const [creating, setCreating] = useState(false);
 
   const openCreate = () => {
-    setEditingId(null);
-    setForm(emptyForm);
+    setCreating(true);
+    setEditingCap(null);
     setSheetOpen(true);
   };
 
   const openEdit = (cap: BusinessCapabilitySummary) => {
-    setEditingId(cap.id);
-    setForm(toFormState(cap));
+    setCreating(false);
+    setEditingCap(cap);
     setSheetOpen(true);
-  };
-
-  const handleSubmit = async () => {
-    const input = { name: form.name, description: form.description || null };
-
-    if (editingId) {
-      await updateBusinessCapability({ variables: { id: editingId, input } });
-    } else {
-      await createBusinessCapability({ variables: { input } });
-    }
-    setSheetOpen(false);
-    await refetch();
   };
 
   const handleDelete = async (id: string) => {
@@ -215,8 +129,6 @@ function CapabilitiesIndexRoute() {
     await deleteBusinessCapability({ variables: { id } });
     await refetch();
   };
-
-  const mutationError = createError ?? updateError;
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
@@ -234,7 +146,6 @@ function CapabilitiesIndexRoute() {
 
       {loading && <p className="text-sm text-muted-foreground">Loading…</p>}
       {error && <p className="text-sm text-destructive">Failed to load capabilities.</p>}
-      {mutationError && <p className="mb-4 text-sm text-destructive">{mutationError.message}</p>}
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {data?.businessCapabilities.map((cap) => (
@@ -250,22 +161,12 @@ function CapabilitiesIndexRoute() {
         )}
       </div>
 
-      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-        <SheetContent className="overflow-y-auto">
-          <SheetHeader>
-            <SheetTitle>{editingId ? 'Edit capability' : 'New capability'}</SheetTitle>
-            <SheetDescription>
-              A business capability describes what the business does, independent of how.
-            </SheetDescription>
-          </SheetHeader>
-          <CapabilityForm form={form} setForm={setForm} />
-          <SheetFooter>
-            <Button onClick={handleSubmit} disabled={!form.name}>
-              {editingId ? 'Save changes' : 'Create'}
-            </Button>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
+      <CapabilityFormSheet
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+        capability={creating ? null : editingCap}
+        onSaved={refetch}
+      />
     </div>
   );
 }

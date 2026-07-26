@@ -1,7 +1,11 @@
 import { gql } from '@apollo/client';
-import { useQuery } from '@apollo/client/react';
-import { createFileRoute, Link, notFound } from '@tanstack/react-router';
-import { lazy, Suspense } from 'react';
+import { useMutation, useQuery } from '@apollo/client/react';
+import { createFileRoute, Link, notFound, useNavigate } from '@tanstack/react-router';
+import { lazy, Suspense, useState } from 'react';
+import {
+  DELETE_BUSINESS_PROCESS,
+  ProcessFormSheet,
+} from '@/components/business-processes/process-form-sheet';
 import { Button } from '@/components/ui/button';
 import type { BusinessProcess, NamedRef } from '@/lib/entities';
 
@@ -23,6 +27,10 @@ const BUSINESS_PROCESS_QUERY = gql`
         name
       }
     }
+    businessCapabilities {
+      id
+      name
+    }
   }
 `;
 
@@ -37,6 +45,7 @@ const CAPABILITY_NAME_QUERY = gql`
 
 interface BusinessProcessData {
   businessProcess: BusinessProcess | null;
+  businessCapabilities: NamedRef[];
 }
 
 interface CapabilityNameData {
@@ -75,11 +84,31 @@ function EmptyState({ label }: { label: string }) {
   return <p className="text-xs text-muted-foreground italic">{label}</p>;
 }
 
-function BusinessProcessDetail({ process, cap }: { process: BusinessProcess; cap?: NamedRef }) {
+function BusinessProcessDetail({
+  process,
+  cap,
+  onEdit,
+  onDelete,
+}: {
+  process: BusinessProcess;
+  cap?: NamedRef;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">{process.name}</h1>
+        <div className="flex items-start justify-between gap-2">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">{process.name}</h1>
+          <div className="flex shrink-0 gap-1">
+            <Button variant="ghost" size="sm" onClick={onEdit}>
+              Edit
+            </Button>
+            <Button variant="destructive" size="sm" onClick={onDelete}>
+              Delete
+            </Button>
+          </div>
+        </div>
         {process.description && (
           <p className="mt-1 text-sm text-muted-foreground">{process.description}</p>
         )}
@@ -158,9 +187,18 @@ function BusinessProcessDetail({ process, cap }: { process: BusinessProcess; cap
 
 function BusinessProcessRoute() {
   const { processId } = Route.useParams();
-  const { data, loading, error } = useQuery<BusinessProcessData>(BUSINESS_PROCESS_QUERY, {
+  const navigate = useNavigate();
+  const { data, loading, error, refetch } = useQuery<BusinessProcessData>(BUSINESS_PROCESS_QUERY, {
     variables: { id: processId },
   });
+  const [deleteBusinessProcess] = useMutation(DELETE_BUSINESS_PROCESS, {
+    update(cache, _result, { variables }) {
+      if (!variables?.id) return;
+      cache.evict({ id: cache.identify({ __typename: 'BusinessProcess', id: variables.id }) });
+      cache.gc();
+    },
+  });
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   const capabilityId = data?.businessProcess?.capabilityId;
   const { data: capData } = useQuery<CapabilityNameData>(CAPABILITY_NAME_QUERY, {
@@ -168,15 +206,32 @@ function BusinessProcessRoute() {
     skip: !capabilityId,
   });
 
+  const handleDelete = async () => {
+    if (!window.confirm('Delete this business process?')) return;
+    await deleteBusinessProcess({ variables: { id: processId } });
+    navigate({ to: '/business-processes' });
+  };
+
   if (loading) return <p className="px-6 py-10 text-sm text-muted-foreground">Loading…</p>;
   if (error) return <p className="px-6 py-10 text-sm text-destructive">Failed to load process.</p>;
   if (!data?.businessProcess) throw notFound();
 
   return (
-    <BusinessProcessDetail
-      process={data.businessProcess}
-      cap={capData?.businessCapability ?? undefined}
-    />
+    <>
+      <BusinessProcessDetail
+        process={data.businessProcess}
+        cap={capData?.businessCapability ?? undefined}
+        onEdit={() => setSheetOpen(true)}
+        onDelete={handleDelete}
+      />
+      <ProcessFormSheet
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+        process={data.businessProcess}
+        capabilities={data.businessCapabilities}
+        onSaved={refetch}
+      />
+    </>
   );
 }
 
