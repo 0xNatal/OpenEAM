@@ -27,6 +27,7 @@ export class ValueStreamStageLink {
 @ObjectType()
 export class BusinessCapability {
   @Field() id!: string;
+  @Field() enterpriseId!: string;
   @Field() name!: string;
   @Field(() => String, { nullable: true }) description?: string | null;
   @Field(() => [BusinessProcess]) businessProcesses!: BusinessProcess[];
@@ -40,6 +41,7 @@ export class BusinessCapability {
 
 @InputType()
 export class BusinessCapabilityInput {
+  @Field() enterpriseId!: string;
   @Field() name!: string;
   @Field(() => String, { nullable: true }) description?: string | null;
 }

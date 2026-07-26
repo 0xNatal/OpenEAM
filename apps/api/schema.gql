@@ -7,6 +7,7 @@ type ArchitectureBuildingBlock implements BuildingBlock {
   architectureLevel: ArchitectureLevel
   capabilityLinks: [CapabilityLink!]!
   description: String
+  enterpriseId: String!
   id: String!
   lifecyclePhase: LifecyclePhase!
   name: String!
@@ -18,6 +19,7 @@ type ArchitectureBuildingBlock implements BuildingBlock {
 
 type ArchitectureDomain {
   description: String
+  enterpriseId: String!
   id: String!
   isDefault: Boolean!
   name: String!
@@ -35,6 +37,7 @@ enum ArchitectureLevel {
 interface BuildingBlock {
   architectureDomainIds: [String!]!
   description: String
+  enterpriseId: String!
   id: String!
   lifecyclePhase: LifecyclePhase!
   name: String!
@@ -47,6 +50,7 @@ input BuildingBlockInput {
   architectureDomainIds: [String!]!
   architectureLevel: ArchitectureLevel
   description: String
+  enterpriseId: String!
   kind: BuildingBlockKind!
   lifecyclePhase: LifecyclePhase!
   name: String!
@@ -64,6 +68,7 @@ enum BuildingBlockKind {
 type BusinessCapability {
   businessProcesses: [BusinessProcess!]!
   description: String
+  enterpriseId: String!
   id: String!
   information: [Information!]!
   name: String!
@@ -74,6 +79,7 @@ type BusinessCapability {
 
 input BusinessCapabilityInput {
   description: String
+  enterpriseId: String!
   name: String!
 }
 
@@ -81,6 +87,7 @@ type BusinessProcess {
   bpmnXml: String
   capabilityId: String!
   description: String
+  enterpriseId: String!
   id: String!
   name: String!
   outcome: String
@@ -102,6 +109,19 @@ type CapabilityLink {
   validTo: String
 }
 
+type Enterprise {
+  description: String
+  goal: String
+  id: String!
+  name: String!
+}
+
+input EnterpriseInput {
+  description: String
+  goal: String
+  name: String!
+}
+
 type Information {
   id: String!
   name: String!
@@ -118,17 +138,21 @@ type Mutation {
   createBuildingBlock(input: BuildingBlockInput!): BuildingBlock!
   createBusinessCapability(input: BusinessCapabilityInput!): BusinessCapability!
   createBusinessProcess(input: BusinessProcessInput!): BusinessProcess!
+  createEnterprise(input: EnterpriseInput!): Enterprise!
   deleteBuildingBlock(id: String!): Boolean!
   deleteBusinessCapability(id: String!): Boolean!
   deleteBusinessProcess(id: String!): Boolean!
+  deleteEnterprise(id: String!): Boolean!
   updateBuildingBlock(id: String!, input: BuildingBlockInput!): BuildingBlock!
   updateBusinessCapability(id: String!, input: BusinessCapabilityInput!): BusinessCapability!
   updateBusinessProcess(id: String!, input: BusinessProcessInput!): BusinessProcess!
   updateBusinessProcessDiagram(bpmnXml: String!, id: String!): BusinessProcess!
+  updateEnterprise(id: String!, input: EnterpriseInput!): Enterprise!
 }
 
 type OrganizationUnit {
   description: String
+  enterpriseId: String!
   id: String!
   name: String!
   parentId: String
@@ -152,23 +176,26 @@ type ProcessStep {
 
 type Query {
   architectureDomain(id: String!): ArchitectureDomain
-  architectureDomains: [ArchitectureDomain!]!
+  architectureDomains(enterpriseId: String!): [ArchitectureDomain!]!
   architectureLandscape(
     architectureDomainId: String
     architectureLevel: ArchitectureLevel
 
     """ISO date (YYYY-MM-DD)"""
     asOf: String
+    enterpriseId: String!
     organizationUnitId: String
   ): [ArchitectureBuildingBlock!]!
   buildingBlock(id: String!): BuildingBlock
-  buildingBlocks: [BuildingBlock!]!
-  businessCapabilities: [BusinessCapability!]!
+  buildingBlocks(enterpriseId: String!): [BuildingBlock!]!
+  businessCapabilities(enterpriseId: String!): [BusinessCapability!]!
   businessCapability(id: String!): BusinessCapability
   businessProcess(id: String!): BusinessProcess
-  businessProcesses: [BusinessProcess!]!
+  businessProcesses(enterpriseId: String!): [BusinessProcess!]!
+  enterprise(id: String!): Enterprise
+  enterprises: [Enterprise!]!
   organizationUnit(id: String!): OrganizationUnit
-  organizationUnits: [OrganizationUnit!]!
+  organizationUnits(enterpriseId: String!): [OrganizationUnit!]!
 
   """Liveness smoke-test. Returns "pong"."""
   ping: String!
@@ -177,10 +204,11 @@ type Query {
 
     """ISO date (YYYY-MM-DD)"""
     asOf: String
+    enterpriseId: String!
     organizationUnitId: String
   ): [SolutionBuildingBlock!]!
   valueStream(id: String!): ValueStream
-  valueStreams: [ValueStream!]!
+  valueStreams(enterpriseId: String!): [ValueStream!]!
 }
 
 type RealizationLink {
@@ -193,6 +221,7 @@ type RealizationLink {
 type SolutionBuildingBlock implements BuildingBlock {
   architectureDomainIds: [String!]!
   description: String
+  enterpriseId: String!
   id: String!
   lifecyclePhase: LifecyclePhase!
   name: String!
@@ -204,6 +233,7 @@ type SolutionBuildingBlock implements BuildingBlock {
 
 type ValueStream {
   description: String
+  enterpriseId: String!
   id: String!
   name: String!
   stages: [ValueStreamStage!]!

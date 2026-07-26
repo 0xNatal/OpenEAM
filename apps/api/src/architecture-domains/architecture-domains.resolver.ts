@@ -7,8 +7,8 @@ export class ArchitectureDomainsResolver {
   constructor(private readonly service: ArchitectureDomainsService) {}
 
   @Query(() => [ArchitectureDomain])
-  architectureDomains() {
-    return this.service.findAll();
+  architectureDomains(@Args('enterpriseId') enterpriseId: string) {
+    return this.service.findAll(enterpriseId);
   }
 
   @Query(() => ArchitectureDomain, { nullable: true })

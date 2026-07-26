@@ -14,6 +14,7 @@ import type {
 // architecture domain, and time (asOf, an ISO date). A landscape is the set
 // of building blocks visible from that viewpoint — not an entity of its own.
 export interface LandscapeFilter {
+  enterpriseId: string;
   asOf?: string;
   architectureLevel?: ArchitectureLevel;
   architectureDomainId?: string;
@@ -27,6 +28,7 @@ interface TemporalRow {
 
 interface BuildingBlockRow extends TemporalRow {
   id: string;
+  enterpriseId: string;
   kind: 'architecture' | 'solution';
   name: string;
   description: string | null;
@@ -64,6 +66,7 @@ export function toBuildingBlock(row: BuildingBlockRow, asOf?: string): MappedBui
   return {
     kind: row.kind,
     id: row.id,
+    enterpriseId: row.enterpriseId,
     name: row.name,
     description: row.description,
     architectureLevel: row.architectureLevel as ArchitectureLevel | null,
@@ -90,8 +93,9 @@ export const withAllLinks = {
 export class BuildingBlocksService {
   constructor(@Inject(DATABASE) private readonly db: Database) {}
 
-  async findAll(): Promise<MappedBuildingBlock[]> {
+  async findAll(enterpriseId: string): Promise<MappedBuildingBlock[]> {
     const rows = await this.db.query.buildingBlocks.findMany({
+      where: (t, { eq }) => eq(t.enterpriseId, enterpriseId),
       with: withAllLinks,
       orderBy: (t, { asc }) => [asc(t.name)],
     });
@@ -113,6 +117,7 @@ export class BuildingBlocksService {
       const [inserted] = await tx
         .insert(schema.buildingBlocks)
         .values({
+          enterpriseId: input.enterpriseId,
           kind: input.kind,
           name: input.name,
           description: input.description ?? null,
@@ -232,7 +237,7 @@ export class BuildingBlocksService {
     filter: LandscapeFilter,
   ): Promise<MappedBuildingBlock[]> {
     const rows = await this.db.query.buildingBlocks.findMany({
-      where: (t, { eq }) => eq(t.kind, kind),
+      where: (t, { and, eq }) => and(eq(t.kind, kind), eq(t.enterpriseId, filter.enterpriseId)),
       with: withAllLinks,
       orderBy: (t, { asc }) => [asc(t.name)],
     });

@@ -13,8 +13,8 @@ export class BuildingBlocksResolver {
   constructor(private readonly service: BuildingBlocksService) {}
 
   @Query(() => [BuildingBlock])
-  buildingBlocks() {
-    return this.service.findAll();
+  buildingBlocks(@Args('enterpriseId') enterpriseId: string) {
+    return this.service.findAll(enterpriseId);
   }
 
   @Query(() => BuildingBlock, { nullable: true })
@@ -26,6 +26,7 @@ export class BuildingBlocksResolver {
   // (time, depth, domain, breadth). All filters are optional.
   @Query(() => [ArchitectureBuildingBlock])
   architectureLandscape(
+    @Args('enterpriseId') enterpriseId: string,
     @Args('asOf', { nullable: true, description: 'ISO date (YYYY-MM-DD)' }) asOf?: string,
     @Args('architectureLevel', { type: () => ArchitectureLevel, nullable: true })
     architectureLevel?: ArchitectureLevel,
@@ -33,6 +34,7 @@ export class BuildingBlocksResolver {
     @Args('organizationUnitId', { nullable: true }) organizationUnitId?: string,
   ) {
     return this.service.architectureLandscape({
+      enterpriseId,
       asOf,
       architectureLevel,
       architectureDomainId,
@@ -43,11 +45,17 @@ export class BuildingBlocksResolver {
   // The Solutions Landscape: all SBBs visible from the chosen viewpoint.
   @Query(() => [SolutionBuildingBlock])
   solutionsLandscape(
+    @Args('enterpriseId') enterpriseId: string,
     @Args('asOf', { nullable: true, description: 'ISO date (YYYY-MM-DD)' }) asOf?: string,
     @Args('architectureDomainId', { nullable: true }) architectureDomainId?: string,
     @Args('organizationUnitId', { nullable: true }) organizationUnitId?: string,
   ) {
-    return this.service.solutionsLandscape({ asOf, architectureDomainId, organizationUnitId });
+    return this.service.solutionsLandscape({
+      enterpriseId,
+      asOf,
+      architectureDomainId,
+      organizationUnitId,
+    });
   }
 
   @Mutation(() => BuildingBlock)

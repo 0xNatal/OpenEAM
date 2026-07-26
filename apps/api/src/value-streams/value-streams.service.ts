@@ -11,6 +11,7 @@ interface StageRow {
 
 interface ValueStreamRow {
   id: string;
+  enterpriseId: string;
   name: string;
   description: string | null;
   stages: StageRow[];
@@ -19,6 +20,7 @@ interface ValueStreamRow {
 function toValueStream(row: ValueStreamRow): ValueStream {
   return {
     id: row.id,
+    enterpriseId: row.enterpriseId,
     name: row.name,
     description: row.description,
     stages: row.stages.map((stage) => ({
@@ -33,8 +35,9 @@ function toValueStream(row: ValueStreamRow): ValueStream {
 export class ValueStreamsService {
   constructor(@Inject(DATABASE) private readonly db: Database) {}
 
-  async findAll(): Promise<ValueStream[]> {
+  async findAll(enterpriseId: string): Promise<ValueStream[]> {
     const rows = await this.db.query.valueStreams.findMany({
+      where: (t, { eq }) => eq(t.enterpriseId, enterpriseId),
       with: {
         stages: {
           orderBy: (t, { asc }) => [asc(t.position)],

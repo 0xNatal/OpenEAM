@@ -8,8 +8,9 @@ export class OrganizationUnitsService {
   constructor(@Inject(DATABASE) private readonly db: Database) {}
 
   // Returns the flat list; clients rebuild the tree from parentId.
-  findAll(): Promise<OrganizationUnit[]> {
+  findAll(enterpriseId: string): Promise<OrganizationUnit[]> {
     return this.db.query.organizationUnits.findMany({
+      where: (t, { eq }) => eq(t.enterpriseId, enterpriseId),
       orderBy: (t, { asc }) => [asc(t.name)],
     });
   }

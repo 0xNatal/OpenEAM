@@ -9,10 +9,22 @@ import type { BusinessProcess, BusinessProcessInput } from './business-process.m
 export class BusinessProcessesService {
   constructor(@Inject(DATABASE) private readonly db: Database) {}
 
-  findAll(): Promise<BusinessProcess[]> {
+  findAll(enterpriseId: string): Promise<BusinessProcess[]> {
     return this.db.query.businessProcesses.findMany({
+      where: (t, { eq }) => eq(t.enterpriseId, enterpriseId),
       with: { steps: { orderBy: (t, { asc }) => [asc(t.position)] } },
     });
+  }
+
+  // A process lives in its capability's enterprise; the input carries no
+  // enterpriseId of its own.
+  private async enterpriseIdOfCapability(capabilityId: string): Promise<string> {
+    const capability = await this.db.query.businessCapabilities.findFirst({
+      where: (t, { eq }) => eq(t.id, capabilityId),
+      columns: { enterpriseId: true },
+    });
+    if (!capability) throw new BadRequestException(`Capability ${capabilityId} not found`);
+    return capability.enterpriseId;
   }
 
   findOne(id: string): Promise<BusinessProcess | undefined> {
@@ -56,9 +68,11 @@ export class BusinessProcessesService {
   }
 
   async create(input: BusinessProcessInput): Promise<BusinessProcess> {
+    const enterpriseId = await this.enterpriseIdOfCapability(input.capabilityId);
     const [inserted] = await this.db
       .insert(schema.businessProcesses)
       .values({
+        enterpriseId,
         capabilityId: input.capabilityId,
         name: input.name,
         description: input.description ?? null,
@@ -76,9 +90,11 @@ export class BusinessProcessesService {
   }
 
   async update(id: string, input: BusinessProcessInput): Promise<BusinessProcess> {
+    const enterpriseId = await this.enterpriseIdOfCapability(input.capabilityId);
     const [updated] = await this.db
       .update(schema.businessProcesses)
       .set({
+        enterpriseId,
         capabilityId: input.capabilityId,
         name: input.name,
         description: input.description ?? null,

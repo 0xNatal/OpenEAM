@@ -7,8 +7,8 @@ export class ValueStreamsResolver {
   constructor(private readonly service: ValueStreamsService) {}
 
   @Query(() => [ValueStream])
-  valueStreams() {
-    return this.service.findAll();
+  valueStreams(@Args('enterpriseId') enterpriseId: string) {
+    return this.service.findAll(enterpriseId);
   }
 
   @Query(() => ValueStream, { nullable: true })

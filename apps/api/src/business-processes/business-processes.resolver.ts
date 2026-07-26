@@ -7,8 +7,8 @@ export class BusinessProcessesResolver {
   constructor(private readonly service: BusinessProcessesService) {}
 
   @Query(() => [BusinessProcess])
-  businessProcesses(): Promise<BusinessProcess[]> {
-    return this.service.findAll();
+  businessProcesses(@Args('enterpriseId') enterpriseId: string): Promise<BusinessProcess[]> {
+    return this.service.findAll(enterpriseId);
   }
 
   @Query(() => BusinessProcess, { nullable: true })

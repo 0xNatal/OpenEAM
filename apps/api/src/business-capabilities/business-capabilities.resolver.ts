@@ -13,8 +13,10 @@ export class BusinessCapabilitiesResolver {
   constructor(private readonly service: BusinessCapabilitiesService) {}
 
   @Query(() => [BusinessCapability])
-  businessCapabilities(): Promise<BusinessCapabilityRow[]> {
-    return this.service.findAll();
+  businessCapabilities(
+    @Args('enterpriseId') enterpriseId: string,
+  ): Promise<BusinessCapabilityRow[]> {
+    return this.service.findAll(enterpriseId);
   }
 
   @Query(() => BusinessCapability, { nullable: true })

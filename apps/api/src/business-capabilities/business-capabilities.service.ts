@@ -9,6 +9,7 @@ import type { BusinessCapabilityInput, ValueStreamStageLink } from './business-c
 
 export interface BusinessCapabilityRow {
   id: string;
+  enterpriseId: string;
   name: string;
   description: string | null;
   businessProcesses: BusinessProcess[];
@@ -20,8 +21,9 @@ export interface BusinessCapabilityRow {
 export class BusinessCapabilitiesService {
   constructor(@Inject(DATABASE) private readonly db: Database) {}
 
-  async findAll(): Promise<BusinessCapabilityRow[]> {
+  async findAll(enterpriseId: string): Promise<BusinessCapabilityRow[]> {
     const rows = await this.db.query.businessCapabilities.findMany({
+      where: (t, { eq }) => eq(t.enterpriseId, enterpriseId),
       with: {
         businessProcesses: {
           with: { steps: { orderBy: (t, { asc }) => [asc(t.position)] } },
@@ -50,7 +52,11 @@ export class BusinessCapabilitiesService {
   async create(input: BusinessCapabilityInput): Promise<BusinessCapabilityRow> {
     const [inserted] = await this.db
       .insert(schema.businessCapabilities)
-      .values({ name: input.name, description: input.description ?? null })
+      .values({
+        enterpriseId: input.enterpriseId,
+        name: input.name,
+        description: input.description ?? null,
+      })
       .returning({ id: schema.businessCapabilities.id });
 
     if (!inserted) throw new NotFoundException('Business capability insert returned no row');
@@ -61,6 +67,8 @@ export class BusinessCapabilitiesService {
     return created;
   }
 
+  // enterpriseId is intentionally not updatable: entities never move between
+  // enterprises (see docs/VISION.md — models are owned by exactly one scope).
   async update(id: string, input: BusinessCapabilityInput): Promise<BusinessCapabilityRow> {
     const [updated] = await this.db
       .update(schema.businessCapabilities)
@@ -87,6 +95,7 @@ export class BusinessCapabilitiesService {
 
 function toCapabilityRow(row: {
   id: string;
+  enterpriseId: string;
   name: string;
   description: string | null;
   businessProcesses: BusinessProcess[];
@@ -97,6 +106,7 @@ function toCapabilityRow(row: {
 }): BusinessCapabilityRow {
   return {
     id: row.id,
+    enterpriseId: row.enterpriseId,
     name: row.name,
     description: row.description,
     businessProcesses: row.businessProcesses,

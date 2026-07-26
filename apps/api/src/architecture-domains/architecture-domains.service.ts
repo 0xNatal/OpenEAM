@@ -7,8 +7,9 @@ import type { ArchitectureDomain } from './architecture-domain.model';
 export class ArchitectureDomainsService {
   constructor(@Inject(DATABASE) private readonly db: Database) {}
 
-  findAll(): Promise<ArchitectureDomain[]> {
+  findAll(enterpriseId: string): Promise<ArchitectureDomain[]> {
     return this.db.query.architectureDomains.findMany({
+      where: (t, { eq }) => eq(t.enterpriseId, enterpriseId),
       orderBy: (t, { asc }) => [asc(t.name)],
     });
   }

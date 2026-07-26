@@ -13,8 +13,17 @@ const validityFields = {
   validTo: z.string().nullable(),
 };
 
+const enterpriseSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string().nullable(),
+  goal: z.string().nullable().optional(),
+  ...timestampFields,
+});
+
 const businessCapabilitySchema = z.object({
   id: z.string(),
+  enterpriseId: z.string(),
   name: z.string(),
   description: z.string().nullable(),
   ...timestampFields,
@@ -22,6 +31,7 @@ const businessCapabilitySchema = z.object({
 
 const businessProcessSchema = z.object({
   id: z.string(),
+  enterpriseId: z.string(),
   name: z.string(),
   description: z.string().nullable(),
   capabilityId: z.string(),
@@ -42,6 +52,7 @@ const processStepSchema = z.object({
 
 const valueStreamSchema = z.object({
   id: z.string(),
+  enterpriseId: z.string(),
   name: z.string(),
   description: z.string().nullable(),
   ...timestampFields,
@@ -63,6 +74,7 @@ const stageCapabilitySchema = z.object({
 
 const architectureDomainSchema = z.object({
   id: z.string(),
+  enterpriseId: z.string(),
   name: z.string(),
   description: z.string().nullable(),
   isDefault: z.boolean(),
@@ -71,6 +83,7 @@ const architectureDomainSchema = z.object({
 
 const organizationUnitSchema = z.object({
   id: z.string(),
+  enterpriseId: z.string(),
   name: z.string(),
   description: z.string().nullable(),
   parentId: z.string().nullable(),
@@ -79,6 +92,7 @@ const organizationUnitSchema = z.object({
 
 const buildingBlockSchema = z.object({
   id: z.string(),
+  enterpriseId: z.string(),
   kind: z.enum(['architecture', 'solution']),
   name: z.string(),
   description: z.string().nullable(),
@@ -118,6 +132,9 @@ const buildingBlockCapabilitySchema = z.object({
 });
 
 export const dataBundleSchema = z.object({
+  // The enterprises this bundle carries; import replaces exactly these
+  // enterprises' models and touches nothing else.
+  enterprises: z.array(enterpriseSchema),
   businessCapabilities: z.array(businessCapabilitySchema),
   businessProcesses: z.array(businessProcessSchema),
   processSteps: z.array(processStepSchema),

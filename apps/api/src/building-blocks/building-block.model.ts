@@ -61,6 +61,7 @@ export class RealizationLink {
 })
 export abstract class BuildingBlock {
   @Field() id!: string;
+  @Field() enterpriseId!: string;
   @Field() name!: string;
   @Field(() => String, { nullable: true }) description?: string | null;
   @Field(() => LifecyclePhase) lifecyclePhase!: LifecyclePhase;
@@ -89,6 +90,7 @@ export class SolutionBuildingBlock extends BuildingBlock {
 // history.
 @InputType()
 export class BuildingBlockInput {
+  @Field() enterpriseId!: string;
   @Field(() => BuildingBlockKind) kind!: BuildingBlockKind;
   @Field() name!: string;
   @Field(() => String, { nullable: true }) description?: string | null;

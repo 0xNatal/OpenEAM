@@ -10,6 +10,7 @@ export class ValueStreamStage {
 @ObjectType()
 export class ValueStream {
   @Field() id!: string;
+  @Field() enterpriseId!: string;
   @Field() name!: string;
   @Field(() => String, { nullable: true }) description?: string | null;
   @Field(() => [ValueStreamStage]) stages!: ValueStreamStage[];

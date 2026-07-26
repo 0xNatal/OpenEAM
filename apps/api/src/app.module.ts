@@ -9,6 +9,7 @@ import { BusinessCapabilitiesModule } from './business-capabilities/business-cap
 import { BusinessProcessesModule } from './business-processes/business-processes.module';
 import { DataExchangeModule } from './data-exchange/data-exchange.module';
 import { DbModule } from './db.module';
+import { EnterprisesModule } from './enterprises/enterprises.module';
 import { HealthModule } from './health/health.module';
 import { OrganizationUnitsModule } from './organization-units/organization-units.module';
 import { ValueStreamsModule } from './value-streams/value-streams.module';
@@ -26,6 +27,7 @@ import { ValueStreamsModule } from './value-streams/value-streams.module';
       graphiql: true,
     }),
     HealthModule,
+    EnterprisesModule,
     ArchitectureDomainsModule,
     OrganizationUnitsModule,
     BuildingBlocksModule,

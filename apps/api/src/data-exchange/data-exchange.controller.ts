@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Query } from '@nestjs/common';
 import { dataBundleSchema } from './data-bundle.schema';
 import { DataExchangeService } from './data-exchange.service';
 
@@ -7,9 +7,10 @@ import { DataExchangeService } from './data-exchange.service';
 export class DataExchangeController {
   constructor(private readonly service: DataExchangeService) {}
 
+  // ?enterpriseId=... exports a single enterprise; omitted, a full backup.
   @Get('export')
-  export() {
-    return this.service.export();
+  export(@Query('enterpriseId') enterpriseId?: string) {
+    return this.service.export(enterpriseId || undefined);
   }
 
   @Post('import')

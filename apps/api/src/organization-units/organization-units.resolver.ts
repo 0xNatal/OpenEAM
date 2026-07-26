@@ -7,8 +7,8 @@ export class OrganizationUnitsResolver {
   constructor(private readonly service: OrganizationUnitsService) {}
 
   @Query(() => [OrganizationUnit])
-  organizationUnits() {
-    return this.service.findAll();
+  organizationUnits(@Args('enterpriseId') enterpriseId: string) {
+    return this.service.findAll(enterpriseId);
   }
 
   @Query(() => OrganizationUnit, { nullable: true })

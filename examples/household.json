@@ -1,13 +1,61 @@
 {
+  "enterprises": [
+    {
+      "id": "household",
+      "name": "Household",
+      "description": "A family household as an enterprise: everyone under one roof, sharing data and media infrastructure.",
+      "goal": "Preserve personal data durably and enjoy media on demand at home."
+    }
+  ],
   "businessCapabilities": [
-    { "id": "data-capture", "name": "Data Capture", "description": null },
-    { "id": "storage-management", "name": "Storage Management", "description": null },
-    { "id": "backup-management", "name": "Backup Management", "description": null },
-    { "id": "data-retrieval", "name": "Data Retrieval", "description": null },
-    { "id": "media-discovery", "name": "Media Discovery", "description": null },
-    { "id": "content-request-handling", "name": "Content Request Handling", "description": null },
-    { "id": "streaming-delivery", "name": "Streaming Delivery", "description": null },
-    { "id": "playback-management", "name": "Playback Management", "description": null }
+    {
+      "id": "data-capture",
+      "name": "Data Capture",
+      "description": null,
+      "enterpriseId": "household"
+    },
+    {
+      "id": "storage-management",
+      "name": "Storage Management",
+      "description": null,
+      "enterpriseId": "household"
+    },
+    {
+      "id": "backup-management",
+      "name": "Backup Management",
+      "description": null,
+      "enterpriseId": "household"
+    },
+    {
+      "id": "data-retrieval",
+      "name": "Data Retrieval",
+      "description": null,
+      "enterpriseId": "household"
+    },
+    {
+      "id": "media-discovery",
+      "name": "Media Discovery",
+      "description": null,
+      "enterpriseId": "household"
+    },
+    {
+      "id": "content-request-handling",
+      "name": "Content Request Handling",
+      "description": null,
+      "enterpriseId": "household"
+    },
+    {
+      "id": "streaming-delivery",
+      "name": "Streaming Delivery",
+      "description": null,
+      "enterpriseId": "household"
+    },
+    {
+      "id": "playback-management",
+      "name": "Playback Management",
+      "description": null,
+      "enterpriseId": "household"
+    }
   ],
   "businessProcesses": [
     {
@@ -17,7 +65,8 @@
       "capabilityId": "data-capture",
       "triggerEvent": null,
       "outcome": null,
-      "bpmnXml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" id=\"Definitions_ImportFile\" targetNamespace=\"http://openeam.org/bpmn\"><bpmn:process id=\"Process_ImportFile\" isExecutable=\"false\"><bpmn:startEvent id=\"StartEvent_1\" name=\"File, photo, or document ready to import\"><bpmn:outgoing>Flow_1</bpmn:outgoing></bpmn:startEvent><bpmn:task id=\"Task_Select\" name=\"Select file\"><bpmn:incoming>Flow_1</bpmn:incoming><bpmn:outgoing>Flow_2</bpmn:outgoing></bpmn:task><bpmn:task id=\"Task_Validate\" name=\"Validate file format\"><bpmn:incoming>Flow_2</bpmn:incoming><bpmn:outgoing>Flow_3</bpmn:outgoing></bpmn:task><bpmn:task id=\"Task_Copy\" name=\"Copy file to storage location\"><bpmn:incoming>Flow_3</bpmn:incoming><bpmn:outgoing>Flow_4</bpmn:outgoing></bpmn:task><bpmn:endEvent id=\"EndEvent_1\" name=\"File imported\"><bpmn:incoming>Flow_4</bpmn:incoming></bpmn:endEvent><bpmn:sequenceFlow id=\"Flow_1\" sourceRef=\"StartEvent_1\" targetRef=\"Task_Select\"/><bpmn:sequenceFlow id=\"Flow_2\" sourceRef=\"Task_Select\" targetRef=\"Task_Validate\"/><bpmn:sequenceFlow id=\"Flow_3\" sourceRef=\"Task_Validate\" targetRef=\"Task_Copy\"/><bpmn:sequenceFlow id=\"Flow_4\" sourceRef=\"Task_Copy\" targetRef=\"EndEvent_1\"/></bpmn:process><bpmndi:BPMNDiagram id=\"BPMNDiagram_1\"><bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"Process_ImportFile\"><bpmndi:BPMNShape id=\"StartEvent_1_di\" bpmnElement=\"StartEvent_1\"><dc:Bounds x=\"152\" y=\"182\" width=\"36\" height=\"36\"/><bpmndi:BPMNLabel><dc:Bounds x=\"128\" y=\"225\" width=\"84\" height=\"40\"/></bpmndi:BPMNLabel></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Task_Select_di\" bpmnElement=\"Task_Select\"><dc:Bounds x=\"250\" y=\"160\" width=\"100\" height=\"80\"/></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Task_Validate_di\" bpmnElement=\"Task_Validate\"><dc:Bounds x=\"410\" y=\"160\" width=\"100\" height=\"80\"/></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Task_Copy_di\" bpmnElement=\"Task_Copy\"><dc:Bounds x=\"570\" y=\"160\" width=\"100\" height=\"80\"/></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"EndEvent_1_di\" bpmnElement=\"EndEvent_1\"><dc:Bounds x=\"732\" y=\"182\" width=\"36\" height=\"36\"/><bpmndi:BPMNLabel><dc:Bounds x=\"720\" y=\"225\" width=\"60\" height=\"27\"/></bpmndi:BPMNLabel></bpmndi:BPMNShape><bpmndi:BPMNEdge id=\"Flow_1_di\" bpmnElement=\"Flow_1\"><di:waypoint x=\"188\" y=\"200\"/><di:waypoint x=\"250\" y=\"200\"/></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_2_di\" bpmnElement=\"Flow_2\"><di:waypoint x=\"350\" y=\"200\"/><di:waypoint x=\"410\" y=\"200\"/></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_3_di\" bpmnElement=\"Flow_3\"><di:waypoint x=\"510\" y=\"200\"/><di:waypoint x=\"570\" y=\"200\"/></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_4_di\" bpmnElement=\"Flow_4\"><di:waypoint x=\"670\" y=\"200\"/><di:waypoint x=\"732\" y=\"200\"/></bpmndi:BPMNEdge></bpmndi:BPMNPlane></bpmndi:BPMNDiagram></bpmn:definitions>\n"
+      "bpmnXml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" id=\"Definitions_ImportFile\" targetNamespace=\"http://openeam.org/bpmn\"><bpmn:process id=\"Process_ImportFile\" isExecutable=\"false\"><bpmn:startEvent id=\"StartEvent_1\" name=\"File, photo, or document ready to import\"><bpmn:outgoing>Flow_1</bpmn:outgoing></bpmn:startEvent><bpmn:task id=\"Task_Select\" name=\"Select file\"><bpmn:incoming>Flow_1</bpmn:incoming><bpmn:outgoing>Flow_2</bpmn:outgoing></bpmn:task><bpmn:task id=\"Task_Validate\" name=\"Validate file format\"><bpmn:incoming>Flow_2</bpmn:incoming><bpmn:outgoing>Flow_3</bpmn:outgoing></bpmn:task><bpmn:task id=\"Task_Copy\" name=\"Copy file to storage location\"><bpmn:incoming>Flow_3</bpmn:incoming><bpmn:outgoing>Flow_4</bpmn:outgoing></bpmn:task><bpmn:endEvent id=\"EndEvent_1\" name=\"File imported\"><bpmn:incoming>Flow_4</bpmn:incoming></bpmn:endEvent><bpmn:sequenceFlow id=\"Flow_1\" sourceRef=\"StartEvent_1\" targetRef=\"Task_Select\"/><bpmn:sequenceFlow id=\"Flow_2\" sourceRef=\"Task_Select\" targetRef=\"Task_Validate\"/><bpmn:sequenceFlow id=\"Flow_3\" sourceRef=\"Task_Validate\" targetRef=\"Task_Copy\"/><bpmn:sequenceFlow id=\"Flow_4\" sourceRef=\"Task_Copy\" targetRef=\"EndEvent_1\"/></bpmn:process><bpmndi:BPMNDiagram id=\"BPMNDiagram_1\"><bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"Process_ImportFile\"><bpmndi:BPMNShape id=\"StartEvent_1_di\" bpmnElement=\"StartEvent_1\"><dc:Bounds x=\"152\" y=\"182\" width=\"36\" height=\"36\"/><bpmndi:BPMNLabel><dc:Bounds x=\"128\" y=\"225\" width=\"84\" height=\"40\"/></bpmndi:BPMNLabel></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Task_Select_di\" bpmnElement=\"Task_Select\"><dc:Bounds x=\"250\" y=\"160\" width=\"100\" height=\"80\"/></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Task_Validate_di\" bpmnElement=\"Task_Validate\"><dc:Bounds x=\"410\" y=\"160\" width=\"100\" height=\"80\"/></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Task_Copy_di\" bpmnElement=\"Task_Copy\"><dc:Bounds x=\"570\" y=\"160\" width=\"100\" height=\"80\"/></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"EndEvent_1_di\" bpmnElement=\"EndEvent_1\"><dc:Bounds x=\"732\" y=\"182\" width=\"36\" height=\"36\"/><bpmndi:BPMNLabel><dc:Bounds x=\"720\" y=\"225\" width=\"60\" height=\"27\"/></bpmndi:BPMNLabel></bpmndi:BPMNShape><bpmndi:BPMNEdge id=\"Flow_1_di\" bpmnElement=\"Flow_1\"><di:waypoint x=\"188\" y=\"200\"/><di:waypoint x=\"250\" y=\"200\"/></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_2_di\" bpmnElement=\"Flow_2\"><di:waypoint x=\"350\" y=\"200\"/><di:waypoint x=\"410\" y=\"200\"/></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_3_di\" bpmnElement=\"Flow_3\"><di:waypoint x=\"510\" y=\"200\"/><di:waypoint x=\"570\" y=\"200\"/></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_4_di\" bpmnElement=\"Flow_4\"><di:waypoint x=\"670\" y=\"200\"/><di:waypoint x=\"732\" y=\"200\"/></bpmndi:BPMNEdge></bpmndi:BPMNPlane></bpmndi:BPMNDiagram></bpmn:definitions>\n",
+      "enterpriseId": "household"
     },
     {
       "id": "tag-metadata",
@@ -25,7 +74,8 @@
       "description": null,
       "capabilityId": "data-capture",
       "triggerEvent": null,
-      "outcome": null
+      "outcome": null,
+      "enterpriseId": "household"
     },
     {
       "id": "allocate-storage",
@@ -33,7 +83,8 @@
       "description": null,
       "capabilityId": "storage-management",
       "triggerEvent": null,
-      "outcome": null
+      "outcome": null,
+      "enterpriseId": "household"
     },
     {
       "id": "organize-files",
@@ -41,7 +92,8 @@
       "description": null,
       "capabilityId": "storage-management",
       "triggerEvent": null,
-      "outcome": null
+      "outcome": null,
+      "enterpriseId": "household"
     },
     {
       "id": "schedule-backup",
@@ -49,7 +101,8 @@
       "description": null,
       "capabilityId": "backup-management",
       "triggerEvent": null,
-      "outcome": null
+      "outcome": null,
+      "enterpriseId": "household"
     },
     {
       "id": "verify-backup-integrity",
@@ -57,7 +110,8 @@
       "description": null,
       "capabilityId": "backup-management",
       "triggerEvent": null,
-      "outcome": null
+      "outcome": null,
+      "enterpriseId": "household"
     },
     {
       "id": "search-files",
@@ -65,7 +119,8 @@
       "description": null,
       "capabilityId": "data-retrieval",
       "triggerEvent": null,
-      "outcome": null
+      "outcome": null,
+      "enterpriseId": "household"
     },
     {
       "id": "restore-from-backup",
@@ -73,7 +128,8 @@
       "description": null,
       "capabilityId": "data-retrieval",
       "triggerEvent": null,
-      "outcome": null
+      "outcome": null,
+      "enterpriseId": "household"
     },
     {
       "id": "browse-catalog",
@@ -81,7 +137,8 @@
       "description": null,
       "capabilityId": "media-discovery",
       "triggerEvent": null,
-      "outcome": null
+      "outcome": null,
+      "enterpriseId": "household"
     },
     {
       "id": "search-content",
@@ -89,7 +146,8 @@
       "description": null,
       "capabilityId": "media-discovery",
       "triggerEvent": null,
-      "outcome": null
+      "outcome": null,
+      "enterpriseId": "household"
     },
     {
       "id": "select-title",
@@ -97,7 +155,8 @@
       "description": null,
       "capabilityId": "content-request-handling",
       "triggerEvent": null,
-      "outcome": null
+      "outcome": null,
+      "enterpriseId": "household"
     },
     {
       "id": "check-availability",
@@ -105,7 +164,8 @@
       "description": null,
       "capabilityId": "content-request-handling",
       "triggerEvent": null,
-      "outcome": null
+      "outcome": null,
+      "enterpriseId": "household"
     },
     {
       "id": "transcode-stream",
@@ -113,7 +173,8 @@
       "description": null,
       "capabilityId": "streaming-delivery",
       "triggerEvent": null,
-      "outcome": null
+      "outcome": null,
+      "enterpriseId": "household"
     },
     {
       "id": "deliver-to-device",
@@ -121,7 +182,8 @@
       "description": null,
       "capabilityId": "streaming-delivery",
       "triggerEvent": null,
-      "outcome": null
+      "outcome": null,
+      "enterpriseId": "household"
     },
     {
       "id": "start-playback",
@@ -129,7 +191,8 @@
       "description": null,
       "capabilityId": "playback-management",
       "triggerEvent": null,
-      "outcome": null
+      "outcome": null,
+      "enterpriseId": "household"
     },
     {
       "id": "track-watch-progress",
@@ -137,7 +200,8 @@
       "description": null,
       "capabilityId": "playback-management",
       "triggerEvent": null,
-      "outcome": null
+      "outcome": null,
+      "enterpriseId": "household"
     }
   ],
   "processSteps": [
@@ -164,12 +228,14 @@
     {
       "id": "preserve-retrieve-personal-data",
       "name": "Preserve & Retrieve Personal Data",
-      "description": "Stakeholder: You/household. Trigger: A file/photo/document is created or needs to be stored. End state: Data is durably stored, backed up, and retrievable on demand."
+      "description": "Stakeholder: You/household. Trigger: A file/photo/document is created or needs to be stored. End state: Data is durably stored, backed up, and retrievable on demand.",
+      "enterpriseId": "household"
     },
     {
       "id": "consume-media-on-demand",
       "name": "Consume Media on Demand",
-      "description": "Stakeholder: You/household. Trigger: Desire to watch/listen to something. End state: Content streams to the requested device."
+      "description": "Stakeholder: You/household. Trigger: Desire to watch/listen to something. End state: Content streams to the requested device.",
+      "enterpriseId": "household"
     }
   ],
   "valueStreamStages": [
@@ -209,7 +275,12 @@
       "valueStreamId": "consume-media-on-demand",
       "position": 1
     },
-    { "id": "stream", "name": "Stream", "valueStreamId": "consume-media-on-demand", "position": 2 },
+    {
+      "id": "stream",
+      "name": "Stream",
+      "valueStreamId": "consume-media-on-demand",
+      "position": 2
+    },
     {
       "id": "playback",
       "name": "Playback",
@@ -218,45 +289,99 @@
     }
   ],
   "stageCapabilities": [
-    { "stageId": "capture", "capabilityId": "data-capture", "position": 0 },
-    { "stageId": "store", "capabilityId": "storage-management", "position": 0 },
-    { "stageId": "protect", "capabilityId": "backup-management", "position": 0 },
-    { "stageId": "retrieve", "capabilityId": "data-retrieval", "position": 0 },
-    { "stageId": "discover", "capabilityId": "media-discovery", "position": 0 },
-    { "stageId": "request", "capabilityId": "content-request-handling", "position": 0 },
-    { "stageId": "stream", "capabilityId": "streaming-delivery", "position": 0 },
-    { "stageId": "playback", "capabilityId": "playback-management", "position": 0 }
+    {
+      "stageId": "capture",
+      "capabilityId": "data-capture",
+      "position": 0
+    },
+    {
+      "stageId": "store",
+      "capabilityId": "storage-management",
+      "position": 0
+    },
+    {
+      "stageId": "protect",
+      "capabilityId": "backup-management",
+      "position": 0
+    },
+    {
+      "stageId": "retrieve",
+      "capabilityId": "data-retrieval",
+      "position": 0
+    },
+    {
+      "stageId": "discover",
+      "capabilityId": "media-discovery",
+      "position": 0
+    },
+    {
+      "stageId": "request",
+      "capabilityId": "content-request-handling",
+      "position": 0
+    },
+    {
+      "stageId": "stream",
+      "capabilityId": "streaming-delivery",
+      "position": 0
+    },
+    {
+      "stageId": "playback",
+      "capabilityId": "playback-management",
+      "position": 0
+    }
   ],
   "architectureDomains": [
     {
-      "id": "00000000-0000-4000-8000-000000000001",
+      "id": "household-domain-business",
       "name": "Business Architecture",
       "description": "Business strategy, governance, organization, and key business processes.",
-      "isDefault": true
+      "isDefault": true,
+      "enterpriseId": "household"
     },
     {
-      "id": "00000000-0000-4000-8000-000000000002",
+      "id": "household-domain-data",
       "name": "Data Architecture",
       "description": "Structure of logical and physical data assets and data management resources.",
-      "isDefault": true
+      "isDefault": true,
+      "enterpriseId": "household"
     },
     {
-      "id": "00000000-0000-4000-8000-000000000003",
+      "id": "household-domain-application",
       "name": "Application Architecture",
       "description": "Individual applications, their interactions, and their relationships to business processes.",
-      "isDefault": true
+      "isDefault": true,
+      "enterpriseId": "household"
     },
     {
-      "id": "00000000-0000-4000-8000-000000000004",
+      "id": "household-domain-technology",
       "name": "Technology Architecture",
       "description": "Software and hardware capabilities required to support business, data, and application services.",
-      "isDefault": true
+      "isDefault": true,
+      "enterpriseId": "household"
     }
   ],
   "organizationUnits": [
-    { "id": "household", "name": "Household", "description": null, "parentId": null },
-    { "id": "living-room", "name": "Living Room", "description": null, "parentId": "household" },
-    { "id": "home-office", "name": "Home Office", "description": null, "parentId": "household" }
+    {
+      "id": "household",
+      "name": "Household",
+      "description": null,
+      "parentId": null,
+      "enterpriseId": "household"
+    },
+    {
+      "id": "living-room",
+      "name": "Living Room",
+      "description": null,
+      "parentId": "household",
+      "enterpriseId": "household"
+    },
+    {
+      "id": "home-office",
+      "name": "Home Office",
+      "description": null,
+      "parentId": "household",
+      "enterpriseId": "household"
+    }
   ],
   "buildingBlocks": [
     {
@@ -267,7 +392,8 @@
       "architectureLevel": "capability",
       "lifecyclePhase": "active",
       "validFrom": "2022-01-01",
-      "validTo": null
+      "validTo": null,
+      "enterpriseId": "household"
     },
     {
       "id": "abb-media-streaming",
@@ -277,7 +403,8 @@
       "architectureLevel": "capability",
       "lifecyclePhase": "active",
       "validFrom": "2021-01-01",
-      "validTo": null
+      "validTo": null,
+      "enterpriseId": "household"
     },
     {
       "id": "sbb-nas",
@@ -287,7 +414,8 @@
       "architectureLevel": null,
       "lifecyclePhase": "active",
       "validFrom": "2022-01-01",
-      "validTo": null
+      "validTo": null,
+      "enterpriseId": "household"
     },
     {
       "id": "sbb-backblaze",
@@ -297,7 +425,8 @@
       "architectureLevel": null,
       "lifecyclePhase": "active",
       "validFrom": "2024-06-01",
-      "validTo": null
+      "validTo": null,
+      "enterpriseId": "household"
     },
     {
       "id": "sbb-plex",
@@ -307,7 +436,8 @@
       "architectureLevel": null,
       "lifecyclePhase": "retired",
       "validFrom": "2021-01-01",
-      "validTo": "2023-01-01"
+      "validTo": "2023-01-01",
+      "enterpriseId": "household"
     },
     {
       "id": "sbb-jellyfin",
@@ -317,33 +447,34 @@
       "architectureLevel": null,
       "lifecyclePhase": "active",
       "validFrom": "2023-01-01",
-      "validTo": null
+      "validTo": null,
+      "enterpriseId": "household"
     }
   ],
   "buildingBlockArchitectureDomains": [
     {
       "buildingBlockId": "abb-durable-storage",
-      "architectureDomainId": "00000000-0000-4000-8000-000000000002"
+      "architectureDomainId": "household-domain-data"
     },
     {
       "buildingBlockId": "abb-media-streaming",
-      "architectureDomainId": "00000000-0000-4000-8000-000000000003"
+      "architectureDomainId": "household-domain-application"
     },
     {
       "buildingBlockId": "sbb-nas",
-      "architectureDomainId": "00000000-0000-4000-8000-000000000004"
+      "architectureDomainId": "household-domain-technology"
     },
     {
       "buildingBlockId": "sbb-backblaze",
-      "architectureDomainId": "00000000-0000-4000-8000-000000000004"
+      "architectureDomainId": "household-domain-technology"
     },
     {
       "buildingBlockId": "sbb-plex",
-      "architectureDomainId": "00000000-0000-4000-8000-000000000003"
+      "architectureDomainId": "household-domain-application"
     },
     {
       "buildingBlockId": "sbb-jellyfin",
-      "architectureDomainId": "00000000-0000-4000-8000-000000000003"
+      "architectureDomainId": "household-domain-application"
     }
   ],
   "buildingBlockOrganizationUnits": [

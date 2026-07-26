@@ -9,6 +9,7 @@ export class ProcessStep {
 @ObjectType()
 export class BusinessProcess {
   @Field() id!: string;
+  @Field() enterpriseId!: string;
   @Field() name!: string;
   @Field(() => String, { nullable: true }) description?: string | null;
   @Field() capabilityId!: string;
