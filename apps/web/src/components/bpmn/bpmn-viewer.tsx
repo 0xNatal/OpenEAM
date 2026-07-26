@@ -43,7 +43,5 @@ export default function BpmnViewer({ xml }: { xml: string }) {
   // bpmn-js draws dark strokes on a transparent canvas, so the surface stays
   // light in both themes for readability. In dark mode we use a soft grey
   // panel rather than pure white to avoid a glaring box in the dark UI.
-  return (
-    <div ref={containerRef} className="h-72 w-full rounded-lg bg-white dark:bg-neutral-300" />
-  );
+  return <div ref={containerRef} className="h-72 w-full rounded-lg bg-white dark:bg-neutral-300" />;
 }
