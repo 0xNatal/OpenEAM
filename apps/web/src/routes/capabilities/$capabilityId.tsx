@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client/react';
-import { createFileRoute, notFound } from '@tanstack/react-router';
+import { createFileRoute, Link, notFound } from '@tanstack/react-router';
 import type { BusinessCapabilityDetail } from '@/lib/entities';
 
 const BUSINESS_CAPABILITY_QUERY = gql`
@@ -61,6 +61,18 @@ function Item({ label }: { label: string }) {
   );
 }
 
+function ProcessLink({ id, label }: { id: string; label: string }) {
+  return (
+    <Link
+      to="/business-processes/$processId"
+      params={{ processId: id }}
+      className="rounded-md border border-border bg-muted/50 px-3 py-2 text-xs text-violet-700 dark:text-violet-300 font-medium hover:border-violet-300 dark:hover:border-violet-700 transition-colors"
+    >
+      {label}
+    </Link>
+  );
+}
+
 function EmptyState({ label }: { label: string }) {
   return <p className="text-xs text-muted-foreground italic">{label}</p>;
 }
@@ -109,7 +121,7 @@ function CapabilityDetail({ cap }: { cap: BusinessCapabilityDetail }) {
           subtitle="Business processes through which this capability is delivered"
         >
           {cap.businessProcesses.length > 0 ? (
-            cap.businessProcesses.map((p) => <Item key={p.id} label={p.name} />)
+            cap.businessProcesses.map((p) => <ProcessLink key={p.id} id={p.id} label={p.name} />)
           ) : (
             <EmptyState label="No processes defined yet" />
           )}
