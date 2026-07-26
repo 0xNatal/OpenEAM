@@ -36,10 +36,10 @@ export interface BusinessCapabilityDetail {
   businessProcesses: NamedRef[];
 }
 
-export interface BusinessCapabilityWithProcesses {
+export interface ValueStreamCapability {
   id: string;
   name: string;
-  businessProcesses: NamedRef[];
+  description?: string | null;
 }
 
 export interface ValueStreamStage {

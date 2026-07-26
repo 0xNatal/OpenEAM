@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/client/react';
 import { createFileRoute, Link, notFound } from '@tanstack/react-router';
 import { ChevronLeft } from 'lucide-react';
 import { ValueStreamDiagram } from '@/components/value-stream/diagram';
-import type { BusinessCapabilityWithProcesses, ValueStream } from '@/lib/entities';
+import type { ValueStream, ValueStreamCapability } from '@/lib/entities';
 
 const VALUE_STREAM_QUERY = gql`
   query ValueStreamDetail($id: String!) {
@@ -20,17 +20,14 @@ const VALUE_STREAM_QUERY = gql`
     businessCapabilities {
       id
       name
-      businessProcesses {
-        id
-        name
-      }
+      description
     }
   }
 `;
 
 interface ValueStreamDetailData {
   valueStream: ValueStream | null;
-  businessCapabilities: BusinessCapabilityWithProcesses[];
+  businessCapabilities: ValueStreamCapability[];
 }
 
 function ValueStreamDetailRoute() {
