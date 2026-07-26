@@ -85,8 +85,10 @@ export default function BpmnModeler({ xml, onSave }: BpmnModelerProps) {
         </Button>
       </div>
       {/* bpmn-js draws dark strokes on a transparent canvas, so the editing
-          surface stays light in both themes for readability. */}
-      <div ref={containerRef} className="min-h-0 flex-1 bg-white" />
+          surface stays light in both themes for readability. In dark mode we
+          use a soft grey panel rather than pure white to avoid a glaring box
+          in the dark UI. */}
+      <div ref={containerRef} className="min-h-0 flex-1 bg-white dark:bg-neutral-300" />
     </div>
   );
 }
