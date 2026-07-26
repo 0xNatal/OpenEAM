@@ -1,5 +1,5 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { BusinessProcess } from './business-process.model';
+import { BusinessProcess, BusinessProcessInput } from './business-process.model';
 import { BusinessProcessesService } from './business-processes.service';
 
 @Resolver(() => BusinessProcess)
@@ -14,6 +14,24 @@ export class BusinessProcessesResolver {
   @Query(() => BusinessProcess, { nullable: true })
   businessProcess(@Args('id') id: string): Promise<BusinessProcess | undefined> {
     return this.service.findOne(id);
+  }
+
+  @Mutation(() => BusinessProcess)
+  createBusinessProcess(@Args('input') input: BusinessProcessInput): Promise<BusinessProcess> {
+    return this.service.create(input);
+  }
+
+  @Mutation(() => BusinessProcess)
+  updateBusinessProcess(
+    @Args('id') id: string,
+    @Args('input') input: BusinessProcessInput,
+  ): Promise<BusinessProcess> {
+    return this.service.update(id, input);
+  }
+
+  @Mutation(() => Boolean)
+  deleteBusinessProcess(@Args('id') id: string): Promise<boolean> {
+    return this.service.delete(id);
   }
 
   // Stores the diagram and re-derives the process steps from its tasks.

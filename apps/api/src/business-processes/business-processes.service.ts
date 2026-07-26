@@ -3,7 +3,7 @@ import type { Database } from '@openeam/db';
 import { eq, schema } from '@openeam/db';
 import { DATABASE } from '../db.module';
 import { extractStepNames } from './bpmn-steps';
-import type { BusinessProcess } from './business-process.model';
+import type { BusinessProcess, BusinessProcessInput } from './business-process.model';
 
 @Injectable()
 export class BusinessProcessesService {
@@ -53,5 +53,54 @@ export class BusinessProcessesService {
     const process = await this.findOne(id);
     if (!process) throw new NotFoundException(`Business process ${id} not found after update`);
     return process;
+  }
+
+  async create(input: BusinessProcessInput): Promise<BusinessProcess> {
+    const [inserted] = await this.db
+      .insert(schema.businessProcesses)
+      .values({
+        capabilityId: input.capabilityId,
+        name: input.name,
+        description: input.description ?? null,
+        triggerEvent: input.triggerEvent ?? null,
+        outcome: input.outcome ?? null,
+      })
+      .returning({ id: schema.businessProcesses.id });
+
+    if (!inserted) throw new NotFoundException('Business process insert returned no row');
+    const created = await this.findOne(inserted.id);
+    if (!created) {
+      throw new NotFoundException(`Business process ${inserted.id} not found after creation`);
+    }
+    return created;
+  }
+
+  async update(id: string, input: BusinessProcessInput): Promise<BusinessProcess> {
+    const [updated] = await this.db
+      .update(schema.businessProcesses)
+      .set({
+        capabilityId: input.capabilityId,
+        name: input.name,
+        description: input.description ?? null,
+        triggerEvent: input.triggerEvent ?? null,
+        outcome: input.outcome ?? null,
+      })
+      .where(eq(schema.businessProcesses.id, id))
+      .returning({ id: schema.businessProcesses.id });
+
+    if (!updated) throw new NotFoundException(`Business process ${id} not found`);
+    const result = await this.findOne(id);
+    if (!result) {
+      throw new NotFoundException(`Business process ${id} not found after update`);
+    }
+    return result;
+  }
+
+  async delete(id: string): Promise<boolean> {
+    const [deleted] = await this.db
+      .delete(schema.businessProcesses)
+      .where(eq(schema.businessProcesses.id, id))
+      .returning({ id: schema.businessProcesses.id });
+    return Boolean(deleted);
   }
 }

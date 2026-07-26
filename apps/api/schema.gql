@@ -88,6 +88,14 @@ type BusinessProcess {
   triggerEvent: String
 }
 
+input BusinessProcessInput {
+  capabilityId: String!
+  description: String
+  name: String!
+  outcome: String
+  triggerEvent: String
+}
+
 type CapabilityLink {
   capabilityId: String!
   validFrom: String
@@ -109,10 +117,13 @@ enum LifecyclePhase {
 type Mutation {
   createBuildingBlock(input: BuildingBlockInput!): BuildingBlock!
   createBusinessCapability(input: BusinessCapabilityInput!): BusinessCapability!
+  createBusinessProcess(input: BusinessProcessInput!): BusinessProcess!
   deleteBuildingBlock(id: String!): Boolean!
   deleteBusinessCapability(id: String!): Boolean!
+  deleteBusinessProcess(id: String!): Boolean!
   updateBuildingBlock(id: String!, input: BuildingBlockInput!): BuildingBlock!
   updateBusinessCapability(id: String!, input: BusinessCapabilityInput!): BusinessCapability!
+  updateBusinessProcess(id: String!, input: BusinessProcessInput!): BusinessProcess!
   updateBusinessProcessDiagram(bpmnXml: String!, id: String!): BusinessProcess!
 }
 
