@@ -59,7 +59,7 @@ export type MappedBuildingBlock = (ArchitectureBuildingBlock | SolutionBuildingB
   kind: 'architecture' | 'solution';
 };
 
-function toBuildingBlock(row: BuildingBlockRow, asOf?: string): MappedBuildingBlock {
+export function toBuildingBlock(row: BuildingBlockRow, asOf?: string): MappedBuildingBlock {
   const linkFilter = asOf ? (link: TemporalRow) => isValidAt(link, asOf) : () => true;
   return {
     kind: row.kind,
@@ -78,7 +78,7 @@ function toBuildingBlock(row: BuildingBlockRow, asOf?: string): MappedBuildingBl
   };
 }
 
-const withAllLinks = {
+export const withAllLinks = {
   architectureDomainLinks: true,
   organizationUnitLinks: true,
   capabilityLinks: true,

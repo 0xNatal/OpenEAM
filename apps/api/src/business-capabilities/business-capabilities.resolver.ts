@@ -1,7 +1,7 @@
 import { Args, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import type { BusinessCapabilityRow } from './business-capabilities.service';
 import { BusinessCapabilitiesService } from './business-capabilities.service';
-import { BusinessCapability, Information, Person, Resource } from './business-capability.model';
+import { BusinessCapability, Information, Person } from './business-capability.model';
 
 @Resolver(() => BusinessCapability)
 export class BusinessCapabilitiesResolver {
@@ -20,11 +20,6 @@ export class BusinessCapabilitiesResolver {
   // No DB tables yet for these — see docs/IDEAS.md.
   @ResolveField(() => [Person])
   people(): Person[] {
-    return [];
-  }
-
-  @ResolveField(() => [Resource])
-  resources(): Resource[] {
     return [];
   }
 

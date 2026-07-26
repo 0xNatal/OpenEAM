@@ -19,12 +19,19 @@ export interface BusinessProcess {
   steps: ProcessStep[];
 }
 
+export interface CapabilityResource {
+  id: string;
+  name: string;
+  lifecyclePhase: LifecyclePhase;
+  __typename: 'ArchitectureBuildingBlock' | 'SolutionBuildingBlock';
+}
+
 export interface BusinessCapabilityDetail {
   id: string;
   name: string;
   description?: string | null;
   people: NamedRef[];
-  resources: NamedRef[];
+  resources: CapabilityResource[];
   information: NamedRef[];
   businessProcesses: NamedRef[];
 }

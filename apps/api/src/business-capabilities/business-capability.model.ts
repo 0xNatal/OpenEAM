@@ -1,14 +1,9 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { BuildingBlock } from '../building-blocks/building-block.model';
 import { BusinessProcess } from '../business-processes/business-process.model';
 
 @ObjectType()
 export class Person {
-  @Field() id!: string;
-  @Field() name!: string;
-}
-
-@ObjectType()
-export class Resource {
   @Field() id!: string;
   @Field() name!: string;
 }
@@ -26,6 +21,8 @@ export class BusinessCapability {
   @Field(() => String, { nullable: true }) description?: string | null;
   @Field(() => [BusinessProcess]) businessProcesses!: BusinessProcess[];
   @Field(() => [Person]) people!: Person[];
-  @Field(() => [Resource]) resources!: Resource[];
+  // Building blocks linked to this capability (the reverse of
+  // ArchitectureBuildingBlock.capabilityLinks in building-block.model.ts).
+  @Field(() => [BuildingBlock]) resources!: BuildingBlock[];
   @Field(() => [Information]) information!: Information[];
 }

@@ -68,7 +68,7 @@ type BusinessCapability {
   information: [Information!]!
   name: String!
   people: [Person!]!
-  resources: [Resource!]!
+  resources: [BuildingBlock!]!
 }
 
 type BusinessProcess {
@@ -168,11 +168,6 @@ type RealizationLink {
   solutionBuildingBlockId: String!
   validFrom: String
   validTo: String
-}
-
-type Resource {
-  id: String!
-  name: String!
 }
 
 type SolutionBuildingBlock implements BuildingBlock {

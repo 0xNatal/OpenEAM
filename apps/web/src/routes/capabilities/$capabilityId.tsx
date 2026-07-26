@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client/react';
 import { createFileRoute, Link, notFound } from '@tanstack/react-router';
-import type { BusinessCapabilityDetail } from '@/lib/entities';
+import type { BusinessCapabilityDetail, CapabilityResource } from '@/lib/entities';
 
 const BUSINESS_CAPABILITY_QUERY = gql`
   query BusinessCapability($id: String!) {
@@ -16,6 +16,8 @@ const BUSINESS_CAPABILITY_QUERY = gql`
       resources {
         id
         name
+        lifecyclePhase
+        __typename
       }
       information {
         id
@@ -77,6 +79,17 @@ function EmptyState({ label }: { label: string }) {
   return <p className="text-xs text-muted-foreground italic">{label}</p>;
 }
 
+function ResourceItem({ resource }: { resource: CapabilityResource }) {
+  return (
+    <div className="flex items-center justify-between gap-2 rounded-md border border-border bg-muted/50 px-3 py-2 text-xs text-foreground">
+      <span>{resource.name}</span>
+      <span className="shrink-0 rounded-full border border-border px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
+        {resource.__typename === 'ArchitectureBuildingBlock' ? 'ABB' : 'SBB'}
+      </span>
+    </div>
+  );
+}
+
 function CapabilityDetail({ cap }: { cap: BusinessCapabilityDetail }) {
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
@@ -97,11 +110,14 @@ function CapabilityDetail({ cap }: { cap: BusinessCapabilityDetail }) {
           )}
         </Quadrant>
 
-        <Quadrant title="Resources" subtitle="IT systems, physical assets, and intangible assets">
+        <Quadrant
+          title="Resources"
+          subtitle="Architecture and solution building blocks that realize this capability"
+        >
           {cap.resources.length > 0 ? (
-            cap.resources.map((r) => <Item key={r.id} label={r.name} />)
+            cap.resources.map((r) => <ResourceItem key={r.id} resource={r} />)
           ) : (
-            <EmptyState label="No resources defined yet" />
+            <EmptyState label="No building blocks linked yet" />
           )}
         </Quadrant>
 
