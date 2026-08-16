@@ -1,8 +1,13 @@
 import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client/react';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { useState } from 'react';
-import { Input } from '@/components/ui/input';
+import {
+  EMPTY_LANDSCAPE_FILTERS,
+  LandscapeFilters,
+  type LandscapeFilterValues,
+} from '@/components/landscape/landscape-filters';
+import { Button } from '@/components/ui/button';
 import { useEnterprise } from '@/lib/enterprise';
 import type { ArchitectureDomain, ArchitectureLevel, OrganizationUnit } from '@/lib/entities';
 
@@ -79,23 +84,17 @@ interface LandscapeData {
   organizationUnits: OrganizationUnit[];
 }
 
-const selectClassName =
-  'h-7 w-full min-w-0 rounded-md border border-input bg-input/20 px-2 py-0.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30';
-
 function LandscapeRoute() {
-  const [asOf, setAsOf] = useState('');
-  const [architectureLevel, setArchitectureLevel] = useState<ArchitectureLevel | ''>('');
-  const [architectureDomainId, setArchitectureDomainId] = useState('');
-  const [organizationUnitId, setOrganizationUnitId] = useState('');
+  const [filters, setFilters] = useState<LandscapeFilterValues>(EMPTY_LANDSCAPE_FILTERS);
 
   const { enterprise } = useEnterprise();
   const { data, loading, error } = useQuery<LandscapeData>(LANDSCAPE_QUERY, {
     variables: {
       enterpriseId: enterprise?.id,
-      asOf: asOf || undefined,
-      architectureLevel: architectureLevel || undefined,
-      architectureDomainId: architectureDomainId || undefined,
-      organizationUnitId: organizationUnitId || undefined,
+      asOf: filters.asOf || undefined,
+      architectureLevel: filters.architectureLevel || undefined,
+      architectureDomainId: filters.architectureDomainId || undefined,
+      organizationUnitId: filters.organizationUnitId || undefined,
     },
     skip: !enterprise,
   });
@@ -104,70 +103,26 @@ function LandscapeRoute() {
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-10">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Landscape</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          The Architecture Landscape (ABBs) and Solutions Landscape (SBBs), filtered by viewpoint:
-          time, level of detail, architecture domain, and organization unit.
-        </p>
+      <div className="mb-8 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Landscape</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            The Architecture Landscape (ABBs) and Solutions Landscape (SBBs), filtered by viewpoint:
+            time, level of detail, architecture domain, and organization unit.
+          </p>
+        </div>
+        <Button asChild variant="outline">
+          <Link to="/landscape/diagram">View as diagram →</Link>
+        </Button>
       </div>
 
-      <div className="mb-6 grid grid-cols-2 gap-3 rounded-xl border border-border bg-card p-4 sm:grid-cols-4">
-        <label
-          htmlFor="landscape-as-of"
-          className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
-        >
-          As of date
-          <Input
-            id="landscape-as-of"
-            type="date"
-            value={asOf}
-            onChange={(e) => setAsOf(e.target.value)}
-          />
-        </label>
-        <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
-          Architecture level
-          <select
-            className={selectClassName}
-            value={architectureLevel}
-            onChange={(e) => setArchitectureLevel(e.target.value as ArchitectureLevel | '')}
-          >
-            <option value="">All</option>
-            <option value="STRATEGIC">Strategic</option>
-            <option value="SEGMENT">Segment</option>
-            <option value="CAPABILITY">Capability</option>
-          </select>
-        </label>
-        <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
-          Architecture domain
-          <select
-            className={selectClassName}
-            value={architectureDomainId}
-            onChange={(e) => setArchitectureDomainId(e.target.value)}
-          >
-            <option value="">All</option>
-            {(data?.architectureDomains ?? []).map((domain) => (
-              <option key={domain.id} value={domain.id}>
-                {domain.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
-          Organization unit
-          <select
-            className={selectClassName}
-            value={organizationUnitId}
-            onChange={(e) => setOrganizationUnitId(e.target.value)}
-          >
-            <option value="">All</option>
-            {(data?.organizationUnits ?? []).map((unit) => (
-              <option key={unit.id} value={unit.id}>
-                {unit.name}
-              </option>
-            ))}
-          </select>
-        </label>
+      <div className="mb-6">
+        <LandscapeFilters
+          value={filters}
+          onChange={setFilters}
+          architectureDomains={data?.architectureDomains ?? []}
+          organizationUnits={data?.organizationUnits ?? []}
+        />
       </div>
 
       {loading && <p className="text-sm text-muted-foreground">Loading…</p>}

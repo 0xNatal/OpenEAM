@@ -84,6 +84,18 @@ export interface OrganizationUnitLink {
   validTo?: string | null;
 }
 
+export type BuildingBlockRelationshipType = 'DEPENDS_ON' | 'DATA_FLOW';
+
+export interface BuildingBlockRelationship {
+  id: string;
+  sourceBuildingBlockId: string;
+  targetBuildingBlockId: string;
+  type: BuildingBlockRelationshipType;
+  description?: string | null;
+  validFrom?: string | null;
+  validTo?: string | null;
+}
+
 export interface BuildingBlock {
   id: string;
   name: string;
