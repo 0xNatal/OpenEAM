@@ -38,3 +38,8 @@ Thumbs.db
 
 # TanStack Router auto-generated route tree
 apps/web/src/routeTree.gen.ts
+
+# Private data-exchange bundles for real (non-public) enterprises — modelled
+# locally so they can be read/imported/updated, never committed or referenced
+# by name anywhere in tracked files.
+examples/private/
