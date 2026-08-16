@@ -57,9 +57,9 @@ function ModelBusinessProcessRoute() {
   const process = data.businessProcess;
 
   return (
-    // Fill the viewport below the app header (h-14) minus the main padding
-    // (p-6): the modeler canvas needs a bounded height to lay out.
-    <div className="flex h-[calc(100vh-6.5rem)] flex-col overflow-hidden rounded-xl border border-border bg-card">
+    // Fill the viewport minus the main padding (p-6): the modeler canvas
+    // needs a bounded height to lay out.
+    <div className="flex h-[calc(100vh-3rem)] flex-col overflow-hidden rounded-xl border border-border bg-card">
       <div className="flex items-center gap-3 border-b border-border px-4 py-2">
         <Button asChild variant="ghost">
           <Link to="/business-processes/$processId" params={{ processId: process.id }}>
