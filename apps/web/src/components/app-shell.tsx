@@ -2,6 +2,7 @@ import {
   BlocksIcon,
   Exchange01Icon,
   Flowchart01Icon,
+  Home01Icon,
   MapsIcon,
   Route01Icon,
   Target01Icon,
@@ -25,6 +26,9 @@ import {
 import { TooltipProvider } from './ui/tooltip';
 
 export function AppShell() {
+  const isOverview = useRouterState({
+    select: (s) => s.location.pathname === '/',
+  });
   const isValueStreams = useRouterState({
     select: (s) => s.location.pathname.startsWith('/value-streams'),
   });
@@ -58,6 +62,14 @@ export function AppShell() {
           <SidebarContent>
             <SidebarGroup>
               <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={isOverview} tooltip="Overview">
+                    <Link to="/">
+                      <HugeiconsIcon icon={Home01Icon} strokeWidth={2} />
+                      <span className="group-data-[collapsible=icon]:hidden">Overview</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild isActive={isValueStreams} tooltip="Value Streams">
                     <Link to="/value-streams">
