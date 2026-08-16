@@ -18,10 +18,15 @@ import LandscapeRendererModule, { ensureArrowMarker } from './landscape-renderer
 export interface DiagramNode {
   id: string;
   label: string;
-  kind: 'architecture' | 'solution';
+  kind: 'architecture' | 'solution' | 'capability';
+  // Name of the block's primary (first) architecture domain — used to pick
+  // a domain color/shape in the renderer. Undefined for capability nodes
+  // (business capabilities aren't themselves assigned to a domain) and for
+  // blocks with no domain assigned.
+  domainName?: string;
 }
 
-export type DiagramEdgeKind = 'realization' | 'depends_on' | 'data_flow' | 'hosted_on';
+export type DiagramEdgeKind = 'realization' | 'depends_on' | 'data_flow' | 'hosted_on' | 'serves';
 
 export interface DiagramEdge {
   id: string;

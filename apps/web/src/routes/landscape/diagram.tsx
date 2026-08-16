@@ -40,8 +40,12 @@ const LANDSCAPE_DIAGRAM_QUERY = gql`
     ) {
       id
       name
+      architectureDomainIds
       realizedBy {
         solutionBuildingBlockId
+      }
+      capabilityLinks {
+        capabilityId
       }
       outgoingRelationships {
         id
@@ -57,6 +61,7 @@ const LANDSCAPE_DIAGRAM_QUERY = gql`
     ) {
       id
       name
+      architectureDomainIds
       outgoingRelationships {
         id
         targetBuildingBlockId
@@ -71,12 +76,17 @@ const LANDSCAPE_DIAGRAM_QUERY = gql`
       id
       name
     }
+    businessCapabilities(enterpriseId: $enterpriseId) {
+      id
+      name
+    }
   }
 `;
 
 interface LandscapeDiagramBlock {
   id: string;
   name: string;
+  architectureDomainIds: string[];
   outgoingRelationships: Array<
     Pick<BuildingBlockRelationship, 'id' | 'targetBuildingBlockId' | 'type'>
   >;
@@ -84,6 +94,7 @@ interface LandscapeDiagramBlock {
 
 interface ArchitectureDiagramBlock extends LandscapeDiagramBlock {
   realizedBy: Array<{ solutionBuildingBlockId: string }>;
+  capabilityLinks: Array<{ capabilityId: string }>;
 }
 
 interface LandscapeDiagramData {
@@ -91,7 +102,14 @@ interface LandscapeDiagramData {
   solutionsLandscape: LandscapeDiagramBlock[];
   architectureDomains: ArchitectureDomain[];
   organizationUnits: OrganizationUnit[];
+  businessCapabilities: Array<{ id: string; name: string }>;
 }
+
+const RELATIONSHIP_KIND_BY_TYPE: Record<BuildingBlockRelationship['type'], DiagramEdgeKind> = {
+  DEPENDS_ON: 'depends_on',
+  DATA_FLOW: 'data_flow',
+  HOSTED_ON: 'hosted_on',
+};
 
 function toDiagramGraph(data: LandscapeDiagramData | undefined): {
   nodes: DiagramNode[];
@@ -99,13 +117,23 @@ function toDiagramGraph(data: LandscapeDiagramData | undefined): {
 } {
   if (!data) return { nodes: [], edges: [] };
 
-  const nodes: DiagramNode[] = [
+  const domainNameById = new Map(data.architectureDomains.map((d) => [d.id, d.name]));
+  const domainNameOf = (block: { architectureDomainIds: string[] }): string | undefined =>
+    block.architectureDomainIds[0] ? domainNameById.get(block.architectureDomainIds[0]) : undefined;
+
+  const blockNodes: DiagramNode[] = [
     ...data.architectureLandscape.map((b) => ({
       id: b.id,
       label: b.name,
       kind: 'architecture' as const,
+      domainName: domainNameOf(b),
     })),
-    ...data.solutionsLandscape.map((b) => ({ id: b.id, label: b.name, kind: 'solution' as const })),
+    ...data.solutionsLandscape.map((b) => ({
+      id: b.id,
+      label: b.name,
+      kind: 'solution' as const,
+      domainName: domainNameOf(b),
+    })),
   ];
 
   const edges: DiagramEdge[] = [];
@@ -119,23 +147,47 @@ function toDiagramGraph(data: LandscapeDiagramData | undefined): {
       });
     }
   }
-  const relationshipKindByType: Record<BuildingBlockRelationship['type'], DiagramEdgeKind> = {
-    DEPENDS_ON: 'depends_on',
-    DATA_FLOW: 'data_flow',
-    HOSTED_ON: 'hosted_on',
-  };
   for (const block of [...data.architectureLandscape, ...data.solutionsLandscape]) {
     for (const rel of block.outgoingRelationships) {
       edges.push({
         id: rel.id,
         sourceId: block.id,
         targetId: rel.targetBuildingBlockId,
-        kind: relationshipKindByType[rel.type],
+        kind: RELATIONSHIP_KIND_BY_TYPE[rel.type],
       });
     }
   }
 
-  return { nodes, edges };
+  // A capability node is only worth drawing if at least one ABB currently
+  // in view serves it — otherwise it'd float with no connections, which is
+  // the same "no dangling nodes" reasoning filterDanglingEdges applies to
+  // edges (this filter has to run before that one, since it decides which
+  // nodes even exist).
+  const capabilityNameById = new Map(data.businessCapabilities.map((c) => [c.id, c.name]));
+  const servesEdges: DiagramEdge[] = [];
+  const capabilityIdsInView = new Set<string>();
+  for (const block of data.architectureLandscape) {
+    for (const link of block.capabilityLinks) {
+      if (!capabilityNameById.has(link.capabilityId)) continue;
+      servesEdges.push({
+        id: `serves-${block.id}-${link.capabilityId}`,
+        sourceId: block.id,
+        targetId: link.capabilityId,
+        kind: 'serves',
+      });
+      capabilityIdsInView.add(link.capabilityId);
+    }
+  }
+  const capabilityNodes: DiagramNode[] = [...capabilityIdsInView].map((id) => ({
+    id,
+    label: capabilityNameById.get(id) as string,
+    kind: 'capability' as const,
+  }));
+
+  return {
+    nodes: [...blockNodes, ...capabilityNodes],
+    edges: [...edges, ...servesEdges],
+  };
 }
 
 function LandscapeDiagramRoute() {
