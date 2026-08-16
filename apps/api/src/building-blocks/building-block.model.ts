@@ -31,6 +31,17 @@ export enum LifecyclePhase {
 
 registerEnumType(LifecyclePhase, { name: 'LifecyclePhase' });
 
+export enum BuildingBlockRelationshipType {
+  DEPENDS_ON = 'depends_on',
+  DATA_FLOW = 'data_flow',
+}
+
+registerEnumType(BuildingBlockRelationshipType, {
+  name: 'BuildingBlockRelationshipType',
+  description:
+    'How a building block relates to another: depends_on (needs it to function) or data_flow (exchanges data with it).',
+});
+
 // Temporal links carry a validity interval (ISO dates, null = unbounded) so
 // the landscape can be reconstructed for any point on the timeline.
 @ObjectType()
@@ -55,6 +66,21 @@ export class RealizationLink {
   @Field(() => String, { nullable: true }) validTo?: string | null;
 }
 
+// A free-standing graph edge between two building blocks (either kind),
+// independent of realization/capability/domain assignment — the source of
+// truth for the diagram view, which lays these out rather than storing
+// hand-placed shapes.
+@ObjectType()
+export class BuildingBlockRelationship {
+  @Field() id!: string;
+  @Field() sourceBuildingBlockId!: string;
+  @Field() targetBuildingBlockId!: string;
+  @Field(() => BuildingBlockRelationshipType) type!: BuildingBlockRelationshipType;
+  @Field(() => String, { nullable: true }) description?: string | null;
+  @Field(() => String, { nullable: true }) validFrom?: string | null;
+  @Field(() => String, { nullable: true }) validTo?: string | null;
+}
+
 @InterfaceType({
   resolveType: (value: { kind: 'architecture' | 'solution' }) =>
     value.kind === 'architecture' ? ArchitectureBuildingBlock : SolutionBuildingBlock,
@@ -69,6 +95,8 @@ export abstract class BuildingBlock {
   @Field(() => String, { nullable: true }) validTo?: string | null;
   @Field(() => [String]) architectureDomainIds!: string[];
   @Field(() => [OrganizationUnitLink]) organizationUnitLinks!: OrganizationUnitLink[];
+  @Field(() => [BuildingBlockRelationship]) outgoingRelationships!: BuildingBlockRelationship[];
+  @Field(() => [BuildingBlockRelationship]) incomingRelationships!: BuildingBlockRelationship[];
 }
 
 @ObjectType({ implements: () => [BuildingBlock] })
@@ -100,4 +128,14 @@ export class BuildingBlockInput {
   @Field(() => String, { nullable: true }) validTo?: string | null;
   @Field(() => [String]) architectureDomainIds!: string[];
   @Field(() => [String]) organizationUnitIds!: string[];
+}
+
+@InputType()
+export class BuildingBlockRelationshipInput {
+  @Field() sourceBuildingBlockId!: string;
+  @Field() targetBuildingBlockId!: string;
+  @Field(() => BuildingBlockRelationshipType) type!: BuildingBlockRelationshipType;
+  @Field(() => String, { nullable: true }) description?: string | null;
+  @Field(() => String, { nullable: true }) validFrom?: string | null;
+  @Field(() => String, { nullable: true }) validTo?: string | null;
 }

@@ -131,6 +131,16 @@ const buildingBlockCapabilitySchema = z.object({
   ...timestampFields,
 });
 
+const buildingBlockRelationshipSchema = z.object({
+  id: z.string(),
+  sourceBuildingBlockId: z.string(),
+  targetBuildingBlockId: z.string(),
+  type: z.enum(['depends_on', 'data_flow']),
+  description: z.string().nullable(),
+  ...validityFields,
+  ...timestampFields,
+});
+
 export const dataBundleSchema = z.object({
   // The enterprises this bundle carries; import replaces exactly these
   // enterprises' models and touches nothing else.
@@ -150,6 +160,7 @@ export const dataBundleSchema = z.object({
   buildingBlockOrganizationUnits: z.array(buildingBlockOrganizationUnitSchema).default([]),
   buildingBlockRealizations: z.array(buildingBlockRealizationSchema).default([]),
   buildingBlockCapabilities: z.array(buildingBlockCapabilitySchema).default([]),
+  buildingBlockRelationships: z.array(buildingBlockRelationshipSchema).default([]),
 });
 
 export type DataBundle = z.infer<typeof dataBundleSchema>;

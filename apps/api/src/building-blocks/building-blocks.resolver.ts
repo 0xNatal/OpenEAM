@@ -4,6 +4,8 @@ import {
   ArchitectureLevel,
   BuildingBlock,
   BuildingBlockInput,
+  BuildingBlockRelationship,
+  BuildingBlockRelationshipInput,
   SolutionBuildingBlock,
 } from './building-block.model';
 import { BuildingBlocksService } from './building-blocks.service';
@@ -71,5 +73,15 @@ export class BuildingBlocksResolver {
   @Mutation(() => Boolean)
   deleteBuildingBlock(@Args('id') id: string) {
     return this.service.delete(id);
+  }
+
+  @Mutation(() => BuildingBlockRelationship)
+  createBuildingBlockRelationship(@Args('input') input: BuildingBlockRelationshipInput) {
+    return this.service.createRelationship(input);
+  }
+
+  @Mutation(() => Boolean)
+  deleteBuildingBlockRelationship(@Args('id') id: string) {
+    return this.service.deleteRelationship(id);
   }
 }

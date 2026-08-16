@@ -23,6 +23,14 @@ export const lifecyclePhase = pgEnum('lifecycle_phase', [
   'retired',
 ]);
 
+// Kept deliberately small — a generic 'depends_on' plus 'data_flow' rather
+// than a full ArchiMate-style taxonomy (serving/triggering/access/...).
+// Richer typing can follow once real usage shows which distinctions matter.
+export const buildingBlockRelationshipType = pgEnum('building_block_relationship_type', [
+  'depends_on',
+  'data_flow',
+]);
+
 // A single table for both ABBs and SBBs (discriminated by `kind`) so every
 // relationship table has one FK target. `architectureLevel` is meaningful only
 // for kind = 'architecture'; the service layer enforces that.
@@ -141,12 +149,43 @@ export const buildingBlockCapabilities = pgTable(
   ],
 );
 
+// Free-standing graph edges between any two building blocks (ABB or SBB),
+// independent of realization/capability/domain assignment. Source depends on
+// / receives data from target. This is the edge set a diagram view lays out
+// with an auto-layout algorithm rather than the manually-positioned shapes a
+// tool like draw.io produces.
+export const buildingBlockRelationships = pgTable(
+  'building_block_relationships',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => randomUUID()),
+    sourceBuildingBlockId: text('source_building_block_id')
+      .notNull()
+      .references(() => buildingBlocks.id, { onDelete: 'cascade' }),
+    targetBuildingBlockId: text('target_building_block_id')
+      .notNull()
+      .references(() => buildingBlocks.id, { onDelete: 'cascade' }),
+    type: buildingBlockRelationshipType('type').notNull().default('depends_on'),
+    description: text('description'),
+    validFrom: date('valid_from'),
+    validTo: date('valid_to'),
+    ...timestamps,
+  },
+  (t) => [
+    index('building_block_relationships_source_id_idx').on(t.sourceBuildingBlockId),
+    index('building_block_relationships_target_id_idx').on(t.targetBuildingBlockId),
+  ],
+);
+
 export const buildingBlocksRelations = relations(buildingBlocks, ({ many }) => ({
   architectureDomainLinks: many(buildingBlockArchitectureDomains),
   organizationUnitLinks: many(buildingBlockOrganizationUnits),
   realizedBy: many(buildingBlockRealizations, { relationName: 'realizationArchitectureSide' }),
   realizes: many(buildingBlockRealizations, { relationName: 'realizationSolutionSide' }),
   capabilityLinks: many(buildingBlockCapabilities),
+  outgoingRelationships: many(buildingBlockRelationships, { relationName: 'relationshipSource' }),
+  incomingRelationships: many(buildingBlockRelationships, { relationName: 'relationshipTarget' }),
 }));
 
 export const buildingBlockArchitectureDomainsRelations = relations(
@@ -203,6 +242,22 @@ export const buildingBlockCapabilitiesRelations = relations(
     capability: one(businessCapabilities, {
       fields: [buildingBlockCapabilities.capabilityId],
       references: [businessCapabilities.id],
+    }),
+  }),
+);
+
+export const buildingBlockRelationshipsRelations = relations(
+  buildingBlockRelationships,
+  ({ one }) => ({
+    source: one(buildingBlocks, {
+      fields: [buildingBlockRelationships.sourceBuildingBlockId],
+      references: [buildingBlocks.id],
+      relationName: 'relationshipSource',
+    }),
+    target: one(buildingBlocks, {
+      fields: [buildingBlockRelationships.targetBuildingBlockId],
+      references: [buildingBlocks.id],
+      relationName: 'relationshipTarget',
     }),
   }),
 );

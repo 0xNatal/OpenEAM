@@ -9,9 +9,11 @@ type ArchitectureBuildingBlock implements BuildingBlock {
   description: String
   enterpriseId: String!
   id: String!
+  incomingRelationships: [BuildingBlockRelationship!]!
   lifecyclePhase: LifecyclePhase!
   name: String!
   organizationUnitLinks: [OrganizationUnitLink!]!
+  outgoingRelationships: [BuildingBlockRelationship!]!
   realizedBy: [RealizationLink!]!
   validFrom: String
   validTo: String
@@ -39,9 +41,11 @@ interface BuildingBlock {
   description: String
   enterpriseId: String!
   id: String!
+  incomingRelationships: [BuildingBlockRelationship!]!
   lifecyclePhase: LifecyclePhase!
   name: String!
   organizationUnitLinks: [OrganizationUnitLink!]!
+  outgoingRelationships: [BuildingBlockRelationship!]!
   validFrom: String
   validTo: String
 }
@@ -63,6 +67,33 @@ input BuildingBlockInput {
 enum BuildingBlockKind {
   ARCHITECTURE
   SOLUTION
+}
+
+type BuildingBlockRelationship {
+  description: String
+  id: String!
+  sourceBuildingBlockId: String!
+  targetBuildingBlockId: String!
+  type: BuildingBlockRelationshipType!
+  validFrom: String
+  validTo: String
+}
+
+input BuildingBlockRelationshipInput {
+  description: String
+  sourceBuildingBlockId: String!
+  targetBuildingBlockId: String!
+  type: BuildingBlockRelationshipType!
+  validFrom: String
+  validTo: String
+}
+
+"""
+How a building block relates to another: depends_on (needs it to function) or data_flow (exchanges data with it).
+"""
+enum BuildingBlockRelationshipType {
+  DATA_FLOW
+  DEPENDS_ON
 }
 
 type BusinessCapability {
@@ -136,10 +167,12 @@ enum LifecyclePhase {
 
 type Mutation {
   createBuildingBlock(input: BuildingBlockInput!): BuildingBlock!
+  createBuildingBlockRelationship(input: BuildingBlockRelationshipInput!): BuildingBlockRelationship!
   createBusinessCapability(input: BusinessCapabilityInput!): BusinessCapability!
   createBusinessProcess(input: BusinessProcessInput!): BusinessProcess!
   createEnterprise(input: EnterpriseInput!): Enterprise!
   deleteBuildingBlock(id: String!): Boolean!
+  deleteBuildingBlockRelationship(id: String!): Boolean!
   deleteBusinessCapability(id: String!): Boolean!
   deleteBusinessProcess(id: String!): Boolean!
   deleteEnterprise(id: String!): Boolean!
@@ -223,9 +256,11 @@ type SolutionBuildingBlock implements BuildingBlock {
   description: String
   enterpriseId: String!
   id: String!
+  incomingRelationships: [BuildingBlockRelationship!]!
   lifecyclePhase: LifecyclePhase!
   name: String!
   organizationUnitLinks: [OrganizationUnitLink!]!
+  outgoingRelationships: [BuildingBlockRelationship!]!
   realizes: [RealizationLink!]!
   validFrom: String
   validTo: String

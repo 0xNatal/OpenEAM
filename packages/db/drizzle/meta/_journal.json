@@ -29,6 +29,13 @@
       "when": 1785083931526,
       "tag": "0003_charming_star_brand",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1786894129572,
+      "tag": "0004_hesitant_shadow_king",
+      "breakpoints": true
     }
   ]
 }

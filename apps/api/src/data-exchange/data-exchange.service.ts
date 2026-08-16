@@ -53,6 +53,7 @@ export class DataExchangeService {
       buildingBlockOrganizationUnits,
       buildingBlockRealizations,
       buildingBlockCapabilities,
+      buildingBlockRelationships,
     ] = await Promise.all([
       this.db.select().from(schema.enterprises),
       this.db.select().from(schema.businessCapabilities),
@@ -68,6 +69,7 @@ export class DataExchangeService {
       this.db.select().from(schema.buildingBlockOrganizationUnits),
       this.db.select().from(schema.buildingBlockRealizations),
       this.db.select().from(schema.buildingBlockCapabilities),
+      this.db.select().from(schema.buildingBlockRelationships),
     ]);
 
     // Child/link rows have no enterpriseId of their own; they follow their
@@ -109,6 +111,11 @@ export class DataExchangeService {
       ),
       buildingBlockCapabilities: buildingBlockCapabilities.filter(
         (l) => buildingBlockIds.has(l.buildingBlockId) && capabilityIds.has(l.capabilityId),
+      ),
+      buildingBlockRelationships: buildingBlockRelationships.filter(
+        (l) =>
+          buildingBlockIds.has(l.sourceBuildingBlockId) &&
+          buildingBlockIds.has(l.targetBuildingBlockId),
       ),
     };
   }
@@ -166,6 +173,11 @@ export class DataExchangeService {
       }
       if (bundle.buildingBlockCapabilities.length > 0) {
         await tx.insert(schema.buildingBlockCapabilities).values(bundle.buildingBlockCapabilities);
+      }
+      if (bundle.buildingBlockRelationships.length > 0) {
+        await tx
+          .insert(schema.buildingBlockRelationships)
+          .values(bundle.buildingBlockRelationships);
       }
     });
   }

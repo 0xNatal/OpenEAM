@@ -6,6 +6,8 @@ import type {
   ArchitectureBuildingBlock,
   ArchitectureLevel,
   BuildingBlockInput,
+  BuildingBlockRelationship,
+  BuildingBlockRelationshipInput,
   LifecyclePhase,
   SolutionBuildingBlock,
 } from './building-block.model';
@@ -43,6 +45,24 @@ interface BuildingBlockRow extends TemporalRow {
   realizes: Array<
     TemporalRow & { architectureBuildingBlockId: string; solutionBuildingBlockId: string }
   >;
+  outgoingRelationships: Array<
+    TemporalRow & {
+      id: string;
+      sourceBuildingBlockId: string;
+      targetBuildingBlockId: string;
+      type: 'depends_on' | 'data_flow';
+      description: string | null;
+    }
+  >;
+  incomingRelationships: Array<
+    TemporalRow & {
+      id: string;
+      sourceBuildingBlockId: string;
+      targetBuildingBlockId: string;
+      type: 'depends_on' | 'data_flow';
+      description: string | null;
+    }
+  >;
 }
 
 // ISO dates (YYYY-MM-DD) compare correctly as strings. Half-open interval:
@@ -78,6 +98,12 @@ export function toBuildingBlock(row: BuildingBlockRow, asOf?: string): MappedBui
     capabilityLinks: row.capabilityLinks.filter(linkFilter),
     realizedBy: row.realizedBy.filter(linkFilter),
     realizes: row.realizes.filter(linkFilter),
+    outgoingRelationships: row.outgoingRelationships.filter(
+      linkFilter,
+    ) as BuildingBlockRelationship[],
+    incomingRelationships: row.incomingRelationships.filter(
+      linkFilter,
+    ) as BuildingBlockRelationship[],
   };
 }
 
@@ -87,6 +113,8 @@ export const withAllLinks = {
   capabilityLinks: true,
   realizedBy: true,
   realizes: true,
+  outgoingRelationships: true,
+  incomingRelationships: true,
 } as const;
 
 @Injectable()
@@ -172,6 +200,37 @@ export class BuildingBlocksService {
       .delete(schema.buildingBlocks)
       .where(eq(schema.buildingBlocks.id, id))
       .returning({ id: schema.buildingBlocks.id });
+    return Boolean(deleted);
+  }
+
+  async createRelationship(
+    input: BuildingBlockRelationshipInput,
+  ): Promise<BuildingBlockRelationship> {
+    if (input.sourceBuildingBlockId === input.targetBuildingBlockId) {
+      throw new BadRequestException('A building block cannot relate to itself');
+    }
+
+    const [created] = await this.db
+      .insert(schema.buildingBlockRelationships)
+      .values({
+        sourceBuildingBlockId: input.sourceBuildingBlockId,
+        targetBuildingBlockId: input.targetBuildingBlockId,
+        type: input.type,
+        description: input.description ?? null,
+        validFrom: input.validFrom ?? null,
+        validTo: input.validTo ?? null,
+      })
+      .returning();
+
+    if (!created) throw new NotFoundException('Building block relationship insert returned no row');
+    return created as BuildingBlockRelationship;
+  }
+
+  async deleteRelationship(id: string): Promise<boolean> {
+    const [deleted] = await this.db
+      .delete(schema.buildingBlockRelationships)
+      .where(eq(schema.buildingBlockRelationships.id, id))
+      .returning({ id: schema.buildingBlockRelationships.id });
     return Boolean(deleted);
   }
 
