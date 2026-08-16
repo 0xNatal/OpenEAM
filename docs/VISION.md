@@ -23,9 +23,11 @@ Integration is a spectrum, and every point on it should feel first-class.
 Building blocks are the unit everything else hangs off — architecture building
 blocks (a needed capability) and solution building blocks (what implements it),
 with lifecycle and validity over time. A lot of the value is in how well they're
-documented: description, ownership, dependencies, the metadata that makes a block
-mean something to whoever's looking. Making that documentation rich and easy to
-maintain is a running focus, not a one-off.
+documented: description, ownership, dependencies ([typed relationships between
+blocks](../packages/db/src/schema/building-blocks.ts) — depends on, exchanges
+data with, runs on), the metadata that makes a block mean something to whoever's
+looking. Making that documentation rich and easy to maintain is a running focus,
+not a one-off.
 
 ## Many views for many stakeholders
 
@@ -34,6 +36,16 @@ a solution architect, a security officer, a project lead — each wants a differ
 cut of the same underlying data. The plan is to keep growing the set of views and
 viewpoints (landscapes, maps, timelines, matrices, roadmaps) on top of one shared
 model, rather than forcing everyone through one picture.
+
+The first view beyond a table is the landscape diagram
+([apps/web/src/routes/landscape/diagram.tsx](../apps/web/src/routes/landscape/diagram.tsx)):
+solution building blocks, their relationships, and hosting laid out
+automatically. It's deliberately narrow — one cut for one question ("what's the
+architecture of the whole thing") rather than one picture trying to answer every
+question at once. A capability-to-architecture view ("what fulfills this
+capability?") was tried inline on the same diagram and taken back out for
+exactly that reason: it answers a different question and reads better as its own
+lens than as a layer on this one.
 
 ## From baseline to target, and out to the work
 
