@@ -1,9 +1,9 @@
-// Minimal diagram-js renderer for building blocks, business capabilities,
-// and the edges between them.
+// Minimal diagram-js renderer for building blocks and the edges between
+// them.
 //
 // Visual grammar:
-// - Shape: pill = business capability, cylinder = a block whose primary
-//   domain is Data, rectangle = everything else.
+// - Shape: cylinder = a block whose primary domain is Data, rectangle =
+//   everything else.
 // - Color: architecture domain (business/data/application/technology),
 //   loosely following ArchiMate's own layer palette — not ABB vs SBB, which
 //   moves to the hover tooltip instead so domain and kind don't compete for
@@ -13,6 +13,10 @@
 //   outline, near-transparent fill, label pinned to the top-left so nested
 //   children stay visible through it, rather than the centered-label solid
 //   fill leaf blocks get.
+//
+// Business capabilities intentionally don't render here: "what fulfills
+// this capability?" is a drill-down question starting from one capability,
+// not something that belongs layered onto the whole-landscape view.
 import type EventBus from 'diagram-js/lib/core/EventBus';
 import type { ConnectionLike, ShapeLike } from 'diagram-js/lib/core/Types';
 import BaseRenderer from 'diagram-js/lib/draw/BaseRenderer';
@@ -54,12 +58,10 @@ function classifyDomain(domainName: string | undefined): DomainCategory | undefi
 // hosted_on never reaches drawConnection — it becomes nesting, not a line
 // (see landscape-layout.ts's buildContainmentTree) — but the map stays
 // exhaustive so a future edge kind can't silently render with no color.
-// Dashed = structural ("realizes/serves"), solid = runtime interaction;
-// data_flow is drawn heavier since "what moves where" is the point of it.
+// data_flow is drawn heavier than depends_on since "what moves where" is
+// the point of it.
 const EDGE_STYLES: Record<DiagramEdge['kind'], { stroke: string; dashed: boolean; width: number }> =
   {
-    realization: { stroke: '#6b7280', dashed: true, width: 1.5 },
-    serves: { stroke: '#a16207', dashed: true, width: 1.5 },
     depends_on: { stroke: '#d97706', dashed: false, width: 1.5 },
     data_flow: { stroke: '#0f766e', dashed: false, width: 2.5 },
     hosted_on: { stroke: 'transparent', dashed: false, width: 0 },
@@ -116,25 +118,6 @@ function drawRoundedRect(
   return rect;
 }
 
-function drawPill(
-  parentGfx: SVGElement,
-  width: number,
-  height: number,
-  colors: { stroke: string; fill: string },
-): SVGElement {
-  const rect = svgCreate('rect', {
-    width,
-    height,
-    rx: height / 2,
-    ry: height / 2,
-    stroke: colors.stroke,
-    strokeWidth: 1.5,
-    fill: colors.fill,
-  });
-  svgAppend(parentGfx, rect);
-  return rect;
-}
-
 // Classic two-arc "database" icon: a body path with rounded top/bottom
 // edges, plus a top ellipse drawn over it to read as the cylinder's lid.
 function drawCylinder(
@@ -181,19 +164,13 @@ class LandscapeRenderer extends BaseRenderer {
     const width = shape.width ?? 0;
     const height = shape.height ?? 0;
 
-    // Business capabilities aren't assigned to a domain themselves — they
-    // *are* the business layer, so they always get the business color.
-    const category = node.kind === 'capability' ? 'business' : classifyDomain(node.domainName);
+    const category = classifyDomain(node.domainName);
     const colors = category ? DOMAIN_COLORS[category] : UNCLASSIFIED_COLOR;
 
-    let mainEl: SVGElement;
-    if (node.kind === 'capability') {
-      mainEl = drawPill(parentGfx, width, height, colors);
-    } else if (category === 'data') {
-      mainEl = drawCylinder(parentGfx, width, height, colors);
-    } else {
-      mainEl = drawRoundedRect(parentGfx, width, height, colors, Boolean(node.isContainer));
-    }
+    const mainEl =
+      category === 'data'
+        ? drawCylinder(parentGfx, width, height, colors)
+        : drawRoundedRect(parentGfx, width, height, colors, Boolean(node.isContainer));
 
     const text = svgCreate('text');
     svgAttr(
@@ -211,10 +188,7 @@ class LandscapeRenderer extends BaseRenderer {
     svgAttr(text, { fill: '#1f2937' });
     text.textContent = truncate(node.label);
     const title = svgCreate('title');
-    title.textContent =
-      node.kind === 'capability'
-        ? `${node.label} (Business Capability)`
-        : `${node.label} (${node.kind === 'architecture' ? 'Architecture' : 'Solution'} Building Block)`;
+    title.textContent = `${node.label} (${node.kind === 'architecture' ? 'Architecture' : 'Solution'} Building Block)`;
     svgAppend(text, title);
     svgAppend(parentGfx, text);
 

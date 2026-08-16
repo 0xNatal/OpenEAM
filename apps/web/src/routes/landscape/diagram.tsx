@@ -23,36 +23,19 @@ import type {
 // diagram-js + elkjs are heavy; only load them when this route is visited.
 const LandscapeDiagram = lazy(() => import('@/components/landscape/landscape-diagram'));
 
+// Architecture building blocks (needed capabilities) deliberately aren't
+// queried or rendered here — this diagram is the concrete technical
+// landscape (solution building blocks and how they relate/host each other),
+// not the abstract capability layer. See docs discussion: an ABB like
+// "Guest Communication" duplicates its business capability 1:1 and adds
+// noise without adding a distinct fact to this view.
 const LANDSCAPE_DIAGRAM_QUERY = gql`
   query LandscapeDiagram(
     $enterpriseId: String!
     $asOf: String
-    $architectureLevel: ArchitectureLevel
     $architectureDomainId: String
     $organizationUnitId: String
   ) {
-    architectureLandscape(
-      enterpriseId: $enterpriseId
-      asOf: $asOf
-      architectureLevel: $architectureLevel
-      architectureDomainId: $architectureDomainId
-      organizationUnitId: $organizationUnitId
-    ) {
-      id
-      name
-      architectureDomainIds
-      realizedBy {
-        solutionBuildingBlockId
-      }
-      capabilityLinks {
-        capabilityId
-      }
-      outgoingRelationships {
-        id
-        targetBuildingBlockId
-        type
-      }
-    }
     solutionsLandscape(
       enterpriseId: $enterpriseId
       asOf: $asOf
@@ -76,10 +59,6 @@ const LANDSCAPE_DIAGRAM_QUERY = gql`
       id
       name
     }
-    businessCapabilities(enterpriseId: $enterpriseId) {
-      id
-      name
-    }
   }
 `;
 
@@ -92,17 +71,10 @@ interface LandscapeDiagramBlock {
   >;
 }
 
-interface ArchitectureDiagramBlock extends LandscapeDiagramBlock {
-  realizedBy: Array<{ solutionBuildingBlockId: string }>;
-  capabilityLinks: Array<{ capabilityId: string }>;
-}
-
 interface LandscapeDiagramData {
-  architectureLandscape: ArchitectureDiagramBlock[];
   solutionsLandscape: LandscapeDiagramBlock[];
   architectureDomains: ArchitectureDomain[];
   organizationUnits: OrganizationUnit[];
-  businessCapabilities: Array<{ id: string; name: string }>;
 }
 
 const RELATIONSHIP_KIND_BY_TYPE: Record<BuildingBlockRelationship['type'], DiagramEdgeKind> = {
@@ -118,36 +90,18 @@ function toDiagramGraph(data: LandscapeDiagramData | undefined): {
   if (!data) return { nodes: [], edges: [] };
 
   const domainNameById = new Map(data.architectureDomains.map((d) => [d.id, d.name]));
-  const domainNameOf = (block: { architectureDomainIds: string[] }): string | undefined =>
-    block.architectureDomainIds[0] ? domainNameById.get(block.architectureDomainIds[0]) : undefined;
 
-  const blockNodes: DiagramNode[] = [
-    ...data.architectureLandscape.map((b) => ({
-      id: b.id,
-      label: b.name,
-      kind: 'architecture' as const,
-      domainName: domainNameOf(b),
-    })),
-    ...data.solutionsLandscape.map((b) => ({
-      id: b.id,
-      label: b.name,
-      kind: 'solution' as const,
-      domainName: domainNameOf(b),
-    })),
-  ];
+  const nodes: DiagramNode[] = data.solutionsLandscape.map((b) => ({
+    id: b.id,
+    label: b.name,
+    kind: 'solution' as const,
+    domainName: b.architectureDomainIds[0]
+      ? domainNameById.get(b.architectureDomainIds[0])
+      : undefined,
+  }));
 
   const edges: DiagramEdge[] = [];
-  for (const block of data.architectureLandscape) {
-    for (const link of block.realizedBy) {
-      edges.push({
-        id: `realization-${block.id}-${link.solutionBuildingBlockId}`,
-        sourceId: block.id,
-        targetId: link.solutionBuildingBlockId,
-        kind: 'realization',
-      });
-    }
-  }
-  for (const block of [...data.architectureLandscape, ...data.solutionsLandscape]) {
+  for (const block of data.solutionsLandscape) {
     for (const rel of block.outgoingRelationships) {
       edges.push({
         id: rel.id,
@@ -158,36 +112,7 @@ function toDiagramGraph(data: LandscapeDiagramData | undefined): {
     }
   }
 
-  // A capability node is only worth drawing if at least one ABB currently
-  // in view serves it — otherwise it'd float with no connections, which is
-  // the same "no dangling nodes" reasoning filterDanglingEdges applies to
-  // edges (this filter has to run before that one, since it decides which
-  // nodes even exist).
-  const capabilityNameById = new Map(data.businessCapabilities.map((c) => [c.id, c.name]));
-  const servesEdges: DiagramEdge[] = [];
-  const capabilityIdsInView = new Set<string>();
-  for (const block of data.architectureLandscape) {
-    for (const link of block.capabilityLinks) {
-      if (!capabilityNameById.has(link.capabilityId)) continue;
-      servesEdges.push({
-        id: `serves-${block.id}-${link.capabilityId}`,
-        sourceId: block.id,
-        targetId: link.capabilityId,
-        kind: 'serves',
-      });
-      capabilityIdsInView.add(link.capabilityId);
-    }
-  }
-  const capabilityNodes: DiagramNode[] = [...capabilityIdsInView].map((id) => ({
-    id,
-    label: capabilityNameById.get(id) as string,
-    kind: 'capability' as const,
-  }));
-
-  return {
-    nodes: [...blockNodes, ...capabilityNodes],
-    edges: [...edges, ...servesEdges],
-  };
+  return { nodes, edges };
 }
 
 function LandscapeDiagramRoute() {
@@ -198,7 +123,6 @@ function LandscapeDiagramRoute() {
     variables: {
       enterpriseId: enterprise?.id,
       asOf: filters.asOf || undefined,
-      architectureLevel: filters.architectureLevel || undefined,
       architectureDomainId: filters.architectureDomainId || undefined,
       organizationUnitId: filters.organizationUnitId || undefined,
     },
@@ -224,6 +148,7 @@ function LandscapeDiagramRoute() {
           onChange={setFilters}
           architectureDomains={data?.architectureDomains ?? []}
           organizationUnits={data?.organizationUnits ?? []}
+          hideArchitectureLevel
         />
       </div>
       {error && <p className="px-4 py-2 text-xs text-destructive">Failed to load the landscape.</p>}

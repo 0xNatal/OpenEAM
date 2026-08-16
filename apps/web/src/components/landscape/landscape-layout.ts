@@ -18,15 +18,13 @@ import LandscapeRendererModule, { ensureArrowMarker } from './landscape-renderer
 export interface DiagramNode {
   id: string;
   label: string;
-  kind: 'architecture' | 'solution' | 'capability';
+  kind: 'architecture' | 'solution';
   // Name of the block's primary (first) architecture domain — used to pick
-  // a domain color/shape in the renderer. Undefined for capability nodes
-  // (business capabilities aren't themselves assigned to a domain) and for
-  // blocks with no domain assigned.
+  // a domain color/shape in the renderer. Undefined if no domain assigned.
   domainName?: string;
 }
 
-export type DiagramEdgeKind = 'realization' | 'depends_on' | 'data_flow' | 'hosted_on' | 'serves';
+export type DiagramEdgeKind = 'depends_on' | 'data_flow' | 'hosted_on';
 
 export interface DiagramEdge {
   id: string;
@@ -54,7 +52,7 @@ export function filterDanglingEdges(nodes: DiagramNode[], edges: DiagramEdge[]):
 // still see multiple historical edges for the same source). Breaks cycles
 // by dropping the offending parent link, so a malformed A-hosted_on-B,
 // B-hosted_on-A never causes infinite recursion or a silently vanished node.
-function buildContainmentTree(nodeIds: string[], hostedOnEdges: DiagramEdge[]): ElkNode[] {
+function buildParentMap(nodeIds: string[], hostedOnEdges: DiagramEdge[]): Map<string, string> {
   const parentOf = new Map<string, string>();
   for (const e of hostedOnEdges) {
     if (!parentOf.has(e.sourceId)) parentOf.set(e.sourceId, e.targetId);
@@ -73,11 +71,53 @@ function buildContainmentTree(nodeIds: string[], hostedOnEdges: DiagramEdge[]): 
     }
   }
 
+  return parentOf;
+}
+
+// elk requires an edge to be declared in the `edges` list of the lowest
+// container that encloses *both* its endpoints — leaving it at the root
+// when both endpoints are deeply nested produces edges with coordinates in
+// the wrong frame (a real elk gotcha, not just a style preference). This
+// walks each node's ancestor chain to find that container, or 'root' if the
+// two endpoints don't share one (including the case where one endpoint IS
+// the other's ancestor, which is rare enough here to just treat as root).
+function lowestCommonContainer(aId: string, bId: string, parentOf: Map<string, string>): string {
+  const aAncestors: string[] = [];
+  for (
+    let current: string | undefined = parentOf.get(aId);
+    current;
+    current = parentOf.get(current)
+  ) {
+    aAncestors.push(current);
+  }
+  const aAncestorSet = new Set(aAncestors);
+
+  for (
+    let current: string | undefined = parentOf.get(bId);
+    current;
+    current = parentOf.get(current)
+  ) {
+    if (aAncestorSet.has(current)) return current;
+  }
+  return 'root';
+}
+
+function buildContainmentTree(
+  nodeIds: string[],
+  parentOf: Map<string, string>,
+  edgesByContainer: Map<string, DiagramEdge[]>,
+): ElkNode[] {
   const childrenOf = new Map<string, string[]>();
   for (const [child, parent] of parentOf) {
     if (!childrenOf.has(parent)) childrenOf.set(parent, []);
     childrenOf.get(parent)?.push(child);
   }
+
+  const toElkEdge = (e: DiagramEdge) => ({
+    id: e.id,
+    sources: [e.sourceId],
+    targets: [e.targetId],
+  });
 
   function buildNode(id: string): ElkNode {
     const kids = childrenOf.get(id) ?? [];
@@ -88,6 +128,7 @@ function buildContainmentTree(nodeIds: string[], hostedOnEdges: DiagramEdge[]): 
       id,
       layoutOptions: { 'elk.padding': CONTAINER_PADDING },
       children: kids.map(buildNode),
+      edges: (edgesByContainer.get(id) ?? []).map(toElkEdge),
     };
   }
 
@@ -97,6 +138,15 @@ function buildContainmentTree(nodeIds: string[], hostedOnEdges: DiagramEdge[]): 
 async function computeLayout(nodes: DiagramNode[], edges: DiagramEdge[]): Promise<ElkNode> {
   const hostedOnEdges = edges.filter((e) => e.kind === 'hosted_on');
   const otherEdges = edges.filter((e) => e.kind !== 'hosted_on');
+  const nodeIds = nodes.map((n) => n.id);
+  const parentOf = buildParentMap(nodeIds, hostedOnEdges);
+
+  const edgesByContainer = new Map<string, DiagramEdge[]>();
+  for (const e of otherEdges) {
+    const container = lowestCommonContainer(e.sourceId, e.targetId, parentOf);
+    if (!edgesByContainer.has(container)) edgesByContainer.set(container, []);
+    edgesByContainer.get(container)?.push(e);
+  }
 
   const elk = new ELK();
   return elk.layout({
@@ -108,11 +158,12 @@ async function computeLayout(nodes: DiagramNode[], edges: DiagramEdge[]): Promis
       'elk.spacing.nodeNode': '40',
       'elk.layered.spacing.nodeNodeBetweenLayers': '80',
     },
-    children: buildContainmentTree(
-      nodes.map((n) => n.id),
-      hostedOnEdges,
-    ),
-    edges: otherEdges.map((e) => ({ id: e.id, sources: [e.sourceId], targets: [e.targetId] })),
+    children: buildContainmentTree(nodeIds, parentOf, edgesByContainer),
+    edges: (edgesByContainer.get('root') ?? []).map((e) => ({
+      id: e.id,
+      sources: [e.sourceId],
+      targets: [e.targetId],
+    })),
   });
 }
 

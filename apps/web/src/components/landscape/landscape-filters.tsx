@@ -26,6 +26,9 @@ interface LandscapeFiltersProps {
   onChange: (value: LandscapeFilterValues) => void;
   architectureDomains: ArchitectureDomain[];
   organizationUnits: OrganizationUnit[];
+  // The diagram view doesn't query architecture building blocks at all, so
+  // filtering by architecture level would silently do nothing there.
+  hideArchitectureLevel?: boolean;
 }
 
 export function LandscapeFilters({
@@ -33,6 +36,7 @@ export function LandscapeFilters({
   onChange,
   architectureDomains,
   organizationUnits,
+  hideArchitectureLevel,
 }: LandscapeFiltersProps) {
   return (
     <div className="grid grid-cols-2 gap-3 rounded-xl border border-border bg-card p-4 sm:grid-cols-4">
@@ -48,21 +52,23 @@ export function LandscapeFilters({
           onChange={(e) => onChange({ ...value, asOf: e.target.value })}
         />
       </label>
-      <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
-        Architecture level
-        <select
-          className={selectClassName}
-          value={value.architectureLevel}
-          onChange={(e) =>
-            onChange({ ...value, architectureLevel: e.target.value as ArchitectureLevel | '' })
-          }
-        >
-          <option value="">All</option>
-          <option value="STRATEGIC">Strategic</option>
-          <option value="SEGMENT">Segment</option>
-          <option value="CAPABILITY">Capability</option>
-        </select>
-      </label>
+      {!hideArchitectureLevel && (
+        <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
+          Architecture level
+          <select
+            className={selectClassName}
+            value={value.architectureLevel}
+            onChange={(e) =>
+              onChange({ ...value, architectureLevel: e.target.value as ArchitectureLevel | '' })
+            }
+          >
+            <option value="">All</option>
+            <option value="STRATEGIC">Strategic</option>
+            <option value="SEGMENT">Segment</option>
+            <option value="CAPABILITY">Capability</option>
+          </select>
+        </label>
+      )}
       <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
         Architecture domain
         <select
