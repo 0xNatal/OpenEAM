@@ -7,6 +7,7 @@ import {
   DELETE_BUSINESS_CAPABILITY,
 } from '@/components/capabilities/capability-form-sheet';
 import { Button } from '@/components/ui/button';
+import { contentWidthClassName, PageHeader } from '@/components/ui/page-header';
 import { useEnterprise } from '@/lib/enterprise';
 import type { BusinessCapabilitySummary } from '@/lib/entities';
 
@@ -134,20 +135,15 @@ function CapabilitiesIndexRoute() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-10">
-      <div className="mb-8 flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            Business Capabilities
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Business capabilities shared across value streams.
-          </p>
-        </div>
-        <Button onClick={openCreate} disabled={!enterprise}>
-          New capability
-        </Button>
-      </div>
+    <div className={contentWidthClassName}>
+      <PageHeader
+        title="Business Capabilities"
+        action={
+          <Button onClick={openCreate} disabled={!enterprise}>
+            New capability
+          </Button>
+        }
+      />
 
       {!enterprise && !loading && (
         <p className="text-sm text-muted-foreground">Create an enterprise to get started.</p>

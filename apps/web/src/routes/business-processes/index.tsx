@@ -7,6 +7,7 @@ import {
   ProcessFormSheet,
 } from '@/components/business-processes/process-form-sheet';
 import { Button } from '@/components/ui/button';
+import { contentWidthClassName, PageHeader } from '@/components/ui/page-header';
 import { useEnterprise } from '@/lib/enterprise';
 import type { NamedRef } from '@/lib/entities';
 
@@ -130,18 +131,15 @@ function BusinessProcessesIndexRoute() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-10">
-      <div className="mb-8 flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Business Processes</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Operational processes that deliver business capabilities.
-          </p>
-        </div>
-        <Button onClick={openCreate} disabled={capabilities.length === 0}>
-          New process
-        </Button>
-      </div>
+    <div className={contentWidthClassName}>
+      <PageHeader
+        title="Business Processes"
+        action={
+          <Button onClick={openCreate} disabled={capabilities.length === 0}>
+            New process
+          </Button>
+        }
+      />
 
       {loading && <p className="text-sm text-muted-foreground">Loading…</p>}
       {error && <p className="text-sm text-destructive">Failed to load business processes.</p>}

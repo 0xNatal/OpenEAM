@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client/react';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { lazy, Suspense, useMemo, useState } from 'react';
 import type {
   DiagramEdge,
@@ -12,7 +12,8 @@ import {
   LandscapeFilters,
   type LandscapeFilterValues,
 } from '@/components/landscape/landscape-filters';
-import { Button } from '@/components/ui/button';
+import { LandscapeViewToggle } from '@/components/landscape/landscape-view-toggle';
+import { canvasWidthClassName, PageHeader } from '@/components/ui/page-header';
 import { useEnterprise } from '@/lib/enterprise';
 import type {
   ArchitectureDomain,
@@ -132,17 +133,16 @@ function LandscapeDiagramRoute() {
   const { nodes, edges } = useMemo(() => toDiagramGraph(data), [data]);
 
   return (
-    // Fill the viewport minus the main padding (p-6): the diagram canvas
-    // needs a bounded height to lay out, same reasoning as the BPMN model
-    // editor route.
-    <div className="flex h-[calc(100vh-3rem)] flex-col overflow-hidden rounded-xl border border-border bg-card">
-      <div className="flex items-center gap-3 border-b border-border px-4 py-2">
-        <Button asChild variant="ghost">
-          <Link to="/landscape">← Back to Landscape</Link>
-        </Button>
-        <p className="text-sm font-semibold text-foreground">Landscape — Diagram</p>
-      </div>
-      <div className="border-b border-border p-3">
+    // Canvas-tier width: no max-width, unlike content pages, so the diagram
+    // gets the full available space. Header's natural height plus the
+    // filter toolbar plus the card's flex-1 fills the rest of the viewport.
+    <div className={canvasWidthClassName}>
+      <PageHeader
+        className="mb-4 shrink-0"
+        title="Landscape"
+        action={<LandscapeViewToggle active="diagram" />}
+      />
+      <div className="mb-3 shrink-0">
         <LandscapeFilters
           value={filters}
           onChange={setFilters}
@@ -151,17 +151,23 @@ function LandscapeDiagramRoute() {
           hideArchitectureLevel
         />
       </div>
-      {error && <p className="px-4 py-2 text-xs text-destructive">Failed to load the landscape.</p>}
-      <div className="min-h-0 flex-1">
-        {loading && !data ? (
-          <p className="p-4 text-xs text-muted-foreground italic">Loading…</p>
-        ) : (
-          <Suspense
-            fallback={<p className="p-4 text-xs text-muted-foreground italic">Loading diagram…</p>}
-          >
-            <LandscapeDiagram nodes={nodes} edges={edges} />
-          </Suspense>
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-border bg-card">
+        {error && (
+          <p className="px-4 py-2 text-xs text-destructive">Failed to load the landscape.</p>
         )}
+        <div className="min-h-0 flex-1">
+          {loading && !data ? (
+            <p className="p-4 text-xs text-muted-foreground italic">Loading…</p>
+          ) : (
+            <Suspense
+              fallback={
+                <p className="p-4 text-xs text-muted-foreground italic">Loading diagram…</p>
+              }
+            >
+              <LandscapeDiagram nodes={nodes} edges={edges} />
+            </Suspense>
+          )}
+        </div>
       </div>
     </div>
   );

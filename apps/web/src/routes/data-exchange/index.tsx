@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { contentWidthClassName, PageHeader } from '@/components/ui/page-header';
 import { useEnterprise } from '@/lib/enterprise';
 
 type Status =
@@ -83,15 +84,13 @@ function DataExchangeRoute() {
   };
 
   return (
-    <div className="mx-auto max-w-2xl px-6 py-10">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Data Exchange</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Export the current enterprise's model as a single JSON bundle, or import a bundle to
-          restore or move enterprises between OpenEAM instances. Import replaces the bundle's
-          enterprises and leaves all others untouched.
-        </p>
-      </div>
+    <div className={contentWidthClassName}>
+      <PageHeader title="Data Exchange" />
+      <p className="mb-6 text-sm text-muted-foreground">
+        Export the current enterprise's model as a single JSON bundle, or import a bundle to restore
+        or move enterprises between OpenEAM instances. Import replaces the bundle's enterprises and
+        leaves all others untouched.
+      </p>
 
       <div className="flex flex-col gap-4">
         <div className="rounded-xl border border-border bg-card p-5">

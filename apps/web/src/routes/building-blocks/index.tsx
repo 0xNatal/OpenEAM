@@ -4,6 +4,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { contentWidthClassName, PageHeader } from '@/components/ui/page-header';
 import {
   Sheet,
   SheetContent,
@@ -351,19 +352,15 @@ function BuildingBlocksIndexRoute() {
   const mutationError = createError ?? updateError;
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-10">
-      <div className="mb-8 flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Building Blocks</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Architecture building blocks (needed capabilities) and solution building blocks
-            (implementations), assigned to architecture domains and organization units.
-          </p>
-        </div>
-        <Button onClick={openCreate} disabled={!enterprise}>
-          New building block
-        </Button>
-      </div>
+    <div className={contentWidthClassName}>
+      <PageHeader
+        title="Building Blocks"
+        action={
+          <Button onClick={openCreate} disabled={!enterprise}>
+            New building block
+          </Button>
+        }
+      />
 
       {loading && <p className="text-sm text-muted-foreground">Loading…</p>}
       {error && <p className="text-sm text-destructive">Failed to load building blocks.</p>}

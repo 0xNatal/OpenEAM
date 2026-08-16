@@ -2,6 +2,7 @@ import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client/react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { ArrowRight } from 'lucide-react';
+import { contentWidthClassName, PageHeader } from '@/components/ui/page-header';
 import { MiniChevronStrip } from '@/components/value-stream/diagram';
 import { useEnterprise } from '@/lib/enterprise';
 
@@ -38,13 +39,8 @@ function ValueStreamsIndexRoute() {
   });
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-10">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Value Streams</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          End-to-end flows that deliver value to stakeholders of this enterprise.
-        </p>
-      </div>
+    <div className={contentWidthClassName}>
+      <PageHeader title="Value Streams" />
 
       {loading && <p className="text-sm text-muted-foreground">Loading…</p>}
       {error && <p className="text-sm text-destructive">Failed to load value streams.</p>}

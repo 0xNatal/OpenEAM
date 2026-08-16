@@ -1,8 +1,13 @@
 import { gql } from '@apollo/client';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { createFileRoute, Link, notFound } from '@tanstack/react-router';
+import { ChevronLeft } from 'lucide-react';
 import { lazy, Suspense, useCallback } from 'react';
-import { Button } from '@/components/ui/button';
+import {
+  canvasWidthClassName,
+  PageHeader,
+  pageBackLinkClassName,
+} from '@/components/ui/page-header';
 
 // bpmn-js is heavy; only load it when the editor route is visited.
 const BpmnModeler = lazy(() => import('@/components/bpmn/bpmn-modeler'));
@@ -50,25 +55,32 @@ function ModelBusinessProcessRoute() {
     [updateDiagram, processId],
   );
 
-  if (loading) return <p className="px-6 py-10 text-sm text-muted-foreground">Loading…</p>;
-  if (error) return <p className="px-6 py-10 text-sm text-destructive">Failed to load process.</p>;
+  if (loading) return <p className="px-6 py-8 text-sm text-muted-foreground">Loading…</p>;
+  if (error) return <p className="px-6 py-8 text-sm text-destructive">Failed to load process.</p>;
   if (!data?.businessProcess) throw notFound();
 
   const process = data.businessProcess;
 
   return (
-    // Fill the viewport minus the main padding (p-6): the modeler canvas
-    // needs a bounded height to lay out.
-    <div className="flex h-[calc(100vh-3rem)] flex-col overflow-hidden rounded-xl border border-border bg-card">
-      <div className="flex items-center gap-3 border-b border-border px-4 py-2">
-        <Button asChild variant="ghost">
-          <Link to="/business-processes/$processId" params={{ processId: process.id }}>
-            ← Back
+    // Canvas-tier width: no max-width, unlike content pages, so the modeler
+    // gets the full available space. Header's natural height plus the
+    // card's flex-1 fills the rest of the viewport.
+    <div className={canvasWidthClassName}>
+      <PageHeader
+        className="mb-4 shrink-0"
+        title={`${process.name} — Process Model`}
+        back={
+          <Link
+            to="/business-processes/$processId"
+            params={{ processId: process.id }}
+            className={pageBackLinkClassName}
+          >
+            <ChevronLeft className="size-3.5" />
+            {process.name}
           </Link>
-        </Button>
-        <p className="text-sm font-semibold text-foreground">{process.name} — Process Model</p>
-      </div>
-      <div className="min-h-0 flex-1">
+        }
+      />
+      <div className="min-h-0 flex-1 overflow-hidden rounded-xl border border-border bg-card">
         <Suspense
           fallback={<p className="p-4 text-xs text-muted-foreground italic">Loading editor…</p>}
         >

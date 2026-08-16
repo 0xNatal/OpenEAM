@@ -1,13 +1,14 @@
 import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client/react';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import {
   EMPTY_LANDSCAPE_FILTERS,
   LandscapeFilters,
   type LandscapeFilterValues,
 } from '@/components/landscape/landscape-filters';
-import { Button } from '@/components/ui/button';
+import { LandscapeViewToggle } from '@/components/landscape/landscape-view-toggle';
+import { contentWidthClassName, PageHeader } from '@/components/ui/page-header';
 import { useEnterprise } from '@/lib/enterprise';
 import type { ArchitectureDomain, ArchitectureLevel, OrganizationUnit } from '@/lib/entities';
 
@@ -102,19 +103,8 @@ function LandscapeRoute() {
   const namesById = new Map((data?.allBuildingBlocks ?? []).map((b) => [b.id, b.name]));
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-10">
-      <div className="mb-8 flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Landscape</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            The Architecture Landscape (ABBs) and Solutions Landscape (SBBs), filtered by viewpoint:
-            time, level of detail, architecture domain, and organization unit.
-          </p>
-        </div>
-        <Button asChild variant="outline">
-          <Link to="/landscape/diagram">View as diagram →</Link>
-        </Button>
-      </div>
+    <div className={contentWidthClassName}>
+      <PageHeader title="Landscape" action={<LandscapeViewToggle active="table" />} />
 
       <div className="mb-6">
         <LandscapeFilters

@@ -1,12 +1,19 @@
 import { gql } from '@apollo/client';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { createFileRoute, Link, notFound, useNavigate } from '@tanstack/react-router';
+import { ChevronLeft } from 'lucide-react';
 import { lazy, Suspense, useState } from 'react';
 import {
   DELETE_BUSINESS_PROCESS,
   ProcessFormSheet,
 } from '@/components/business-processes/process-form-sheet';
 import { Button } from '@/components/ui/button';
+import {
+  contentWidthClassName,
+  PageHeader,
+  pageBackLinkClassName,
+  TitledCard,
+} from '@/components/ui/page-header';
 import type { BusinessProcess, NamedRef } from '@/lib/entities';
 
 // bpmn-js is heavy; only load it when a diagram is actually shown.
@@ -62,26 +69,6 @@ interface EnterpriseCapabilitiesData {
   businessCapabilities: NamedRef[];
 }
 
-function Section({
-  title,
-  subtitle,
-  children,
-}: {
-  title: string;
-  subtitle: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="rounded-xl border border-border bg-card p-5 flex flex-col gap-3">
-      <div>
-        <p className="text-sm font-semibold text-foreground">{title}</p>
-        <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>
-      </div>
-      <div className="flex flex-col gap-1.5">{children}</div>
-    </div>
-  );
-}
-
 function Item({ label }: { label: string }) {
   return (
     <div className="rounded-md border border-border bg-muted/50 px-3 py-2 text-xs text-foreground">
@@ -106,23 +93,26 @@ function BusinessProcessDetail({
   onDelete: () => void;
 }) {
   return (
-    <div className="mx-auto max-w-5xl px-6 py-10">
-      <div className="mb-8">
-        <div className="flex items-start justify-between gap-2">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">{process.name}</h1>
-          <div className="flex shrink-0 gap-1">
+    <div className={contentWidthClassName}>
+      <PageHeader
+        title={process.name}
+        back={
+          <Link to="/business-processes" className={pageBackLinkClassName}>
+            <ChevronLeft className="size-3.5" />
+            Business Processes
+          </Link>
+        }
+        action={
+          <>
             <Button variant="ghost" size="sm" onClick={onEdit}>
               Edit
             </Button>
             <Button variant="destructive" size="sm" onClick={onDelete}>
               Delete
             </Button>
-          </div>
-        </div>
-        {process.description && (
-          <p className="mt-1 text-sm text-muted-foreground">{process.description}</p>
-        )}
-      </div>
+          </>
+        }
+      />
 
       <div className="mb-4 rounded-xl border border-border bg-card p-5 flex flex-col gap-3">
         <div className="flex items-start justify-between gap-4">
@@ -150,7 +140,7 @@ function BusinessProcessDetail({
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <Section
+        <TitledCard
           title="Business Capability"
           subtitle="The business capability this process contributes to"
         >
@@ -165,31 +155,31 @@ function BusinessProcessDetail({
           ) : (
             <EmptyState label="No capability linked" />
           )}
-        </Section>
+        </TitledCard>
 
-        <Section title="Trigger" subtitle="What initiates this process">
+        <TitledCard title="Trigger" subtitle="What initiates this process">
           {process.triggerEvent ? (
             <Item label={process.triggerEvent} />
           ) : (
             <EmptyState label="No trigger defined yet" />
           )}
-        </Section>
+        </TitledCard>
 
-        <Section title="Steps" subtitle="Ordered activities that make up this process">
+        <TitledCard title="Steps" subtitle="Ordered activities that make up this process">
           {process.steps.length > 0 ? (
             process.steps.map((s) => <Item key={s.id} label={s.name} />)
           ) : (
             <EmptyState label="No steps yet — add named tasks to the diagram above" />
           )}
-        </Section>
+        </TitledCard>
 
-        <Section title="Outcome" subtitle="What this process produces or delivers">
+        <TitledCard title="Outcome" subtitle="What this process produces or delivers">
           {process.outcome ? (
             <Item label={process.outcome} />
           ) : (
             <EmptyState label="No outcome defined yet" />
           )}
-        </Section>
+        </TitledCard>
       </div>
     </div>
   );
@@ -228,8 +218,8 @@ function BusinessProcessRoute() {
     navigate({ to: '/business-processes' });
   };
 
-  if (loading) return <p className="px-6 py-10 text-sm text-muted-foreground">Loading…</p>;
-  if (error) return <p className="px-6 py-10 text-sm text-destructive">Failed to load process.</p>;
+  if (loading) return <p className="px-6 py-8 text-sm text-muted-foreground">Loading…</p>;
+  if (error) return <p className="px-6 py-8 text-sm text-destructive">Failed to load process.</p>;
   if (!data?.businessProcess) throw notFound();
 
   return (

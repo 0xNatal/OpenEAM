@@ -3,6 +3,7 @@
 // the two stay in lockstep instead of drifting apart as separate copies.
 import { Input } from '@/components/ui/input';
 import type { ArchitectureDomain, ArchitectureLevel, OrganizationUnit } from '@/lib/entities';
+import { cn } from '@/lib/utils';
 
 export interface LandscapeFilterValues {
   asOf: string;
@@ -19,7 +20,7 @@ export const EMPTY_LANDSCAPE_FILTERS: LandscapeFilterValues = {
 };
 
 export const selectClassName =
-  'h-7 w-full min-w-0 rounded-md border border-input bg-input/20 px-2 py-0.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30';
+  'h-7 min-w-0 rounded-md border border-input bg-input/20 px-2 py-0.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30';
 
 interface LandscapeFiltersProps {
   value: LandscapeFilterValues;
@@ -39,24 +40,25 @@ export function LandscapeFilters({
   hideArchitectureLevel,
 }: LandscapeFiltersProps) {
   return (
-    <div className="grid grid-cols-2 gap-3 rounded-xl border border-border bg-card p-4 sm:grid-cols-4">
+    <div className="flex flex-wrap items-center gap-4">
       <label
         htmlFor="landscape-as-of"
-        className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
+        className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground"
       >
-        As of date
+        As of
         <Input
           id="landscape-as-of"
           type="date"
+          className="w-36"
           value={value.asOf}
           onChange={(e) => onChange({ ...value, asOf: e.target.value })}
         />
       </label>
       {!hideArchitectureLevel && (
-        <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
-          Architecture level
+        <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+          Level
           <select
-            className={selectClassName}
+            className={cn(selectClassName, 'w-32')}
             value={value.architectureLevel}
             onChange={(e) =>
               onChange({ ...value, architectureLevel: e.target.value as ArchitectureLevel | '' })
@@ -69,10 +71,10 @@ export function LandscapeFilters({
           </select>
         </label>
       )}
-      <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
-        Architecture domain
+      <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+        Domain
         <select
-          className={selectClassName}
+          className={cn(selectClassName, 'w-40')}
           value={value.architectureDomainId}
           onChange={(e) => onChange({ ...value, architectureDomainId: e.target.value })}
         >
@@ -84,10 +86,10 @@ export function LandscapeFilters({
           ))}
         </select>
       </label>
-      <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
-        Organization unit
+      <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+        Org unit
         <select
-          className={selectClassName}
+          className={cn(selectClassName, 'w-40')}
           value={value.organizationUnitId}
           onChange={(e) => onChange({ ...value, organizationUnitId: e.target.value })}
         >

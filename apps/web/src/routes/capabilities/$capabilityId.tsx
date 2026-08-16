@@ -1,12 +1,19 @@
 import { gql } from '@apollo/client';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { createFileRoute, Link, notFound, useNavigate } from '@tanstack/react-router';
+import { ChevronLeft } from 'lucide-react';
 import { useState } from 'react';
 import {
   CapabilityFormSheet,
   DELETE_BUSINESS_CAPABILITY,
 } from '@/components/capabilities/capability-form-sheet';
 import { Button } from '@/components/ui/button';
+import {
+  contentWidthClassName,
+  PageHeader,
+  pageBackLinkClassName,
+  TitledCard,
+} from '@/components/ui/page-header';
 import type { BusinessCapabilityDetail, CapabilityResource } from '@/lib/entities';
 
 const BUSINESS_CAPABILITY_QUERY = gql`
@@ -46,26 +53,6 @@ const BUSINESS_CAPABILITY_QUERY = gql`
 
 interface BusinessCapabilityData {
   businessCapability: BusinessCapabilityDetail | null;
-}
-
-function Quadrant({
-  title,
-  subtitle,
-  children,
-}: {
-  title: string;
-  subtitle: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="rounded-xl border border-border bg-card p-5 flex flex-col gap-3">
-      <div>
-        <p className="text-sm font-semibold text-foreground">{title}</p>
-        <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>
-      </div>
-      <div className="flex flex-col gap-1.5">{children}</div>
-    </div>
-  );
 }
 
 function Item({ label }: { label: string }) {
@@ -113,41 +100,46 @@ function CapabilityDetail({
   onDelete: () => void;
 }) {
   return (
-    <div className="mx-auto max-w-5xl px-6 py-10">
-      <div className="mb-8">
-        <div className="flex items-start justify-between gap-2">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">{cap.name}</h1>
-          <div className="flex shrink-0 gap-1">
+    <div className={contentWidthClassName}>
+      <PageHeader
+        title={cap.name}
+        back={
+          <Link to="/capabilities" className={pageBackLinkClassName}>
+            <ChevronLeft className="size-3.5" />
+            Business Capabilities
+          </Link>
+        }
+        action={
+          <>
             <Button variant="ghost" size="sm" onClick={onEdit}>
               Edit
             </Button>
             <Button variant="destructive" size="sm" onClick={onDelete}>
               Delete
             </Button>
-          </div>
-        </div>
-        {cap.description && <p className="mt-1 text-sm text-muted-foreground">{cap.description}</p>}
+          </>
+        }
+      />
 
-        <div className="mt-3 flex flex-wrap items-center gap-2">
-          {cap.valueStreamStages.length > 0 ? (
-            cap.valueStreamStages.map((link) => (
-              <Link
-                key={`${link.valueStreamId}-${link.stageId}`}
-                to="/value-streams/$valueStreamId"
-                params={{ valueStreamId: link.valueStreamId }}
-                className="rounded-full border border-border bg-muted/50 px-3 py-1 text-xs text-muted-foreground hover:border-violet-300 dark:hover:border-violet-700 hover:text-violet-700 dark:hover:text-violet-300 transition-colors"
-              >
-                {link.valueStreamName} <span className="opacity-60">›</span> {link.stageName}
-              </Link>
-            ))
-          ) : (
-            <p className="text-xs text-muted-foreground italic">Not part of any value stream yet</p>
-          )}
-        </div>
+      <div className="mb-6 flex flex-wrap items-center gap-2">
+        {cap.valueStreamStages.length > 0 ? (
+          cap.valueStreamStages.map((link) => (
+            <Link
+              key={`${link.valueStreamId}-${link.stageId}`}
+              to="/value-streams/$valueStreamId"
+              params={{ valueStreamId: link.valueStreamId }}
+              className="rounded-full border border-border bg-muted/50 px-3 py-1 text-xs text-muted-foreground hover:border-violet-300 dark:hover:border-violet-700 hover:text-violet-700 dark:hover:text-violet-300 transition-colors"
+            >
+              {link.valueStreamName} <span className="opacity-60">›</span> {link.stageName}
+            </Link>
+          ))
+        ) : (
+          <p className="text-xs text-muted-foreground italic">Not part of any value stream yet</p>
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <Quadrant
+        <TitledCard
           title="People"
           subtitle="Actors, stakeholders, business units or partners involved in delivering this capability"
         >
@@ -156,9 +148,9 @@ function CapabilityDetail({
           ) : (
             <EmptyState label="No people defined yet" />
           )}
-        </Quadrant>
+        </TitledCard>
 
-        <Quadrant
+        <TitledCard
           title="Resources"
           subtitle="Architecture and solution building blocks that realize this capability"
         >
@@ -167,9 +159,9 @@ function CapabilityDetail({
           ) : (
             <EmptyState label="No building blocks linked yet" />
           )}
-        </Quadrant>
+        </TitledCard>
 
-        <Quadrant
+        <TitledCard
           title="Information"
           subtitle="Business data, knowledge, and insight required or consumed"
         >
@@ -178,9 +170,9 @@ function CapabilityDetail({
           ) : (
             <EmptyState label="No information defined yet" />
           )}
-        </Quadrant>
+        </TitledCard>
 
-        <Quadrant
+        <TitledCard
           title="Business Processes"
           subtitle="Business processes through which this capability is delivered"
         >
@@ -189,7 +181,7 @@ function CapabilityDetail({
           ) : (
             <EmptyState label="No processes defined yet" />
           )}
-        </Quadrant>
+        </TitledCard>
       </div>
     </div>
   );
@@ -217,9 +209,9 @@ function CapabilityRoute() {
     navigate({ to: '/capabilities' });
   };
 
-  if (loading) return <p className="px-6 py-10 text-sm text-muted-foreground">Loading…</p>;
+  if (loading) return <p className="px-6 py-8 text-sm text-muted-foreground">Loading…</p>;
   if (error)
-    return <p className="px-6 py-10 text-sm text-destructive">Failed to load capability.</p>;
+    return <p className="px-6 py-8 text-sm text-destructive">Failed to load capability.</p>;
   if (!data?.businessCapability) throw notFound();
 
   return (

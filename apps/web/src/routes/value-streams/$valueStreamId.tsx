@@ -2,6 +2,11 @@ import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client/react';
 import { createFileRoute, Link, notFound } from '@tanstack/react-router';
 import { ChevronLeft } from 'lucide-react';
+import {
+  contentWidthClassName,
+  PageHeader,
+  pageBackLinkClassName,
+} from '@/components/ui/page-header';
 import { ValueStreamDiagram } from '@/components/value-stream/diagram';
 import type { ValueStream, ValueStreamCapability } from '@/lib/entities';
 
@@ -52,28 +57,24 @@ function ValueStreamDetailRoute() {
     skip: !enterpriseId,
   });
 
-  if (loading) return <p className="px-6 py-10 text-sm text-muted-foreground">Loading…</p>;
+  if (loading) return <p className="px-6 py-8 text-sm text-muted-foreground">Loading…</p>;
   if (error)
-    return <p className="px-6 py-10 text-sm text-destructive">Failed to load value stream.</p>;
+    return <p className="px-6 py-8 text-sm text-destructive">Failed to load value stream.</p>;
   if (!data?.valueStream) throw notFound();
 
   const stream = data.valueStream;
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-10">
-      {/* Back + header */}
-      <div className="mb-8">
-        <Link
-          to="/value-streams"
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-violet-600 dark:hover:text-violet-400 transition-colors mb-4"
-        >
-          <ChevronLeft className="size-3.5" />
-          Value Streams
-        </Link>
-
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">{stream.name}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{stream.description}</p>
-      </div>
+    <div className={contentWidthClassName}>
+      <PageHeader
+        title={stream.name}
+        back={
+          <Link to="/value-streams" className={pageBackLinkClassName}>
+            <ChevronLeft className="size-3.5" />
+            Value Streams
+          </Link>
+        }
+      />
 
       {/* Diagram */}
       <div className="rounded-2xl border border-border bg-muted/30 p-6 shadow-xs">
