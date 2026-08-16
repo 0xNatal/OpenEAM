@@ -44,6 +44,9 @@ function ValueStreamsIndexRoute() {
 
       {loading && <p className="text-sm text-muted-foreground">Loading…</p>}
       {error && <p className="text-sm text-destructive">Failed to load value streams.</p>}
+      {data?.valueStreams.length === 0 && (
+        <p className="text-sm text-muted-foreground">No value streams yet.</p>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {data?.valueStreams.map((vs) => (
