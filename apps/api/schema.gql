@@ -89,11 +89,12 @@ input BuildingBlockRelationshipInput {
 }
 
 """
-How a building block relates to another: depends_on (needs it to function) or data_flow (exchanges data with it).
+How a building block relates to another: depends_on (needs it to function), data_flow (exchanges data with it), or hosted_on (runs on it — containment, not a peer relationship; a block should have at most one active hosted_on edge at a time).
 """
 enum BuildingBlockRelationshipType {
   DATA_FLOW
   DEPENDS_ON
+  HOSTED_ON
 }
 
 type BusinessCapability {

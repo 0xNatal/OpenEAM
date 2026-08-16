@@ -2,7 +2,11 @@ import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client/react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { lazy, Suspense, useMemo, useState } from 'react';
-import type { DiagramEdge, DiagramNode } from '@/components/landscape/landscape-diagram';
+import type {
+  DiagramEdge,
+  DiagramEdgeKind,
+  DiagramNode,
+} from '@/components/landscape/landscape-diagram';
 import {
   EMPTY_LANDSCAPE_FILTERS,
   LandscapeFilters,
@@ -115,13 +119,18 @@ function toDiagramGraph(data: LandscapeDiagramData | undefined): {
       });
     }
   }
+  const relationshipKindByType: Record<BuildingBlockRelationship['type'], DiagramEdgeKind> = {
+    DEPENDS_ON: 'depends_on',
+    DATA_FLOW: 'data_flow',
+    HOSTED_ON: 'hosted_on',
+  };
   for (const block of [...data.architectureLandscape, ...data.solutionsLandscape]) {
     for (const rel of block.outgoingRelationships) {
       edges.push({
         id: rel.id,
         sourceId: block.id,
         targetId: rel.targetBuildingBlockId,
-        kind: rel.type === 'DATA_FLOW' ? 'data_flow' : 'depends_on',
+        kind: relationshipKindByType[rel.type],
       });
     }
   }

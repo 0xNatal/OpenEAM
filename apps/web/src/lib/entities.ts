@@ -84,7 +84,7 @@ export interface OrganizationUnitLink {
   validTo?: string | null;
 }
 
-export type BuildingBlockRelationshipType = 'DEPENDS_ON' | 'DATA_FLOW';
+export type BuildingBlockRelationshipType = 'DEPENDS_ON' | 'DATA_FLOW' | 'HOSTED_ON';
 
 export interface BuildingBlockRelationship {
   id: string;

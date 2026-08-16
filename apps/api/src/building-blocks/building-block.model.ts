@@ -34,12 +34,13 @@ registerEnumType(LifecyclePhase, { name: 'LifecyclePhase' });
 export enum BuildingBlockRelationshipType {
   DEPENDS_ON = 'depends_on',
   DATA_FLOW = 'data_flow',
+  HOSTED_ON = 'hosted_on',
 }
 
 registerEnumType(BuildingBlockRelationshipType, {
   name: 'BuildingBlockRelationshipType',
   description:
-    'How a building block relates to another: depends_on (needs it to function) or data_flow (exchanges data with it).',
+    'How a building block relates to another: depends_on (needs it to function), data_flow (exchanges data with it), or hosted_on (runs on it — containment, not a peer relationship; a block should have at most one active hosted_on edge at a time).',
 });
 
 // Temporal links carry a validity interval (ISO dates, null = unbounded) so

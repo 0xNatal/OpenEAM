@@ -17,15 +17,25 @@ const NODE_COLORS: Record<DiagramNode['kind'], { stroke: string; fill: string }>
   solution: { stroke: '#16a34a', fill: '#f0fdf4' },
 };
 
+// hosted_on never reaches drawConnection — it becomes nesting, not a line
+// (see landscape-layout.ts's buildContainmentTree) — but the map stays
+// exhaustive so a future edge kind can't silently render with no color.
 const EDGE_COLORS: Record<DiagramEdge['kind'], string> = {
   realization: '#6b7280',
   depends_on: '#d97706',
   data_flow: '#7c3aed',
+  hosted_on: 'transparent',
 };
 
 function truncate(label: string, max = 22): string {
   return label.length > max ? `${label.slice(0, max - 1)}…` : label;
 }
+
+// Containers (a block with hosted_on children, e.g. Azure holding
+// Kubernetes) render as an outline with the label pinned to the top-left,
+// near-transparent fill so nested children stay visible through it — rather
+// than the centered-label, solid-fill treatment leaf blocks get.
+type RenderableNode = DiagramNode & { isContainer?: boolean };
 
 // diagram-js doesn't inject an arrowhead marker definition for us — add one
 // to the canvas's root <svg> once, on first render.
@@ -61,29 +71,39 @@ class LandscapeRenderer extends BaseRenderer {
   }
 
   override drawShape(parentGfx: SVGElement, shape: ShapeLike): SVGElement {
-    const node = (shape as unknown as { businessObject: DiagramNode }).businessObject;
+    const node = (shape as unknown as { businessObject: RenderableNode }).businessObject;
     const colors = NODE_COLORS[node.kind];
+    const width = shape.width ?? 0;
+    const height = shape.height ?? 0;
 
     const rect = svgCreate('rect', {
-      width: shape.width,
-      height: shape.height,
+      width,
+      height,
       rx: 6,
       ry: 6,
       stroke: colors.stroke,
       strokeWidth: 1.5,
-      fill: colors.fill,
+      fill: node.isContainer ? 'rgba(255,255,255,0.35)' : colors.fill,
     });
+    if (node.isContainer) {
+      svgAttr(rect, { 'stroke-dasharray': '5,3' });
+    }
     svgAppend(parentGfx, rect);
 
     const text = svgCreate('text');
-    svgAttr(text, {
-      x: (shape.width ?? 0) / 2,
-      y: (shape.height ?? 0) / 2,
-      'text-anchor': 'middle',
-      'dominant-baseline': 'middle',
-      'font-size': 12,
-      fill: '#1f2937',
-    });
+    svgAttr(
+      text,
+      node.isContainer
+        ? { x: 10, y: 16, 'text-anchor': 'start', 'font-size': 11, 'font-weight': 600 }
+        : {
+            x: width / 2,
+            y: height / 2,
+            'text-anchor': 'middle',
+            'dominant-baseline': 'middle',
+            'font-size': 12,
+          },
+    );
+    svgAttr(text, { fill: '#1f2937' });
     text.textContent = truncate(node.label);
     const title = svgCreate('title');
     title.textContent = node.label;

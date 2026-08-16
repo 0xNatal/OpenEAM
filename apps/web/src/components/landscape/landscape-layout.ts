@@ -3,12 +3,16 @@
 // palette/selection/modeling — pan/zoom only). Split out of the React
 // wrapper so the pure data logic (edge filtering, layout) is testable
 // without a DOM.
+//
+// hosted_on edges are containment ("runs on"), not a peer relationship like
+// depends_on/data_flow — they become actual nesting (a box drawn inside
+// another), not a connector line, via elk's hierarchical layout support.
 
 import CoreModule from 'diagram-js/lib/core';
 import Diagram from 'diagram-js/lib/Diagram';
 import MoveCanvasModule from 'diagram-js/lib/navigation/movecanvas';
 import ZoomScrollModule from 'diagram-js/lib/navigation/zoomscroll';
-import ELK, { type ElkExtendedEdge, type ElkNode } from 'elkjs/lib/elk.bundled.js';
+import ELK, { type ElkNode } from 'elkjs/lib/elk.bundled.js';
 import LandscapeRendererModule, { ensureArrowMarker } from './landscape-renderer';
 
 export interface DiagramNode {
@@ -17,7 +21,7 @@ export interface DiagramNode {
   kind: 'architecture' | 'solution';
 }
 
-export type DiagramEdgeKind = 'realization' | 'depends_on' | 'data_flow';
+export type DiagramEdgeKind = 'realization' | 'depends_on' | 'data_flow' | 'hosted_on';
 
 export interface DiagramEdge {
   id: string;
@@ -28,6 +32,7 @@ export interface DiagramEdge {
 
 const NODE_WIDTH = 160;
 const NODE_HEIGHT = 50;
+const CONTAINER_PADDING = '[top=32,left=16,bottom=16,right=16]';
 
 // Drops edges whose source or target isn't among the given nodes — a
 // relationship or realization link can point at a block that the current
@@ -38,23 +43,201 @@ export function filterDanglingEdges(nodes: DiagramNode[], edges: DiagramEdge[]):
   return edges.filter((e) => nodeIds.has(e.sourceId) && nodeIds.has(e.targetId));
 }
 
-async function computeLayout(
-  nodes: DiagramNode[],
-  edges: DiagramEdge[],
-): Promise<{ nodes: ElkNode[]; edges: ElkExtendedEdge[] }> {
+// Builds a child -> parent map from hosted_on edges (source runs on
+// target), first-wins per child (a node can only have one active hosted_on
+// parent — enforced server-side, but a diagram without an as-of filter can
+// still see multiple historical edges for the same source). Breaks cycles
+// by dropping the offending parent link, so a malformed A-hosted_on-B,
+// B-hosted_on-A never causes infinite recursion or a silently vanished node.
+function buildContainmentTree(nodeIds: string[], hostedOnEdges: DiagramEdge[]): ElkNode[] {
+  const parentOf = new Map<string, string>();
+  for (const e of hostedOnEdges) {
+    if (!parentOf.has(e.sourceId)) parentOf.set(e.sourceId, e.targetId);
+  }
+
+  for (const id of nodeIds) {
+    const seen = new Set<string>();
+    let current = id;
+    while (parentOf.has(current)) {
+      if (seen.has(current)) {
+        parentOf.delete(id);
+        break;
+      }
+      seen.add(current);
+      current = parentOf.get(current) as string;
+    }
+  }
+
+  const childrenOf = new Map<string, string[]>();
+  for (const [child, parent] of parentOf) {
+    if (!childrenOf.has(parent)) childrenOf.set(parent, []);
+    childrenOf.get(parent)?.push(child);
+  }
+
+  function buildNode(id: string): ElkNode {
+    const kids = childrenOf.get(id) ?? [];
+    if (kids.length === 0) {
+      return { id, width: NODE_WIDTH, height: NODE_HEIGHT };
+    }
+    return {
+      id,
+      layoutOptions: { 'elk.padding': CONTAINER_PADDING },
+      children: kids.map(buildNode),
+    };
+  }
+
+  return nodeIds.filter((id) => !parentOf.has(id)).map(buildNode);
+}
+
+async function computeLayout(nodes: DiagramNode[], edges: DiagramEdge[]): Promise<ElkNode> {
+  const hostedOnEdges = edges.filter((e) => e.kind === 'hosted_on');
+  const otherEdges = edges.filter((e) => e.kind !== 'hosted_on');
+
   const elk = new ELK();
-  const result = await elk.layout({
+  return elk.layout({
     id: 'root',
     layoutOptions: {
       'elk.algorithm': 'layered',
       'elk.direction': 'RIGHT',
+      'elk.hierarchyHandling': 'INCLUDE_CHILDREN',
       'elk.spacing.nodeNode': '40',
       'elk.layered.spacing.nodeNodeBetweenLayers': '80',
     },
-    children: nodes.map((n) => ({ id: n.id, width: NODE_WIDTH, height: NODE_HEIGHT })),
-    edges: edges.map((e) => ({ id: e.id, sources: [e.sourceId], targets: [e.targetId] })),
+    children: buildContainmentTree(
+      nodes.map((n) => n.id),
+      hostedOnEdges,
+    ),
+    edges: otherEdges.map((e) => ({ id: e.id, sources: [e.sourceId], targets: [e.targetId] })),
   });
-  return { nodes: result.children ?? [], edges: result.edges ?? [] };
+}
+
+interface PositionedNode {
+  shape: unknown;
+  absX: number;
+  absY: number;
+}
+
+interface CanvasApi {
+  addShape: (shape: unknown, parent?: unknown) => void;
+  addConnection: (connection: unknown, parent: unknown) => void;
+  getRootElement: () => unknown;
+  getContainer: () => HTMLElement;
+  zoom: (mode: string) => void;
+}
+
+interface ElementFactoryApi {
+  createShape: (attrs: Record<string, unknown>) => unknown;
+  createConnection: (attrs: Record<string, unknown>) => unknown;
+}
+
+// Places every real node in the (possibly nested) elk tree, translating
+// elk's parent-relative child coordinates into the absolute canvas
+// coordinates diagram-js expects, and adds each shape under its logical
+// diagram-js parent so paint order stacks containers behind their children.
+function placeNodes(
+  elkNode: ElkNode,
+  offsetX: number,
+  offsetY: number,
+  diagramParent: unknown,
+  nodeById: Map<string, DiagramNode>,
+  elementFactory: ElementFactoryApi,
+  canvas: CanvasApi,
+  positioned: Map<string, PositionedNode>,
+): void {
+  const original = elkNode.id ? nodeById.get(elkNode.id) : undefined;
+  let childOffsetX = offsetX;
+  let childOffsetY = offsetY;
+  let childParent = diagramParent;
+
+  if (original && elkNode.id) {
+    const absX = offsetX + (elkNode.x ?? 0);
+    const absY = offsetY + (elkNode.y ?? 0);
+    const isContainer = (elkNode.children?.length ?? 0) > 0;
+    const shape = elementFactory.createShape({
+      id: elkNode.id,
+      x: absX,
+      y: absY,
+      width: elkNode.width ?? NODE_WIDTH,
+      height: elkNode.height ?? NODE_HEIGHT,
+      businessObject: { ...original, isContainer },
+    });
+    canvas.addShape(shape, diagramParent);
+    positioned.set(elkNode.id, { shape, absX, absY });
+    childOffsetX = absX;
+    childOffsetY = absY;
+    childParent = shape;
+  }
+
+  for (const child of elkNode.children ?? []) {
+    placeNodes(
+      child,
+      childOffsetX,
+      childOffsetY,
+      childParent,
+      nodeById,
+      elementFactory,
+      canvas,
+      positioned,
+    );
+  }
+}
+
+// Walks the same tree looking for edge sections at every level — elk may
+// return a cross-container edge nested under its lowest common ancestor
+// rather than at the root, so this doesn't assume edges only ever live at
+// the top level. Coordinates are translated the same way node positions are.
+function placeEdges(
+  elkNode: ElkNode,
+  offsetX: number,
+  offsetY: number,
+  edgeById: Map<string, DiagramEdge>,
+  positioned: Map<string, PositionedNode>,
+  elementFactory: ElementFactoryApi,
+  canvas: CanvasApi,
+): void {
+  for (const laidOutEdge of elkNode.edges ?? []) {
+    if (!laidOutEdge.id) continue;
+    const original = edgeById.get(laidOutEdge.id);
+    if (!original) continue;
+    const source = positioned.get(original.sourceId);
+    const target = positioned.get(original.targetId);
+    if (!source || !target) continue;
+
+    // elk returns routed edges as `sections` (startPoint/bendPoints/endPoint),
+    // not a flat list of points — a common gotcha when wiring elk into a
+    // renderer that expects plain waypoints.
+    const section = laidOutEdge.sections?.[0];
+    const waypoints = section
+      ? [section.startPoint, ...(section.bendPoints ?? []), section.endPoint].map((p) => ({
+          x: offsetX + p.x,
+          y: offsetY + p.y,
+        }))
+      : [
+          { x: source.absX, y: source.absY },
+          { x: target.absX, y: target.absY },
+        ];
+
+    const connection = elementFactory.createConnection({
+      id: laidOutEdge.id,
+      waypoints,
+      source: source.shape,
+      target: target.shape,
+      businessObject: original,
+    });
+    canvas.addConnection(connection, canvas.getRootElement());
+  }
+
+  for (const child of elkNode.children ?? []) {
+    placeEdges(
+      child,
+      offsetX + (child.x ?? 0),
+      offsetY + (child.y ?? 0),
+      edgeById,
+      positioned,
+      elementFactory,
+      canvas,
+    );
+  }
 }
 
 // Builds and mounts a diagram-js canvas laid out by elk into `container`.
@@ -69,70 +252,28 @@ export async function layoutAndRender(
   const nodeById = new Map(nodes.map((n) => [n.id, n]));
   const edgeById = new Map(edges.map((e) => [e.id, e]));
 
-  const layout = await computeLayout(nodes, edges);
+  const layoutRoot = await computeLayout(nodes, edges);
 
   const diagram = new Diagram({
     canvas: { container },
     modules: [CoreModule, ZoomScrollModule, MoveCanvasModule, LandscapeRendererModule],
   });
 
-  const canvas = diagram.get('canvas') as {
-    addShape: (shape: unknown) => void;
-    addConnection: (connection: unknown, parent: unknown) => void;
-    getRootElement: () => unknown;
-    getContainer: () => HTMLElement;
-    zoom: (mode: string) => void;
-  };
-  const elementFactory = diagram.get('elementFactory') as {
-    createShape: (attrs: Record<string, unknown>) => unknown;
-    createConnection: (attrs: Record<string, unknown>) => unknown;
-  };
+  const canvas = diagram.get('canvas') as CanvasApi;
+  const elementFactory = diagram.get('elementFactory') as ElementFactoryApi;
 
-  const shapesById = new Map<string, unknown>();
-  for (const laidOutNode of layout.nodes) {
-    if (!laidOutNode.id) continue;
-    const original = nodeById.get(laidOutNode.id);
-    if (!original) continue;
-    const shape = elementFactory.createShape({
-      id: laidOutNode.id,
-      x: laidOutNode.x ?? 0,
-      y: laidOutNode.y ?? 0,
-      width: laidOutNode.width ?? NODE_WIDTH,
-      height: laidOutNode.height ?? NODE_HEIGHT,
-      businessObject: original,
-    });
-    canvas.addShape(shape);
-    shapesById.set(laidOutNode.id, shape);
-  }
-
-  for (const laidOutEdge of layout.edges) {
-    if (!laidOutEdge.id) continue;
-    const original = edgeById.get(laidOutEdge.id);
-    if (!original) continue;
-    const source = shapesById.get(original.sourceId);
-    const target = shapesById.get(original.targetId);
-    if (!source || !target) continue;
-
-    // elk returns routed edges as `sections` (startPoint/bendPoints/endPoint),
-    // not a flat list of points — a common gotcha when wiring elk into a
-    // renderer that expects plain waypoints.
-    const section = laidOutEdge.sections?.[0];
-    const waypoints = section
-      ? [section.startPoint, ...(section.bendPoints ?? []), section.endPoint]
-      : [
-          { x: 0, y: 0 },
-          { x: 0, y: 0 },
-        ];
-
-    const connection = elementFactory.createConnection({
-      id: laidOutEdge.id,
-      waypoints,
-      source,
-      target,
-      businessObject: original,
-    });
-    canvas.addConnection(connection, canvas.getRootElement());
-  }
+  const positioned = new Map<string, PositionedNode>();
+  placeNodes(
+    layoutRoot,
+    0,
+    0,
+    canvas.getRootElement(),
+    nodeById,
+    elementFactory,
+    canvas,
+    positioned,
+  );
+  placeEdges(layoutRoot, 0, 0, edgeById, positioned, elementFactory, canvas);
 
   ensureArrowMarker(canvas.getContainer());
   canvas.zoom('fit-viewport');

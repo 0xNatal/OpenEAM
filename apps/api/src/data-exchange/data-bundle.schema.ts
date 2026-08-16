@@ -135,7 +135,7 @@ const buildingBlockRelationshipSchema = z.object({
   id: z.string(),
   sourceBuildingBlockId: z.string(),
   targetBuildingBlockId: z.string(),
-  type: z.enum(['depends_on', 'data_flow']),
+  type: z.enum(['depends_on', 'data_flow', 'hosted_on']),
   description: z.string().nullable(),
   ...validityFields,
   ...timestampFields,

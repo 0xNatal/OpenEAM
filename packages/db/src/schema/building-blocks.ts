@@ -26,9 +26,14 @@ export const lifecyclePhase = pgEnum('lifecycle_phase', [
 // Kept deliberately small — a generic 'depends_on' plus 'data_flow' rather
 // than a full ArchiMate-style taxonomy (serving/triggering/access/...).
 // Richer typing can follow once real usage shows which distinctions matter.
+// 'hosted_on' is the odd one out: containment ("runs on"), not a peer
+// relationship — a block should have at most one *active* hosted_on edge at
+// a time (enforced in the service layer), unlike depends_on/data_flow which
+// are naturally many-to-many.
 export const buildingBlockRelationshipType = pgEnum('building_block_relationship_type', [
   'depends_on',
   'data_flow',
+  'hosted_on',
 ]);
 
 // A single table for both ABBs and SBBs (discriminated by `kind`) so every

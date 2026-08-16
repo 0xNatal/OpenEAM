@@ -50,7 +50,7 @@ interface BuildingBlockRow extends TemporalRow {
       id: string;
       sourceBuildingBlockId: string;
       targetBuildingBlockId: string;
-      type: 'depends_on' | 'data_flow';
+      type: 'depends_on' | 'data_flow' | 'hosted_on';
       description: string | null;
     }
   >;
@@ -59,7 +59,7 @@ interface BuildingBlockRow extends TemporalRow {
       id: string;
       sourceBuildingBlockId: string;
       targetBuildingBlockId: string;
-      type: 'depends_on' | 'data_flow';
+      type: 'depends_on' | 'data_flow' | 'hosted_on';
       description: string | null;
     }
   >;
@@ -208,6 +208,28 @@ export class BuildingBlocksService {
   ): Promise<BuildingBlockRelationship> {
     if (input.sourceBuildingBlockId === input.targetBuildingBlockId) {
       throw new BadRequestException('A building block cannot relate to itself');
+    }
+
+    // hosted_on is containment ("runs on"), not a peer relationship like
+    // depends_on/data_flow — a block can only run on one thing at a time, so
+    // unlike those, it can't be many-to-many. Only checks for an existing
+    // *unbounded* (validTo null) edge, not full interval overlap; closing
+    // the old edge (setting its validTo) before opening a new one is on the
+    // caller, same as every other temporal link in this schema.
+    if (input.type === 'hosted_on' && !input.validTo) {
+      const existingActiveParent = await this.db.query.buildingBlockRelationships.findFirst({
+        where: (t, { and, eq, isNull }) =>
+          and(
+            eq(t.sourceBuildingBlockId, input.sourceBuildingBlockId),
+            eq(t.type, 'hosted_on'),
+            isNull(t.validTo),
+          ),
+      });
+      if (existingActiveParent) {
+        throw new BadRequestException(
+          'This building block already has an active hosted_on relationship — close it (set validTo) before adding another',
+        );
+      }
     }
 
     const [created] = await this.db

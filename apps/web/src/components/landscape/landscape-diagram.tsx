@@ -6,7 +6,7 @@ import 'diagram-js/assets/diagram-js.css';
 import { useEffect, useRef, useState } from 'react';
 import { type DiagramEdge, type DiagramNode, layoutAndRender } from './landscape-layout';
 
-export type { DiagramEdge, DiagramNode } from './landscape-layout';
+export type { DiagramEdge, DiagramEdgeKind, DiagramNode } from './landscape-layout';
 
 interface LandscapeDiagramProps {
   nodes: DiagramNode[];
