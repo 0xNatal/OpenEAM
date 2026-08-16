@@ -46,7 +46,7 @@ export function AppShell() {
 
   return (
     <TooltipProvider delayDuration={200}>
-      <SidebarProvider>
+      <SidebarProvider defaultOpen={false}>
         <Sidebar collapsible="icon">
           <SidebarHeader className="font-semibold text-base">
             <div className="flex items-center justify-between">
