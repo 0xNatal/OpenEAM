@@ -10,7 +10,7 @@ export const pageBackLinkClassName =
 // and centered; "canvas" pages (BPMN modeler, landscape diagram) need the
 // full available width for panning/zooming, so they only get the padding.
 export const contentWidthClassName = 'mx-auto w-full max-w-5xl px-6 pb-8';
-export const canvasWidthClassName = 'mx-auto flex h-[calc(100vh-3rem)] w-full flex-col px-6 pb-8';
+export const canvasWidthClassName = 'mx-auto flex h-[calc(100vh-1.5rem)] w-full flex-col px-6 pb-8';
 
 interface PageHeaderProps {
   title: ReactNode;
@@ -22,9 +22,16 @@ interface PageHeaderProps {
 // The title + page-level primary action row. Item-level actions (Edit/Delete
 // on a card or row) stay local to that item, not here; page-level filters
 // get their own plain row below this header, not folded into it.
+//
+// Sticks to the top of the page on scroll, like Claude's own headers. The
+// top padding lives here (not on <main>) so the breathing room above the
+// title survives being stuck at the very top of the viewport instead of
+// only existing before the first scroll. The gradient below it (rather
+// than a border) fades scrolling content out instead of clipping it on a
+// hard edge.
 export function PageHeader({ title, action, back, className }: PageHeaderProps) {
   return (
-    <div className={cn('mb-4', className)}>
+    <div className={cn('sticky top-0 z-10 mb-10 bg-background pt-4', className)}>
       {back}
       <div className="flex items-center justify-between gap-3">
         <h1 className="min-w-0 truncate text-xl font-semibold tracking-tight text-foreground">
@@ -32,6 +39,10 @@ export function PageHeader({ title, action, back, className }: PageHeaderProps) 
         </h1>
         {action && <div className="flex shrink-0 items-center gap-2">{action}</div>}
       </div>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-full h-10 bg-gradient-to-b from-background from-40% to-transparent"
+      />
     </div>
   );
 }

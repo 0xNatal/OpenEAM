@@ -127,7 +127,7 @@ export function AppShell() {
         </Sidebar>
 
         <div className="flex flex-1 flex-col min-h-screen">
-          <main className="flex-1 p-6">
+          <main className="flex-1 px-6 pb-6">
             <Outlet />
           </main>
         </div>
