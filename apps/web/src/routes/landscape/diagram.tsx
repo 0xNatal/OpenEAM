@@ -141,7 +141,7 @@ function LandscapeDiagramRoute() {
     // filter toolbar plus the card's flex-1 fills the rest of the viewport.
     <div className={canvasWidthClassName}>
       <PageHeader
-        className="mb-4 shrink-0"
+        className="shrink-0"
         title="Landscape"
         action={<LandscapeViewToggle active="diagram" />}
       />
