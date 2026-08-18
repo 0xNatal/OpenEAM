@@ -24,6 +24,10 @@ These are technical choices. What they're *for* — the stakeholder questions we
 - **i18n** — when a second language is actually needed.
 - **Full-text search** — Postgres `tsvector` first, Meilisearch later.
 - **Persisted queries** — during production hardening.
+- **Gate GraphiQL and disable introspection outside dev** — `graphiql: true` in `GraphQLModule.forRoot` (`apps/api/src/app.module.ts`) is hardcoded on with no environment check, and introspection isn't explicitly disabled either, so the full schema and an interactive query IDE would be exposed in any real deployment. Worth doing before the API is ever reachable from outside `localhost` — gate both behind `NODE_ENV !== 'production'` (or a dedicated env flag).
+- **Validate env vars at boot** — `apps/api/src/main.ts` reads `DATABASE_URL`/`API_PORT`/`WEB_ORIGIN` ad hoc via `process.env` with `??` fallbacks; a missing or malformed value fails at first request instead of at startup. A small zod-validated config object (zod's already a dependency, see `data-bundle.schema.ts`) would fail fast with a clear message.
+- **Dependency-update automation (Renovate or Dependabot)** — nothing currently surfaces outdated packages; a manual `pnpm -r outdated` pass in 2026-08 found 31 stale packages, including a stale peer-dependency ghost in `node_modules` that silently broke a typecheck. A weekly, patch/minor-grouped bot config would catch drift (and security patches) before it piles up.
+- **Security headers / rate limiting (helmet, throttling)** — no `helmet`, no request throttling on the API. Low urgency pre-auth (see Auth idea above), but cheap to add now and easy to forget once the API is reachable from outside `localhost`.
 - **Apache AGE** — if relational + recursive CTEs get limiting for graph queries.
 - **Turborepo** — if CI builds get slow (~2 min+).
 - **Unit/integration tests (Vitest)** — removed from the init (the only test was a health smoke test with nothing real to cover yet). Re-add with the first real feature: `vitest` devDep + `test`/`test:watch` scripts per package, the root `test` script, and the CI test step. Tool choice stays Vitest.
