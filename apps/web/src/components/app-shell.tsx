@@ -1,14 +1,13 @@
-import {
-  BlocksIcon,
-  Exchange01Icon,
-  Flowchart01Icon,
-  Home01Icon,
-  MapsIcon,
-  Route01Icon,
-  Target01Icon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react';
 import { Link, Outlet, useRouterState } from '@tanstack/react-router';
+import {
+  ArrowLeftRight,
+  Blocks,
+  Home,
+  Map as MapIcon,
+  Route,
+  Target,
+  Workflow,
+} from 'lucide-react';
 import { EnterpriseSwitcher } from './enterprise-switcher';
 import { ThemeToggle } from './theme-toggle';
 import {
@@ -65,7 +64,7 @@ export function AppShell() {
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild isActive={isOverview} tooltip="Overview">
                     <Link to="/">
-                      <HugeiconsIcon icon={Home01Icon} strokeWidth={2} />
+                      <Home strokeWidth={2} />
                       <span className="group-data-[collapsible=icon]:hidden">Overview</span>
                     </Link>
                   </SidebarMenuButton>
@@ -73,7 +72,7 @@ export function AppShell() {
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild isActive={isValueStreams} tooltip="Value Streams">
                     <Link to="/value-streams">
-                      <HugeiconsIcon icon={Route01Icon} strokeWidth={2} />
+                      <Route strokeWidth={2} />
                       <span className="group-data-[collapsible=icon]:hidden">Value Streams</span>
                     </Link>
                   </SidebarMenuButton>
@@ -85,7 +84,7 @@ export function AppShell() {
                     tooltip="Business Capabilities"
                   >
                     <Link to="/capabilities">
-                      <HugeiconsIcon icon={Target01Icon} strokeWidth={2} />
+                      <Target strokeWidth={2} />
                       <span className="group-data-[collapsible=icon]:hidden">
                         Business Capabilities
                       </span>
@@ -99,7 +98,7 @@ export function AppShell() {
                     tooltip="Business Processes"
                   >
                     <Link to="/business-processes">
-                      <HugeiconsIcon icon={Flowchart01Icon} strokeWidth={2} />
+                      <Workflow strokeWidth={2} />
                       <span className="group-data-[collapsible=icon]:hidden">
                         Business Processes
                       </span>
@@ -109,7 +108,7 @@ export function AppShell() {
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild isActive={isBuildingBlocks} tooltip="Building Blocks">
                     <Link to="/building-blocks">
-                      <HugeiconsIcon icon={BlocksIcon} strokeWidth={2} />
+                      <Blocks strokeWidth={2} />
                       <span className="group-data-[collapsible=icon]:hidden">Building Blocks</span>
                     </Link>
                   </SidebarMenuButton>
@@ -117,7 +116,7 @@ export function AppShell() {
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild isActive={isLandscape} tooltip="Landscape">
                     <Link to="/landscape">
-                      <HugeiconsIcon icon={MapsIcon} strokeWidth={2} />
+                      <MapIcon strokeWidth={2} />
                       <span className="group-data-[collapsible=icon]:hidden">Landscape</span>
                     </Link>
                   </SidebarMenuButton>
@@ -125,7 +124,7 @@ export function AppShell() {
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild isActive={isDataExchange} tooltip="Data Exchange">
                     <Link to="/data-exchange">
-                      <HugeiconsIcon icon={Exchange01Icon} strokeWidth={2} />
+                      <ArrowLeftRight strokeWidth={2} />
                       <span className="group-data-[collapsible=icon]:hidden">Data Exchange</span>
                     </Link>
                   </SidebarMenuButton>
