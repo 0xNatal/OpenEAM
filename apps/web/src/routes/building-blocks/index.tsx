@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import { useMutation, useQuery } from '@apollo/client/react';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -381,7 +381,15 @@ function BuildingBlocksIndexRoute() {
           <tbody>
             {(data?.buildingBlocks ?? []).map((block) => (
               <tr key={block.id} className="border-b border-border last:border-0">
-                <td className="px-4 py-2 font-medium text-foreground">{block.name}</td>
+                <td className="px-4 py-2 font-medium">
+                  <Link
+                    to="/building-blocks/$buildingBlockId"
+                    params={{ buildingBlockId: block.id }}
+                    className="text-foreground hover:text-violet-700 dark:hover:text-violet-300"
+                  >
+                    {block.name}
+                  </Link>
+                </td>
                 <td className="px-4 py-2 text-muted-foreground">
                   {block.__typename === 'ArchitectureBuildingBlock' ? 'ABB' : 'SBB'}
                 </td>

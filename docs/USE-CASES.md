@@ -118,11 +118,12 @@ diagram ([diagram-js + elkjs](IDEAS.md), read-only, automatic layout) renders
 it — `hosted_on` as real nesting (Azure containing Kubernetes containing what
 runs on it) rather than a line.
 
-Delivered ahead of its ranking, and still incomplete: no UI to create or edit a
-relationship (GraphQL mutations and bundle import only, so far — see US-3.1 in
-[USER-STORIES.md](USER-STORIES.md)), and no transitive traversal — today you see
-one hop, not "everything that depends on this, directly and indirectly," which
-is what US-3.2 actually asks for.
+Delivered ahead of its ranking. A building block's detail page now lets you
+create and delete relationships to other blocks (type, description, validity
+interval), on top of the GraphQL mutations and bundle import that were already
+there — see US-3.1 in [USER-STORIES.md](USER-STORIES.md). Still incomplete: no
+transitive traversal — today you see one hop, not "everything that depends on
+this, directly and indirectly," which is what US-3.2 actually asks for.
 
 ### UC-4 · Know which capabilities are weakly supported
 

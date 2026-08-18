@@ -180,7 +180,7 @@ The current use case. Full detail.
 
 ## UC-3 · Know what breaks if we change something
 
-- **US-3.1** — As an *architect*, I want to record typed dependencies between building blocks, so that the model is a graph rather than a star around capabilities. *(Done at the data/API level — `depends_on`/`data_flow`/`hosted_on`, create/delete over GraphQL. No UI form yet.)*
+- **US-3.1** — As an *architect*, I want to record typed dependencies between building blocks, so that the model is a graph rather than a star around capabilities. *(Done — `depends_on`/`data_flow`/`hosted_on`, create/delete over GraphQL and from a building block's detail page in the UI.)*
 - **US-3.2** — As a *solution architect*, I want to see everything that depends on a block, directly and indirectly, so that I can scope a migration. *(Not started — only direct, one-hop edges are visible today.)*
 - **US-3.3** — As a *solution architect*, I want to see the landscape as a diagram with automatic layout, so that I can follow the dependencies instead of reading them. *(Done, read-only — [landscape/diagram.tsx](../apps/web/src/routes/landscape/diagram.tsx).)*
 - **US-3.4** — As an *architect*, I want dependencies to carry validity like every other relationship, so that "what depended on it in 2024" is answerable. *(Done at the schema level — `validFrom`/`validTo` on every relationship, same as every other temporal table. Not yet surfaced by the diagram's `asOf` filter.)*
