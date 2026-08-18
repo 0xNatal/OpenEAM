@@ -12,13 +12,13 @@
   "dependencies": {
     "@apollo/server": "5.5.1",
     "@as-integrations/express5": "1.1.2",
-    "@nestjs/apollo": "13.4.2",
-    "@nestjs/common": "11.1.24",
-    "@nestjs/core": "11.1.24",
-    "@nestjs/graphql": "13.4.2",
-    "@nestjs/platform-express": "11.1.24",
+    "@nestjs/apollo": "13.4.5",
+    "@nestjs/common": "11.2.1",
+    "@nestjs/core": "11.2.1",
+    "@nestjs/graphql": "13.4.5",
+    "@nestjs/platform-express": "11.2.1",
     "@openeam/db": "workspace:*",
-    "bpmn-moddle": "^10.0.0",
+    "bpmn-moddle": "^10.1.0",
     "express": "5.2.1",
     "graphql": "16.14.0",
     "reflect-metadata": "0.2.2",
@@ -26,13 +26,13 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@nestjs/cli": "11.0.21",
+    "@nestjs/cli": "11.0.24",
     "@nestjs/schematics": "11.1.0",
     "@types/express": "5.0.6",
     "@types/node": "24.12.4",
-    "@types/pg": "8.20.0",
+    "@types/pg": "8.21.0",
     "dotenv-cli": "11.0.0",
-    "ts-loader": "9.6.0",
+    "ts-loader": "9.6.2",
     "typescript": "6.0.3"
   }
 }
