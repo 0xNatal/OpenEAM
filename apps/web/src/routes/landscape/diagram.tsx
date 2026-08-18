@@ -117,7 +117,10 @@ function toDiagramGraph(data: LandscapeDiagramData | undefined): {
 }
 
 function LandscapeDiagramRoute() {
-  const [filters, setFilters] = useState<LandscapeFilterValues>(EMPTY_LANDSCAPE_FILTERS);
+  const [filters, setFilters] = useState<LandscapeFilterValues>({
+    ...EMPTY_LANDSCAPE_FILTERS,
+    asOf: new Date().toISOString().slice(0, 10),
+  });
 
   const { enterprise } = useEnterprise();
   const { data, loading, error } = useQuery<LandscapeDiagramData>(LANDSCAPE_DIAGRAM_QUERY, {

@@ -78,6 +78,8 @@ The current use case. Full detail.
 > can reach the one I mean without scrolling a page that is only going to get
 > longer**.
 
+*(Done — [building-blocks/index.tsx](../apps/web/src/routes/building-blocks/index.tsx), client-side, filters as you type.)*
+
 - Free-text match on name and description, filtering as you type
 - Works alongside the filters from US-1.5 rather than resetting them
 - An empty result says so, and says what was searched for
@@ -87,6 +89,8 @@ The current use case. Full detail.
 > As an **architect**, I want to **filter building blocks by kind, lifecycle,
 > architecture domain, and organization unit**, so that **I can work on one
 > corner of the landscape at a time**.
+
+*(Done — same route. A page-local filter bar rather than the Landscape's shared `LandscapeFilters`, since the field sets only partially overlap (domain/org-unit) and search/kind/lifecycle are unique to this list.)*
 
 - Filters for kind (ABB / SBB), lifecycle phase, architecture domain, organization unit
 - Filters combine, and the active ones are visible and clearable
@@ -98,6 +102,8 @@ The current use case. Full detail.
 > organization unit, owner, and freshness**, so that **I can judge an entry
 > without opening it**.
 
+*(Partially done — domain and organization unit columns shipped alongside US-1.5. Owner and last-confirmed columns wait on US-1.1/US-1.2, which need new schema.)*
+
 - Columns for architecture domain, organization unit, owner, last confirmed
 - Long values degrade gracefully rather than breaking the row
 - Still readable at a few hundred rows
@@ -108,6 +114,8 @@ The current use case. Full detail.
 > **the first thing I see is what we actually run, not everything we have ever
 > run**.
 
+*(Done — [landscape/index.tsx](../apps/web/src/routes/landscape/index.tsx) and [landscape/diagram.tsx](../apps/web/src/routes/landscape/diagram.tsx) both default `asOf` to today; the backend already treated an empty `asOf` as "all time", so this was a frontend-only change.)*
+
 - "As of" defaults to today; retired and not-yet-started blocks fall out of the default view
 - Clearing the date is still possible and clearly means "all time"
 - The active date is obvious enough that nobody misreads a future view as the present
@@ -117,6 +125,8 @@ The current use case. Full detail.
 > As an **architect**, I want the Landscape's *Realized by* column to **show each
 > solution's lifecycle and validity**, so that **one retired and two planned
 > solutions don't read as three current ones**.
+
+*(Done — landscape/index.tsx. Each realizing solution shows its lifecycle phase; a realization whose own `validFrom`/`validTo` doesn't cover the selected `asOf` renders de-emphasized, mirroring the API's own validity check.)*
 
 - Realizing solutions show lifecycle phase, and are visually separated when they fall outside the selected date
 - The realization's own validity is respected, not just the block's

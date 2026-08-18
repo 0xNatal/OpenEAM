@@ -35,6 +35,8 @@ const LANDSCAPE_QUERY = gql`
       validTo
       realizedBy {
         solutionBuildingBlockId
+        validFrom
+        validTo
       }
     }
     solutionsLandscape(
@@ -52,6 +54,7 @@ const LANDSCAPE_QUERY = gql`
     allBuildingBlocks: buildingBlocks(enterpriseId: $enterpriseId) {
       id
       name
+      lifecyclePhase
     }
     architectureDomains(enterpriseId: $enterpriseId) {
       id
@@ -72,21 +75,41 @@ interface LandscapeBlock {
   validTo?: string | null;
 }
 
+interface RealizationLink {
+  solutionBuildingBlockId: string;
+  validFrom?: string | null;
+  validTo?: string | null;
+}
+
 interface ArchitectureLandscapeBlock extends LandscapeBlock {
   architectureLevel: ArchitectureLevel | null;
-  realizedBy: Array<{ solutionBuildingBlockId: string }>;
+  realizedBy: RealizationLink[];
 }
 
 interface LandscapeData {
   architectureLandscape: ArchitectureLandscapeBlock[];
   solutionsLandscape: LandscapeBlock[];
-  allBuildingBlocks: Array<{ id: string; name: string }>;
+  allBuildingBlocks: Array<{ id: string; name: string; lifecyclePhase: string }>;
   architectureDomains: ArchitectureDomain[];
   organizationUnits: OrganizationUnit[];
 }
 
+// Mirrors the API's half-open interval check (validFrom inclusive, validTo
+// exclusive; null = unbounded) so a realization link renders de-emphasized
+// exactly when the backend would exclude it from the selected viewpoint.
+function isValidAt(link: { validFrom?: string | null; validTo?: string | null }, asOf: string) {
+  return (!link.validFrom || link.validFrom <= asOf) && (!link.validTo || link.validTo > asOf);
+}
+
+function todayIso() {
+  return new Date().toISOString().slice(0, 10);
+}
+
 function LandscapeRoute() {
-  const [filters, setFilters] = useState<LandscapeFilterValues>(EMPTY_LANDSCAPE_FILTERS);
+  const [filters, setFilters] = useState<LandscapeFilterValues>({
+    ...EMPTY_LANDSCAPE_FILTERS,
+    asOf: todayIso(),
+  });
 
   const { enterprise } = useEnterprise();
   const { data, loading, error } = useQuery<LandscapeData>(LANDSCAPE_QUERY, {
@@ -100,7 +123,7 @@ function LandscapeRoute() {
     skip: !enterprise,
   });
 
-  const namesById = new Map((data?.allBuildingBlocks ?? []).map((b) => [b.id, b.name]));
+  const blocksById = new Map((data?.allBuildingBlocks ?? []).map((b) => [b.id, b]));
 
   return (
     <div className={contentWidthClassName}>
@@ -140,15 +163,27 @@ function LandscapeRoute() {
                       {block.architectureLevel ?? '—'}
                     </td>
                     <td className="px-3 py-2 text-muted-foreground">
-                      {block.realizedBy.length === 0
-                        ? '—'
-                        : block.realizedBy
-                            .map(
-                              (r) =>
-                                namesById.get(r.solutionBuildingBlockId) ??
-                                r.solutionBuildingBlockId,
-                            )
-                            .join(', ')}
+                      {block.realizedBy.length === 0 ? (
+                        '—'
+                      ) : (
+                        <div className="flex flex-wrap gap-x-1.5 gap-y-0.5">
+                          {block.realizedBy.map((r) => {
+                            const solution = blocksById.get(r.solutionBuildingBlockId);
+                            const outOfView = filters.asOf ? !isValidAt(r, filters.asOf) : false;
+                            return (
+                              <span
+                                key={r.solutionBuildingBlockId}
+                                className={
+                                  outOfView ? 'italic text-muted-foreground/60' : undefined
+                                }
+                              >
+                                {solution?.name ?? r.solutionBuildingBlockId}
+                                {solution && ` (${solution.lifecyclePhase})`}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))}

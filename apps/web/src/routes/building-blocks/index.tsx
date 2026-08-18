@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { contentWidthClassName, PageHeader } from '@/components/ui/page-header';
@@ -304,8 +304,59 @@ function BuildingBlocksIndexRoute() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [form, setForm] = useState<FormState>(emptyForm);
 
+  const [search, setSearch] = useState('');
+  const [kindFilter, setKindFilter] = useState<BuildingBlockKind | ''>('');
+  const [lifecycleFilter, setLifecycleFilter] = useState<LifecyclePhase | ''>('');
+  const [domainFilter, setDomainFilter] = useState('');
+  const [organizationUnitFilter, setOrganizationUnitFilter] = useState('');
+
   const domains = data?.architectureDomains ?? [];
   const organizationUnits = data?.organizationUnits ?? [];
+  const domainNameById = new Map(domains.map((d) => [d.id, d.name]));
+  const organizationUnitNameById = new Map(organizationUnits.map((u) => [u.id, u.name]));
+
+  const hasActiveFilters = Boolean(
+    search || kindFilter || lifecycleFilter || domainFilter || organizationUnitFilter,
+  );
+
+  const clearFilters = () => {
+    setSearch('');
+    setKindFilter('');
+    setLifecycleFilter('');
+    setDomainFilter('');
+    setOrganizationUnitFilter('');
+  };
+
+  const filteredBlocks = useMemo(() => {
+    const blocks = data?.buildingBlocks ?? [];
+    const q = search.trim().toLowerCase();
+    return blocks.filter((block) => {
+      if (q) {
+        const haystack = `${block.name} ${block.description ?? ''}`.toLowerCase();
+        if (!haystack.includes(q)) return false;
+      }
+      if (kindFilter) {
+        const blockKind: BuildingBlockKind =
+          block.__typename === 'ArchitectureBuildingBlock' ? 'ARCHITECTURE' : 'SOLUTION';
+        if (blockKind !== kindFilter) return false;
+      }
+      if (lifecycleFilter && block.lifecyclePhase !== lifecycleFilter) return false;
+      if (domainFilter && !block.architectureDomainIds.includes(domainFilter)) return false;
+      if (
+        organizationUnitFilter &&
+        !block.organizationUnitLinks.some((l) => l.organizationUnitId === organizationUnitFilter)
+      )
+        return false;
+      return true;
+    });
+  }, [
+    data?.buildingBlocks,
+    search,
+    kindFilter,
+    lifecycleFilter,
+    domainFilter,
+    organizationUnitFilter,
+  ]);
 
   const openCreate = () => {
     setEditingId(null);
@@ -366,6 +417,83 @@ function BuildingBlocksIndexRoute() {
       {error && <p className="text-sm text-destructive">Failed to load building blocks.</p>}
       {mutationError && <p className="mb-4 text-sm text-destructive">{mutationError.message}</p>}
 
+      <div className="mb-4 flex flex-wrap items-center gap-4">
+        <label
+          htmlFor="bb-search"
+          className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground"
+        >
+          Search
+          <Input
+            id="bb-search"
+            className="w-48"
+            placeholder="Name or description"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </label>
+        <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+          Kind
+          <select
+            className={selectClassName}
+            value={kindFilter}
+            onChange={(e) => setKindFilter(e.target.value as BuildingBlockKind | '')}
+          >
+            <option value="">All</option>
+            <option value="ARCHITECTURE">ABB</option>
+            <option value="SOLUTION">SBB</option>
+          </select>
+        </label>
+        <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+          Lifecycle
+          <select
+            className={selectClassName}
+            value={lifecycleFilter}
+            onChange={(e) => setLifecycleFilter(e.target.value as LifecyclePhase | '')}
+          >
+            <option value="">All</option>
+            <option value="PLANNED">Planned</option>
+            <option value="ACTIVE">Active</option>
+            <option value="PHASING_OUT">Phasing out</option>
+            <option value="RETIRED">Retired</option>
+          </select>
+        </label>
+        <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+          Domain
+          <select
+            className={selectClassName}
+            value={domainFilter}
+            onChange={(e) => setDomainFilter(e.target.value)}
+          >
+            <option value="">All</option>
+            {domains.map((domain) => (
+              <option key={domain.id} value={domain.id}>
+                {domain.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+          Org unit
+          <select
+            className={selectClassName}
+            value={organizationUnitFilter}
+            onChange={(e) => setOrganizationUnitFilter(e.target.value)}
+          >
+            <option value="">All</option>
+            {organizationUnits.map((unit) => (
+              <option key={unit.id} value={unit.id}>
+                {unit.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        {hasActiveFilters && (
+          <Button variant="ghost" size="sm" onClick={clearFilters}>
+            Clear filters
+          </Button>
+        )}
+      </div>
+
       <div className="overflow-hidden rounded-xl border border-border bg-card">
         <table className="w-full text-sm">
           <thead className="border-b border-border bg-muted/50 text-left text-xs uppercase tracking-wider text-muted-foreground">
@@ -374,12 +502,14 @@ function BuildingBlocksIndexRoute() {
               <th className="px-4 py-2">Kind</th>
               <th className="px-4 py-2">Level</th>
               <th className="px-4 py-2">Lifecycle</th>
+              <th className="px-4 py-2">Domain</th>
+              <th className="px-4 py-2">Org unit</th>
               <th className="px-4 py-2">Valid</th>
               <th className="px-4 py-2" />
             </tr>
           </thead>
           <tbody>
-            {(data?.buildingBlocks ?? []).map((block) => (
+            {filteredBlocks.map((block) => (
               <tr key={block.id} className="border-b border-border last:border-0">
                 <td className="px-4 py-2 font-medium">
                   <Link
@@ -398,6 +528,24 @@ function BuildingBlocksIndexRoute() {
                 </td>
                 <td className="px-4 py-2 text-muted-foreground">{block.lifecyclePhase}</td>
                 <td className="px-4 py-2 text-muted-foreground">
+                  {block.architectureDomainIds.length > 0
+                    ? block.architectureDomainIds
+                        .map((id) => domainNameById.get(id) ?? id)
+                        .join(', ')
+                    : '—'}
+                </td>
+                <td className="px-4 py-2 text-muted-foreground">
+                  {block.organizationUnitLinks.length > 0
+                    ? block.organizationUnitLinks
+                        .map(
+                          (l) =>
+                            organizationUnitNameById.get(l.organizationUnitId) ??
+                            l.organizationUnitId,
+                        )
+                        .join(', ')
+                    : '—'}
+                </td>
+                <td className="px-4 py-2 text-muted-foreground">
                   {block.validFrom ?? '…'} – {block.validTo ?? '…'}
                 </td>
                 <td className="px-4 py-2 text-right">
@@ -410,10 +558,19 @@ function BuildingBlocksIndexRoute() {
                 </td>
               </tr>
             ))}
-            {data?.buildingBlocks.length === 0 && (
+            {filteredBlocks.length === 0 && (data?.buildingBlocks.length ?? 0) === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-6 text-center text-sm text-muted-foreground">
+                <td colSpan={8} className="px-4 py-6 text-center text-sm text-muted-foreground">
                   No building blocks yet.
+                </td>
+              </tr>
+            )}
+            {filteredBlocks.length === 0 && (data?.buildingBlocks.length ?? 0) > 0 && (
+              <tr>
+                <td colSpan={8} className="px-4 py-6 text-center text-sm text-muted-foreground">
+                  {search
+                    ? `No building blocks match "${search}".`
+                    : 'No building blocks match the selected filters.'}
                 </td>
               </tr>
             )}
