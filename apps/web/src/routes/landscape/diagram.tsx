@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client/react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useMemo, useState } from 'react';
 import type {
   DiagramEdge,
   DiagramEdgeKind,
@@ -124,19 +124,6 @@ function LandscapeDiagramRoute() {
   const { enterprise } = useEnterprise();
   const navigate = useNavigate();
 
-  // index.css reserves scrollbar width on every page (scrollbar-gutter:
-  // stable) so centered content doesn't shift depending on whether a page
-  // happens to scroll. This page never scrolls at the body level — the
-  // canvas pans/zooms internally — so that reservation is just a dead
-  // strip on the right the diagram can't use. Scoped to this route's
-  // lifetime rather than touching the global rule, since every other page
-  // still wants it.
-  useEffect(() => {
-    document.documentElement.style.scrollbarGutter = 'auto';
-    return () => {
-      document.documentElement.style.scrollbarGutter = '';
-    };
-  }, []);
   const { data, loading, error } = useQuery<LandscapeDiagramData>(LANDSCAPE_DIAGRAM_QUERY, {
     variables: {
       enterpriseId: enterprise?.id,
