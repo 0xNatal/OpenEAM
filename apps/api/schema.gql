@@ -172,6 +172,7 @@ type Mutation {
   createBusinessCapability(input: BusinessCapabilityInput!): BusinessCapability!
   createBusinessProcess(input: BusinessProcessInput!): BusinessProcess!
   createEnterprise(input: EnterpriseInput!): Enterprise!
+  createValueStream(input: ValueStreamInput!): ValueStream!
   deleteBuildingBlock(id: String!): Boolean!
   deleteBuildingBlockRelationship(id: String!): Boolean!
   deleteBusinessCapability(id: String!): Boolean!
@@ -275,9 +276,21 @@ type ValueStream {
   stages: [ValueStreamStage!]!
 }
 
+input ValueStreamInput {
+  description: String
+  enterpriseId: String!
+  name: String!
+  stages: [ValueStreamStageInput!]!
+}
+
 type ValueStreamStage {
   capabilityIds: [String!]!
   id: String!
+  name: String!
+}
+
+input ValueStreamStageInput {
+  capabilityIds: [String!]!
   name: String!
 }
 

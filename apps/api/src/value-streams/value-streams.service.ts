@@ -1,7 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import type { Database } from '@openeam/db';
+import { schema } from '@openeam/db';
 import { DATABASE } from '../db.module';
-import type { ValueStream } from './value-stream.model';
+import type { ValueStream, ValueStreamInput } from './value-stream.model';
 
 interface StageRow {
   id: string;
@@ -59,5 +60,53 @@ export class ValueStreamsService {
       },
     });
     return row ? toValueStream(row) : undefined;
+  }
+
+  async create(input: ValueStreamInput): Promise<ValueStream> {
+    const id = await this.db.transaction(async (tx) => {
+      const [inserted] = await tx
+        .insert(schema.valueStreams)
+        .values({
+          enterpriseId: input.enterpriseId,
+          name: input.name,
+          description: input.description ?? null,
+        })
+        .returning({ id: schema.valueStreams.id });
+
+      if (!inserted) throw new NotFoundException('Value stream insert returned no row');
+
+      // Stage order and each stage's capability order both come from their
+      // position in the input arrays — the wire format carries order
+      // implicitly, only the DB rows need an explicit position column.
+      for (const [stagePosition, stage] of input.stages.entries()) {
+        const [insertedStage] = await tx
+          .insert(schema.valueStreamStages)
+          .values({
+            valueStreamId: inserted.id,
+            name: stage.name,
+            position: stagePosition,
+          })
+          .returning({ id: schema.valueStreamStages.id });
+
+        if (!insertedStage)
+          throw new NotFoundException('Value stream stage insert returned no row');
+
+        if (stage.capabilityIds.length > 0) {
+          await tx.insert(schema.stageCapabilities).values(
+            stage.capabilityIds.map((capabilityId, position) => ({
+              stageId: insertedStage.id,
+              capabilityId,
+              position,
+            })),
+          );
+        }
+      }
+
+      return inserted.id;
+    });
+
+    const created = await this.findOne(id);
+    if (!created) throw new NotFoundException(`Value stream ${id} not found after creation`);
+    return created;
   }
 }

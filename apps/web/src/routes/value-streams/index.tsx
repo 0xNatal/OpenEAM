@@ -2,8 +2,11 @@ import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client/react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 import { contentWidthClassName, PageHeader } from '@/components/ui/page-header';
 import { MiniChevronStrip } from '@/components/value-stream/diagram';
+import { ValueStreamFormSheet } from '@/components/value-stream/value-stream-form-sheet';
 import { useEnterprise } from '@/lib/enterprise';
 
 const VALUE_STREAMS_QUERY = gql`
@@ -17,6 +20,10 @@ const VALUE_STREAMS_QUERY = gql`
         name
       }
     }
+    businessCapabilities(enterpriseId: $enterpriseId) {
+      id
+      name
+    }
   }
 `;
 
@@ -29,18 +36,27 @@ interface ValueStreamSummary {
 
 interface ValueStreamsData {
   valueStreams: ValueStreamSummary[];
+  businessCapabilities: { id: string; name: string }[];
 }
 
 function ValueStreamsIndexRoute() {
   const { enterprise } = useEnterprise();
-  const { data, loading, error } = useQuery<ValueStreamsData>(VALUE_STREAMS_QUERY, {
+  const { data, loading, error, refetch } = useQuery<ValueStreamsData>(VALUE_STREAMS_QUERY, {
     variables: { enterpriseId: enterprise?.id },
     skip: !enterprise,
   });
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   return (
     <div className={contentWidthClassName}>
-      <PageHeader title="Value Streams" />
+      <PageHeader
+        title="Value Streams"
+        action={
+          <Button onClick={() => setSheetOpen(true)} disabled={!enterprise}>
+            New value stream
+          </Button>
+        }
+      />
 
       {loading && <p className="text-sm text-muted-foreground">Loading…</p>}
       {error && <p className="text-sm text-destructive">Failed to load value streams.</p>}
@@ -84,6 +100,16 @@ function ValueStreamsIndexRoute() {
           </Link>
         ))}
       </div>
+
+      {enterprise && (
+        <ValueStreamFormSheet
+          open={sheetOpen}
+          onOpenChange={setSheetOpen}
+          enterpriseId={enterprise.id}
+          capabilities={data?.businessCapabilities ?? []}
+          onCreated={() => refetch()}
+        />
+      )}
     </div>
   );
 }
