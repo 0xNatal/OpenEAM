@@ -9,8 +9,16 @@ export const pageBackLinkClassName =
 // Width convention: "content" pages (lists, forms, detail views) are capped
 // and centered; "canvas" pages (BPMN modeler, landscape diagram) need the
 // full available width for panning/zooming, so they only get the padding.
+// <main> (app-shell.tsx) carries no padding of its own — these classes are
+// each page's sole source of spacing, so it's never stacked on top of
+// another layer.
 export const contentWidthClassName = 'mx-auto w-full max-w-5xl px-6 pb-8';
-export const canvasWidthClassName = 'mx-auto flex h-[calc(100vh-1.5rem)] w-full flex-col px-6 pb-8';
+export const canvasWidthClassName = 'mx-auto flex h-screen w-full flex-col px-6 pb-8';
+
+// True edge-to-edge: no padding at all, for the one view meant to feel
+// maximal rather than merely wide — canvasWidthClassName is still the
+// right choice for other canvas pages (e.g. the BPMN modeler).
+export const fullBleedCanvasClassName = 'flex h-screen w-full flex-col';
 
 interface PageHeaderProps {
   title: ReactNode;

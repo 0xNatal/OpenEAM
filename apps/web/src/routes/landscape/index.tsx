@@ -7,7 +7,6 @@ import {
   LandscapeFilters,
   type LandscapeFilterValues,
 } from '@/components/landscape/landscape-filters';
-import { LandscapeViewToggle } from '@/components/landscape/landscape-view-toggle';
 import { contentWidthClassName, PageHeader } from '@/components/ui/page-header';
 import { useEnterprise } from '@/lib/enterprise';
 import type { ArchitectureDomain, ArchitectureLevel, OrganizationUnit } from '@/lib/entities';
@@ -127,7 +126,7 @@ function LandscapeRoute() {
 
   return (
     <div className={contentWidthClassName}>
-      <PageHeader title="Landscape" action={<LandscapeViewToggle active="table" />} />
+      <PageHeader title="Landscape Table" />
 
       <div className="mb-6">
         <LandscapeFilters

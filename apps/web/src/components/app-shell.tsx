@@ -5,6 +5,7 @@ import {
   Home,
   Map as MapIcon,
   Route,
+  Table2,
   Target,
   Workflow,
 } from 'lucide-react';
@@ -40,8 +41,15 @@ export function AppShell() {
   const isBuildingBlocks = useRouterState({
     select: (s) => s.location.pathname.startsWith('/building-blocks'),
   });
-  const isLandscape = useRouterState({
-    select: (s) => s.location.pathname.startsWith('/landscape'),
+  // The diagram is the flagship landscape view, so it owns the plain
+  // "Landscape" nav entry; the table is a separate, secondary entry (see
+  // routes/landscape/index.tsx) — hence an exact match here rather than
+  // startsWith, so the two don't both light up together.
+  const isLandscapeDiagram = useRouterState({
+    select: (s) => s.location.pathname.startsWith('/landscape/diagram'),
+  });
+  const isLandscapeTable = useRouterState({
+    select: (s) => s.location.pathname === '/landscape',
   });
   const isDataExchange = useRouterState({
     select: (s) => s.location.pathname.startsWith('/data-exchange'),
@@ -114,10 +122,18 @@ export function AppShell() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={isLandscape} tooltip="Landscape">
-                    <Link to="/landscape">
+                  <SidebarMenuButton asChild isActive={isLandscapeDiagram} tooltip="Landscape">
+                    <Link to="/landscape/diagram">
                       <MapIcon strokeWidth={2} />
                       <span className="group-data-[collapsible=icon]:hidden">Landscape</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={isLandscapeTable} tooltip="Landscape Table">
+                    <Link to="/landscape">
+                      <Table2 strokeWidth={2} />
+                      <span className="group-data-[collapsible=icon]:hidden">Landscape Table</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -138,7 +154,13 @@ export function AppShell() {
         </Sidebar>
 
         <div className="flex flex-1 flex-col min-h-screen">
-          <main className="flex-1 px-6 pb-6">
+          {/* No padding here — each page's own width class
+              (contentWidthClassName/canvasWidthClassName/
+              fullBleedCanvasClassName, see ui/page-header.tsx) is the sole
+              owner of its spacing. Main used to carry px-6 pb-6 of its own,
+              which silently double-padded every page's right/bottom edge
+              once those width classes gained their own px-6 pb-8. */}
+          <main className="flex-1">
             <Outlet />
           </main>
         </div>
