@@ -17,7 +17,6 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -87,14 +86,13 @@ export function AppShell() {
 
             {/* Business and Architecture mirror the layers this app already
                 models (business capabilities/processes vs. building blocks/
-                landscape). The sidebar defaults to collapsed/icon-only,
-                which is the primary way it's used (see CLAUDE.md) — group
-                *labels* vanish there, but SidebarSeparator is a plain rule,
-                not text, so it still marks the boundary between groups even
-                with icons alone. */}
+                landscape). No group labels — the sidebar defaults to
+                collapsed/icon-only (its primary state, see CLAUDE.md) where
+                text labels vanish anyway, so SidebarSeparator alone marks
+                each group's boundary, in both states, without relying on
+                text that only sometimes renders. */}
             <SidebarSeparator />
             <SidebarGroup>
-              <SidebarGroupLabel>Business</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
                   <SidebarMenuItem>
@@ -139,7 +137,6 @@ export function AppShell() {
 
             <SidebarSeparator />
             <SidebarGroup>
-              <SidebarGroupLabel>Architecture</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
                   <SidebarMenuItem>
