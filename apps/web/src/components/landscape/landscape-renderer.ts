@@ -27,19 +27,41 @@ const ARROW_MARKER_ID = 'landscape-diagram-arrow';
 
 type DomainCategory = 'business' | 'data' | 'application' | 'technology';
 
-// Loosely follows ArchiMate's layer colors (business=yellow, application=
-// blue, technology=green); data isn't a distinct ArchiMate layer, so this
-// picks a teal that reads as its own thing without clashing.
+// Colors live as CSS custom properties (index.css, --landscape-*) rather
+// than literals here, with separate light/dark values defined there — the
+// renderer just points at a token and the SVG repaints on its own when the
+// theme toggles, no re-render needed. Loosely follows ArchiMate's layer
+// colors (business=yellow, application=blue, technology=green); data isn't
+// a distinct ArchiMate layer, so this picks a teal that reads as its own
+// thing without clashing.
+//
+// Never hardcode a color in this file — add a token to index.css instead,
+// so dark mode stays correct as this renderer's visual language grows.
 const DOMAIN_COLORS: Record<DomainCategory, { stroke: string; fill: string }> = {
-  business: { stroke: '#a16207', fill: '#fef9c3' },
-  data: { stroke: '#0f766e', fill: '#ccfbf1' },
-  application: { stroke: '#2563eb', fill: '#eff6ff' },
-  technology: { stroke: '#15803d', fill: '#dcfce7' },
+  business: {
+    stroke: 'var(--landscape-domain-business-stroke)',
+    fill: 'var(--landscape-domain-business-fill)',
+  },
+  data: {
+    stroke: 'var(--landscape-domain-data-stroke)',
+    fill: 'var(--landscape-domain-data-fill)',
+  },
+  application: {
+    stroke: 'var(--landscape-domain-application-stroke)',
+    fill: 'var(--landscape-domain-application-fill)',
+  },
+  technology: {
+    stroke: 'var(--landscape-domain-technology-stroke)',
+    fill: 'var(--landscape-domain-technology-fill)',
+  },
 };
 
 // Custom/renamed architecture domains (this app doesn't enforce the 4
 // default names as a fixed enum) fall back to neutral grey.
-const UNCLASSIFIED_COLOR = { stroke: '#6b7280', fill: '#f3f4f6' };
+const UNCLASSIFIED_COLOR = {
+  stroke: 'var(--landscape-domain-unclassified-stroke)',
+  fill: 'var(--landscape-domain-unclassified-fill)',
+};
 
 // Best-effort classification by domain name, matching the 4 default
 // architecture domains this app seeds (see examples/*.json) — a substring
@@ -62,8 +84,8 @@ function classifyDomain(domainName: string | undefined): DomainCategory | undefi
 // the point of it.
 const EDGE_STYLES: Record<DiagramEdge['kind'], { stroke: string; dashed: boolean; width: number }> =
   {
-    depends_on: { stroke: '#d97706', dashed: false, width: 1.5 },
-    data_flow: { stroke: '#0f766e', dashed: false, width: 2.5 },
+    depends_on: { stroke: 'var(--landscape-edge-depends-on)', dashed: false, width: 1.5 },
+    data_flow: { stroke: 'var(--landscape-edge-data-flow)', dashed: false, width: 2.5 },
     hosted_on: { stroke: 'transparent', dashed: false, width: 0 },
   };
 
@@ -89,7 +111,7 @@ export function ensureArrowMarker(container: HTMLElement): void {
     markerHeight: 7,
     orient: 'auto-start-reverse',
   });
-  const path = svgCreate('path', { d: 'M 0 0 L 10 5 L 0 10 z', fill: '#9ca3af' });
+  const path = svgCreate('path', { d: 'M 0 0 L 10 5 L 0 10 z', fill: 'var(--landscape-arrow)' });
   svgAppend(marker, path);
   svgAppend(defs, marker);
   svg.insertBefore(defs, svg.firstChild);
@@ -109,7 +131,7 @@ function drawRoundedRect(
     ry: 6,
     stroke: colors.stroke,
     strokeWidth: 1.5,
-    fill: isContainer ? 'rgba(255,255,255,0.35)' : colors.fill,
+    fill: isContainer ? 'var(--landscape-container-fill)' : colors.fill,
   });
   if (isContainer) {
     svgAttr(rect, { 'stroke-dasharray': '5,3' });
@@ -185,7 +207,7 @@ class LandscapeRenderer extends BaseRenderer {
             'font-size': 12,
           },
     );
-    svgAttr(text, { fill: '#1f2937' });
+    svgAttr(text, { fill: 'var(--landscape-label)' });
     text.textContent = truncate(node.label);
     const title = svgCreate('title');
     title.textContent = `${node.label} (${node.kind === 'architecture' ? 'Architecture' : 'Solution'} Building Block)`;

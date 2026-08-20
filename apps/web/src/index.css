@@ -83,6 +83,28 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
+
+    /* Landscape diagram (landscape-renderer.ts) — set as raw SVG fill/
+       stroke attributes, not Tailwind classes, so they aren't registered
+       in the @theme inline block above. The renderer should never
+       hardcode a color of its own: every visual choice it makes pulls
+       from a token here, so dark mode stays correct automatically as the
+       diagram's visual language grows — add a token, not a conditional. */
+    --landscape-domain-business-fill: #fef9c3;
+    --landscape-domain-business-stroke: #a16207;
+    --landscape-domain-data-fill: #ccfbf1;
+    --landscape-domain-data-stroke: #0f766e;
+    --landscape-domain-application-fill: #eff6ff;
+    --landscape-domain-application-stroke: #2563eb;
+    --landscape-domain-technology-fill: #dcfce7;
+    --landscape-domain-technology-stroke: #15803d;
+    --landscape-domain-unclassified-fill: #f3f4f6;
+    --landscape-domain-unclassified-stroke: #6b7280;
+    --landscape-edge-depends-on: #d97706;
+    --landscape-edge-data-flow: #0f766e;
+    --landscape-label: #1f2937;
+    --landscape-container-fill: rgba(255, 255, 255, 0.35);
+    --landscape-arrow: #9ca3af;
 }
 
 .dark {
@@ -118,6 +140,26 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0);
+
+    /* Landscape diagram — see the light-mode block above for the token
+       contract. Strokes go brighter/more saturated and fills switch from
+       pastel-on-white to a low-opacity tint of the stroke color, since a
+       light pastel fill would wash out against a dark surface. */
+    --landscape-domain-business-fill: rgba(217, 119, 6, 0.22);
+    --landscape-domain-business-stroke: #fbbf24;
+    --landscape-domain-data-fill: rgba(13, 148, 136, 0.22);
+    --landscape-domain-data-stroke: #2dd4bf;
+    --landscape-domain-application-fill: rgba(37, 99, 235, 0.22);
+    --landscape-domain-application-stroke: #60a5fa;
+    --landscape-domain-technology-fill: rgba(21, 128, 61, 0.22);
+    --landscape-domain-technology-stroke: #4ade80;
+    --landscape-domain-unclassified-fill: rgba(107, 114, 128, 0.22);
+    --landscape-domain-unclassified-stroke: #9ca3af;
+    --landscape-edge-depends-on: #f59e0b;
+    --landscape-edge-data-flow: #2dd4bf;
+    --landscape-label: #e5e7eb;
+    --landscape-container-fill: rgba(255, 255, 255, 0.08);
+    --landscape-arrow: #a3a3a3;
 }
 
 @layer base {

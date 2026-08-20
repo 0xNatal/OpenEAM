@@ -167,11 +167,13 @@ export default function LandscapeDiagram({ nodes, edges, onNodeClick }: Landscap
     );
   }
 
-  // diagram-js draws dark strokes on a transparent canvas, so the surface
-  // stays light in both themes for readability — same reasoning as the BPMN
-  // viewer/modeler.
+  // Unlike the BPMN viewer/modeler (which force a light canvas because
+  // bpmn-js's own default colors assume one), this renderer draws every
+  // color from a themed CSS token (see index.css's --landscape-* block and
+  // landscape-renderer.ts), so the surface itself can just follow the
+  // app's normal card color and stay correct in both themes.
   return (
-    <div className="landscape-diagram-surface h-full w-full bg-white dark:bg-neutral-300">
+    <div className="landscape-diagram-surface h-full w-full bg-card">
       {/* Hover markers (see ACTIVE_MARKER/CONNECTED_MARKER/DIMMED_MARKER above)
           are plain CSS classes diagram-js adds to each element's <g> — styled
           here rather than in landscape-renderer.ts since they're hover state,

@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client/react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { type CSSProperties, lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import type {
   DiagramEdge,
   DiagramEdgeKind,
@@ -76,18 +76,6 @@ interface LandscapeDiagramData {
   architectureDomains: ArchitectureDomain[];
   organizationUnits: OrganizationUnit[];
 }
-
-// Pins the filter bar's theme tokens to their light-mode values (from
-// index.css's :root block). The filter pill floats over the diagram
-// surface, which stays light in both themes (see landscape-diagram.tsx) —
-// without this, LandscapeFilters' dark-mode muted-foreground/border/input
-// tokens would wash out against that white background.
-const LIGHT_FILTER_TOKENS = {
-  '--muted-foreground': 'oklch(0.556 0 0)',
-  '--border': 'oklch(0.922 0 0)',
-  '--input': 'oklch(0.922 0 0)',
-  '--ring': 'oklch(0.708 0 0)',
-} as CSSProperties;
 
 const RELATIONSHIP_KIND_BY_TYPE: Record<BuildingBlockRelationship['type'], DiagramEdgeKind> = {
   DEPENDS_ON: 'depends_on',
@@ -169,14 +157,11 @@ function LandscapeDiagramRoute() {
     <div className={fullBleedCanvasClassName}>
       <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-card">
         {/* Floating over the canvas rather than occupying its own row, so
-            filtering doesn't cost the diagram any vertical space. Styled
-            light-and-solid regardless of theme, matching the diagram
-            surface underneath it (always light — see landscape-diagram.tsx)
-            so it stays legible as nodes pan behind it. */}
-        <div
-          className="absolute left-4 top-4 z-10 flex items-center gap-4 rounded-full border border-neutral-200 bg-white/95 px-4 py-2 text-neutral-900 shadow-sm backdrop-blur"
-          style={LIGHT_FILTER_TOKENS}
-        >
+            filtering doesn't cost the diagram any vertical space. Plain
+            themed tokens (bg-card/border-border) — the diagram surface
+            underneath follows the theme too now, so there's no light/dark
+            mismatch to work around here. */}
+        <div className="absolute left-4 top-4 z-10 flex items-center gap-4 rounded-full border border-border bg-card/95 px-4 py-2 text-foreground shadow-sm backdrop-blur">
           <LandscapeFilters
             value={filters}
             onChange={setFilters}
