@@ -2,8 +2,15 @@
 // organization unit) used by both the table and diagram landscape views, so
 // the two stay in lockstep instead of drifting apart as separate copies.
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import type { ArchitectureDomain, ArchitectureLevel, OrganizationUnit } from '@/lib/entities';
-import { cn } from '@/lib/utils';
+import { SELECT_EMPTY_VALUE } from '@/lib/utils';
 
 export interface LandscapeFilterValues {
   asOf: string;
@@ -18,9 +25,6 @@ export const EMPTY_LANDSCAPE_FILTERS: LandscapeFilterValues = {
   architectureDomainId: '',
   organizationUnitId: '',
 };
-
-export const selectClassName =
-  'h-7 min-w-0 rounded-md border border-input bg-input/20 px-2 py-0.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30';
 
 interface LandscapeFiltersProps {
   value: LandscapeFilterValues;
@@ -55,51 +59,79 @@ export function LandscapeFilters({
         />
       </label>
       {!hideArchitectureLevel && (
-        <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+        <label
+          htmlFor="landscape-level"
+          className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground"
+        >
           Level
-          <select
-            className={cn(selectClassName, 'w-32')}
-            value={value.architectureLevel}
-            onChange={(e) =>
-              onChange({ ...value, architectureLevel: e.target.value as ArchitectureLevel | '' })
+          <Select
+            value={value.architectureLevel || SELECT_EMPTY_VALUE}
+            onValueChange={(v) =>
+              onChange({
+                ...value,
+                architectureLevel: v === SELECT_EMPTY_VALUE ? '' : (v as ArchitectureLevel),
+              })
             }
           >
-            <option value="">All</option>
-            <option value="STRATEGIC">Strategic</option>
-            <option value="SEGMENT">Segment</option>
-            <option value="CAPABILITY">Capability</option>
-          </select>
+            <SelectTrigger id="landscape-level" className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={SELECT_EMPTY_VALUE}>All</SelectItem>
+              <SelectItem value="STRATEGIC">Strategic</SelectItem>
+              <SelectItem value="SEGMENT">Segment</SelectItem>
+              <SelectItem value="CAPABILITY">Capability</SelectItem>
+            </SelectContent>
+          </Select>
         </label>
       )}
-      <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+      <label
+        htmlFor="landscape-domain"
+        className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground"
+      >
         Domain
-        <select
-          className={cn(selectClassName, 'w-40')}
-          value={value.architectureDomainId}
-          onChange={(e) => onChange({ ...value, architectureDomainId: e.target.value })}
+        <Select
+          value={value.architectureDomainId || SELECT_EMPTY_VALUE}
+          onValueChange={(v) =>
+            onChange({ ...value, architectureDomainId: v === SELECT_EMPTY_VALUE ? '' : v })
+          }
         >
-          <option value="">All</option>
-          {architectureDomains.map((domain) => (
-            <option key={domain.id} value={domain.id}>
-              {domain.name}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger id="landscape-domain" className="w-40">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={SELECT_EMPTY_VALUE}>All</SelectItem>
+            {architectureDomains.map((domain) => (
+              <SelectItem key={domain.id} value={domain.id}>
+                {domain.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </label>
-      <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+      <label
+        htmlFor="landscape-org-unit"
+        className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground"
+      >
         Org unit
-        <select
-          className={cn(selectClassName, 'w-40')}
-          value={value.organizationUnitId}
-          onChange={(e) => onChange({ ...value, organizationUnitId: e.target.value })}
+        <Select
+          value={value.organizationUnitId || SELECT_EMPTY_VALUE}
+          onValueChange={(v) =>
+            onChange({ ...value, organizationUnitId: v === SELECT_EMPTY_VALUE ? '' : v })
+          }
         >
-          <option value="">All</option>
-          {organizationUnits.map((unit) => (
-            <option key={unit.id} value={unit.id}>
-              {unit.name}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger id="landscape-org-unit" className="w-40">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={SELECT_EMPTY_VALUE}>All</SelectItem>
+            {organizationUnits.map((unit) => (
+              <SelectItem key={unit.id} value={unit.id}>
+                {unit.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </label>
     </div>
   );

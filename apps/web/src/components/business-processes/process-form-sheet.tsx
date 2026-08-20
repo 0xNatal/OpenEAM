@@ -4,6 +4,13 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
   Sheet,
   SheetContent,
   SheetDescription,
@@ -154,22 +161,26 @@ export function ProcessFormSheet({
             />
           </label>
 
-          <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
+          <label
+            htmlFor="proc-capability"
+            className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
+          >
             Business capability
-            <select
-              className="h-7 w-full min-w-0 rounded-md border border-input bg-input/20 px-2 py-0.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
+            <Select
               value={form.capabilityId}
-              onChange={(e) => setForm({ ...form, capabilityId: e.target.value })}
+              onValueChange={(v) => setForm({ ...form, capabilityId: v })}
             >
-              <option value="" disabled>
-                Select a capability
-              </option>
-              {capabilities.map((cap) => (
-                <option key={cap.id} value={cap.id}>
-                  {cap.name}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger id="proc-capability" className="w-full">
+                <SelectValue placeholder="Select a capability" />
+              </SelectTrigger>
+              <SelectContent>
+                {capabilities.map((cap) => (
+                  <SelectItem key={cap.id} value={cap.id}>
+                    {cap.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </label>
 
           <label

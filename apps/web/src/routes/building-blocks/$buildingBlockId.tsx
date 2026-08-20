@@ -11,6 +11,13 @@ import {
   TitledCard,
 } from '@/components/ui/page-header';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
   Sheet,
   SheetContent,
   SheetDescription,
@@ -20,6 +27,7 @@ import {
 } from '@/components/ui/sheet';
 import { useEnterprise } from '@/lib/enterprise';
 import type { BuildingBlockRelationship, BuildingBlockRelationshipType } from '@/lib/entities';
+import { SELECT_EMPTY_VALUE } from '@/lib/utils';
 
 const BUILDING_BLOCK_DETAIL_QUERY = gql`
   query BuildingBlockDetail($id: String!, $enterpriseId: String!) {
@@ -179,9 +187,6 @@ const emptyRelationshipForm: RelationshipFormState = {
   validTo: '',
 };
 
-const selectClassName =
-  'h-7 w-full min-w-0 rounded-md border border-input bg-input/20 px-2 py-0.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30';
-
 function BuildingBlockRoute() {
   const { buildingBlockId } = Route.useParams();
   const { enterprise } = useEnterprise();
@@ -323,35 +328,54 @@ function BuildingBlockRoute() {
           </SheetHeader>
 
           <div className="flex flex-col gap-4 px-6 py-2">
-            <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
+            <label
+              htmlFor="rel-target-block"
+              className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
+            >
               Target building block
-              <select
-                className={selectClassName}
-                value={form.targetBuildingBlockId}
-                onChange={(e) => setForm({ ...form, targetBuildingBlockId: e.target.value })}
-              >
-                <option value="">—</option>
-                {otherBlocks.map((b) => (
-                  <option key={b.id} value={b.id}>
-                    {b.name} ({b.__typename === 'ArchitectureBuildingBlock' ? 'ABB' : 'SBB'})
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
-              Type
-              <select
-                className={selectClassName}
-                value={form.type}
-                onChange={(e) =>
-                  setForm({ ...form, type: e.target.value as BuildingBlockRelationshipType })
+              <Select
+                value={form.targetBuildingBlockId || SELECT_EMPTY_VALUE}
+                onValueChange={(v) =>
+                  setForm({
+                    ...form,
+                    targetBuildingBlockId: v === SELECT_EMPTY_VALUE ? '' : v,
+                  })
                 }
               >
-                <option value="DEPENDS_ON">Depends on</option>
-                <option value="DATA_FLOW">Data flow</option>
-                <option value="HOSTED_ON">Hosted on</option>
-              </select>
+                <SelectTrigger id="rel-target-block" className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={SELECT_EMPTY_VALUE}>—</SelectItem>
+                  {otherBlocks.map((b) => (
+                    <SelectItem key={b.id} value={b.id}>
+                      {b.name} ({b.__typename === 'ArchitectureBuildingBlock' ? 'ABB' : 'SBB'})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </label>
+
+            <label
+              htmlFor="rel-type"
+              className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
+            >
+              Type
+              <Select
+                value={form.type}
+                onValueChange={(v) =>
+                  setForm({ ...form, type: v as BuildingBlockRelationshipType })
+                }
+              >
+                <SelectTrigger id="rel-type" className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="DEPENDS_ON">Depends on</SelectItem>
+                  <SelectItem value="DATA_FLOW">Data flow</SelectItem>
+                  <SelectItem value="HOSTED_ON">Hosted on</SelectItem>
+                </SelectContent>
+              </Select>
             </label>
 
             <label

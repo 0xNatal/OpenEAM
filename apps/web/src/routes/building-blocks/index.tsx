@@ -6,6 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { contentWidthClassName, PageHeader } from '@/components/ui/page-header';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
   Sheet,
   SheetContent,
   SheetDescription,
@@ -22,6 +29,7 @@ import type {
   LifecyclePhase,
   OrganizationUnit,
 } from '@/lib/entities';
+import { SELECT_EMPTY_VALUE } from '@/lib/utils';
 
 const BUILDING_BLOCKS_QUERY = gql`
   query BuildingBlocksIndex($enterpriseId: String!) {
@@ -120,9 +128,6 @@ function toFormState(block: BuildingBlock): FormState {
   };
 }
 
-const selectClassName =
-  'h-7 w-full min-w-0 rounded-md border border-input bg-input/20 px-2 py-0.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30';
-
 function BuildingBlockForm({
   form,
   setForm,
@@ -139,22 +144,29 @@ function BuildingBlockForm({
 
   return (
     <div className="flex flex-col gap-4 px-6 py-2">
-      <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
+      <label
+        htmlFor="bb-kind"
+        className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
+      >
         Kind
-        <select
-          className={selectClassName}
+        <Select
           value={form.kind}
-          onChange={(e) =>
+          onValueChange={(v) =>
             setForm({
               ...form,
-              kind: e.target.value as BuildingBlockKind,
-              architectureLevel: e.target.value === 'SOLUTION' ? '' : form.architectureLevel,
+              kind: v as BuildingBlockKind,
+              architectureLevel: v === 'SOLUTION' ? '' : form.architectureLevel,
             })
           }
         >
-          <option value="ARCHITECTURE">Architecture Building Block (ABB)</option>
-          <option value="SOLUTION">Solution Building Block (SBB)</option>
-        </select>
+          <SelectTrigger id="bb-kind" className="w-full">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="ARCHITECTURE">Architecture Building Block (ABB)</SelectItem>
+            <SelectItem value="SOLUTION">Solution Building Block (SBB)</SelectItem>
+          </SelectContent>
+        </Select>
       </label>
 
       <label
@@ -182,35 +194,52 @@ function BuildingBlockForm({
       </label>
 
       {form.kind === 'ARCHITECTURE' && (
-        <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
+        <label
+          htmlFor="bb-architecture-level"
+          className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
+        >
           Architecture level
-          <select
-            className={selectClassName}
-            value={form.architectureLevel}
-            onChange={(e) =>
-              setForm({ ...form, architectureLevel: e.target.value as ArchitectureLevel | '' })
+          <Select
+            value={form.architectureLevel || SELECT_EMPTY_VALUE}
+            onValueChange={(v) =>
+              setForm({
+                ...form,
+                architectureLevel: v === SELECT_EMPTY_VALUE ? '' : (v as ArchitectureLevel),
+              })
             }
           >
-            <option value="">—</option>
-            <option value="STRATEGIC">Strategic</option>
-            <option value="SEGMENT">Segment</option>
-            <option value="CAPABILITY">Capability</option>
-          </select>
+            <SelectTrigger id="bb-architecture-level" className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={SELECT_EMPTY_VALUE}>—</SelectItem>
+              <SelectItem value="STRATEGIC">Strategic</SelectItem>
+              <SelectItem value="SEGMENT">Segment</SelectItem>
+              <SelectItem value="CAPABILITY">Capability</SelectItem>
+            </SelectContent>
+          </Select>
         </label>
       )}
 
-      <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
+      <label
+        htmlFor="bb-lifecycle-phase"
+        className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
+      >
         Lifecycle phase
-        <select
-          className={selectClassName}
+        <Select
           value={form.lifecyclePhase}
-          onChange={(e) => setForm({ ...form, lifecyclePhase: e.target.value as LifecyclePhase })}
+          onValueChange={(v) => setForm({ ...form, lifecyclePhase: v as LifecyclePhase })}
         >
-          <option value="PLANNED">Planned</option>
-          <option value="ACTIVE">Active</option>
-          <option value="PHASING_OUT">Phasing out</option>
-          <option value="RETIRED">Retired</option>
-        </select>
+          <SelectTrigger id="bb-lifecycle-phase" className="w-full">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="PLANNED">Planned</SelectItem>
+            <SelectItem value="ACTIVE">Active</SelectItem>
+            <SelectItem value="PHASING_OUT">Phasing out</SelectItem>
+            <SelectItem value="RETIRED">Retired</SelectItem>
+          </SelectContent>
+        </Select>
       </label>
 
       <div className="grid grid-cols-2 gap-3">
@@ -431,61 +460,93 @@ function BuildingBlocksIndexRoute() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </label>
-        <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+        <label
+          htmlFor="bb-kind-filter"
+          className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground"
+        >
           Kind
-          <select
-            className={selectClassName}
-            value={kindFilter}
-            onChange={(e) => setKindFilter(e.target.value as BuildingBlockKind | '')}
+          <Select
+            value={kindFilter || SELECT_EMPTY_VALUE}
+            onValueChange={(v) =>
+              setKindFilter(v === SELECT_EMPTY_VALUE ? '' : (v as BuildingBlockKind))
+            }
           >
-            <option value="">All</option>
-            <option value="ARCHITECTURE">ABB</option>
-            <option value="SOLUTION">SBB</option>
-          </select>
+            <SelectTrigger id="bb-kind-filter">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={SELECT_EMPTY_VALUE}>All</SelectItem>
+              <SelectItem value="ARCHITECTURE">ABB</SelectItem>
+              <SelectItem value="SOLUTION">SBB</SelectItem>
+            </SelectContent>
+          </Select>
         </label>
-        <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+        <label
+          htmlFor="bb-lifecycle-filter"
+          className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground"
+        >
           Lifecycle
-          <select
-            className={selectClassName}
-            value={lifecycleFilter}
-            onChange={(e) => setLifecycleFilter(e.target.value as LifecyclePhase | '')}
+          <Select
+            value={lifecycleFilter || SELECT_EMPTY_VALUE}
+            onValueChange={(v) =>
+              setLifecycleFilter(v === SELECT_EMPTY_VALUE ? '' : (v as LifecyclePhase))
+            }
           >
-            <option value="">All</option>
-            <option value="PLANNED">Planned</option>
-            <option value="ACTIVE">Active</option>
-            <option value="PHASING_OUT">Phasing out</option>
-            <option value="RETIRED">Retired</option>
-          </select>
+            <SelectTrigger id="bb-lifecycle-filter">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={SELECT_EMPTY_VALUE}>All</SelectItem>
+              <SelectItem value="PLANNED">Planned</SelectItem>
+              <SelectItem value="ACTIVE">Active</SelectItem>
+              <SelectItem value="PHASING_OUT">Phasing out</SelectItem>
+              <SelectItem value="RETIRED">Retired</SelectItem>
+            </SelectContent>
+          </Select>
         </label>
-        <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+        <label
+          htmlFor="bb-domain-filter"
+          className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground"
+        >
           Domain
-          <select
-            className={selectClassName}
-            value={domainFilter}
-            onChange={(e) => setDomainFilter(e.target.value)}
+          <Select
+            value={domainFilter || SELECT_EMPTY_VALUE}
+            onValueChange={(v) => setDomainFilter(v === SELECT_EMPTY_VALUE ? '' : v)}
           >
-            <option value="">All</option>
-            {domains.map((domain) => (
-              <option key={domain.id} value={domain.id}>
-                {domain.name}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger id="bb-domain-filter">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={SELECT_EMPTY_VALUE}>All</SelectItem>
+              {domains.map((domain) => (
+                <SelectItem key={domain.id} value={domain.id}>
+                  {domain.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </label>
-        <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+        <label
+          htmlFor="bb-org-unit-filter"
+          className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground"
+        >
           Org unit
-          <select
-            className={selectClassName}
-            value={organizationUnitFilter}
-            onChange={(e) => setOrganizationUnitFilter(e.target.value)}
+          <Select
+            value={organizationUnitFilter || SELECT_EMPTY_VALUE}
+            onValueChange={(v) => setOrganizationUnitFilter(v === SELECT_EMPTY_VALUE ? '' : v)}
           >
-            <option value="">All</option>
-            {organizationUnits.map((unit) => (
-              <option key={unit.id} value={unit.id}>
-                {unit.name}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger id="bb-org-unit-filter">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={SELECT_EMPTY_VALUE}>All</SelectItem>
+              {organizationUnits.map((unit) => (
+                <SelectItem key={unit.id} value={unit.id}>
+                  {unit.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </label>
         {hasActiveFilters && (
           <Button variant="ghost" size="sm" onClick={clearFilters}>
