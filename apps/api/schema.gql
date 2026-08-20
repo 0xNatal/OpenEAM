@@ -178,11 +178,13 @@ type Mutation {
   deleteBusinessCapability(id: String!): Boolean!
   deleteBusinessProcess(id: String!): Boolean!
   deleteEnterprise(id: String!): Boolean!
+  deleteValueStream(id: String!): Boolean!
   updateBuildingBlock(id: String!, input: BuildingBlockInput!): BuildingBlock!
   updateBusinessCapability(id: String!, input: BusinessCapabilityInput!): BusinessCapability!
   updateBusinessProcess(id: String!, input: BusinessProcessInput!): BusinessProcess!
   updateBusinessProcessDiagram(bpmnXml: String!, id: String!): BusinessProcess!
   updateEnterprise(id: String!, input: EnterpriseInput!): Enterprise!
+  updateValueStream(id: String!, input: ValueStreamInput!): ValueStream!
 }
 
 type OrganizationUnit {

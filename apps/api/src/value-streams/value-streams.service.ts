@@ -1,8 +1,38 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import type { Database } from '@openeam/db';
-import { schema } from '@openeam/db';
+import type { Database, Transaction } from '@openeam/db';
+import { eq, schema } from '@openeam/db';
 import { DATABASE } from '../db.module';
 import type { ValueStream, ValueStreamInput } from './value-stream.model';
+
+// Stage order and each stage's capability order both come from their
+// position in the input arrays — the wire format carries order implicitly,
+// only the DB rows need an explicit position column. Shared by create and
+// update, since update replaces a value stream's stages wholesale rather
+// than diffing them (simplest correct approach for a small ordered list).
+async function insertStages(
+  tx: Transaction,
+  valueStreamId: string,
+  stages: ValueStreamInput['stages'],
+): Promise<void> {
+  for (const [stagePosition, stage] of stages.entries()) {
+    const [insertedStage] = await tx
+      .insert(schema.valueStreamStages)
+      .values({ valueStreamId, name: stage.name, position: stagePosition })
+      .returning({ id: schema.valueStreamStages.id });
+
+    if (!insertedStage) throw new NotFoundException('Value stream stage insert returned no row');
+
+    if (stage.capabilityIds.length > 0) {
+      await tx.insert(schema.stageCapabilities).values(
+        stage.capabilityIds.map((capabilityId, position) => ({
+          stageId: insertedStage.id,
+          capabilityId,
+          position,
+        })),
+      );
+    }
+  }
+}
 
 interface StageRow {
   id: string;
@@ -75,38 +105,44 @@ export class ValueStreamsService {
 
       if (!inserted) throw new NotFoundException('Value stream insert returned no row');
 
-      // Stage order and each stage's capability order both come from their
-      // position in the input arrays — the wire format carries order
-      // implicitly, only the DB rows need an explicit position column.
-      for (const [stagePosition, stage] of input.stages.entries()) {
-        const [insertedStage] = await tx
-          .insert(schema.valueStreamStages)
-          .values({
-            valueStreamId: inserted.id,
-            name: stage.name,
-            position: stagePosition,
-          })
-          .returning({ id: schema.valueStreamStages.id });
-
-        if (!insertedStage)
-          throw new NotFoundException('Value stream stage insert returned no row');
-
-        if (stage.capabilityIds.length > 0) {
-          await tx.insert(schema.stageCapabilities).values(
-            stage.capabilityIds.map((capabilityId, position) => ({
-              stageId: insertedStage.id,
-              capabilityId,
-              position,
-            })),
-          );
-        }
-      }
-
+      await insertStages(tx, inserted.id, input.stages);
       return inserted.id;
     });
 
     const created = await this.findOne(id);
     if (!created) throw new NotFoundException(`Value stream ${id} not found after creation`);
     return created;
+  }
+
+  async update(id: string, input: ValueStreamInput): Promise<ValueStream> {
+    await this.db.transaction(async (tx) => {
+      const [updated] = await tx
+        .update(schema.valueStreams)
+        .set({ name: input.name, description: input.description ?? null })
+        .where(eq(schema.valueStreams.id, id))
+        .returning({ id: schema.valueStreams.id });
+
+      if (!updated) throw new NotFoundException(`Value stream ${id} not found`);
+
+      // Full replace of stages/links rather than diffing them against the
+      // existing set — simplest correct approach for a small ordered list,
+      // and cascade delete takes stageCapabilities with their stage.
+      await tx
+        .delete(schema.valueStreamStages)
+        .where(eq(schema.valueStreamStages.valueStreamId, id));
+      await insertStages(tx, id, input.stages);
+    });
+
+    const updated = await this.findOne(id);
+    if (!updated) throw new NotFoundException(`Value stream ${id} not found after update`);
+    return updated;
+  }
+
+  async delete(id: string): Promise<boolean> {
+    const [deleted] = await this.db
+      .delete(schema.valueStreams)
+      .where(eq(schema.valueStreams.id, id))
+      .returning({ id: schema.valueStreams.id });
+    return Boolean(deleted);
   }
 }

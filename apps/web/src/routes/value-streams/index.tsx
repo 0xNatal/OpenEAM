@@ -1,12 +1,16 @@
 import { gql } from '@apollo/client';
-import { useQuery } from '@apollo/client/react';
+import { useMutation, useQuery } from '@apollo/client/react';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { contentWidthClassName, PageHeader } from '@/components/ui/page-header';
 import { MiniChevronStrip } from '@/components/value-stream/diagram';
-import { ValueStreamFormSheet } from '@/components/value-stream/value-stream-form-sheet';
+import {
+  DELETE_VALUE_STREAM,
+  ValueStreamFormSheet,
+  type ValueStreamFormValue,
+} from '@/components/value-stream/value-stream-form-sheet';
 import { useEnterprise } from '@/lib/enterprise';
 
 const VALUE_STREAMS_QUERY = gql`
@@ -18,6 +22,7 @@ const VALUE_STREAMS_QUERY = gql`
       stages {
         id
         name
+        capabilityIds
       }
     }
     businessCapabilities(enterpriseId: $enterpriseId) {
@@ -27,16 +32,69 @@ const VALUE_STREAMS_QUERY = gql`
   }
 `;
 
-interface ValueStreamSummary {
-  id: string;
-  name: string;
-  description?: string | null;
-  stages: { id: string; name: string }[];
+interface ValueStreamSummary extends ValueStreamFormValue {
+  stages: Array<{ id: string; name: string; capabilityIds: string[] }>;
 }
 
 interface ValueStreamsData {
   valueStreams: ValueStreamSummary[];
   businessCapabilities: { id: string; name: string }[];
+}
+
+function ValueStreamCard({
+  vs,
+  onEdit,
+  onDelete,
+}: {
+  vs: ValueStreamSummary;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  return (
+    <div className="group relative">
+      <div className="absolute right-2 top-2 z-10 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+        <Button variant="ghost" size="icon-sm" onClick={onEdit}>
+          <Pencil strokeWidth={2} />
+          <span className="sr-only">Edit</span>
+        </Button>
+        <Button variant="destructive" size="icon-sm" onClick={onDelete}>
+          <Trash2 strokeWidth={2} />
+          <span className="sr-only">Delete</span>
+        </Button>
+      </div>
+      <Link
+        to="/value-streams/$valueStreamId"
+        params={{ valueStreamId: vs.id }}
+        className="flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-xs transition-all duration-150 group-hover:border-violet-300 group-hover:shadow-md dark:group-hover:border-violet-700"
+      >
+        {/* Mini chevron strip preview */}
+        <div className="px-4 pt-4 pb-2">
+          <MiniChevronStrip stages={vs.stages.map((s) => s.name)} />
+        </div>
+
+        {/* Card body */}
+        <div className="flex flex-1 flex-col gap-3 px-4 py-4">
+          <div>
+            <h2 className="text-base font-semibold text-foreground transition-colors group-hover:text-violet-700 dark:group-hover:text-violet-300">
+              {vs.name}
+            </h2>
+            <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+              {vs.description}
+            </p>
+          </div>
+
+          <div className="mt-auto flex items-center justify-between">
+            <span className="inline-flex items-center rounded-full bg-violet-50 px-2.5 py-0.5 text-xs font-medium text-violet-700 dark:bg-violet-950/50 dark:text-violet-300">
+              {vs.stages.length} stages
+            </span>
+            <span className="flex items-center gap-1 text-xs font-medium text-violet-600 opacity-0 transition-opacity group-hover:opacity-100 dark:text-violet-400">
+              Explore <ArrowRight className="size-3" />
+            </span>
+          </div>
+        </div>
+      </Link>
+    </div>
+  );
 }
 
 function ValueStreamsIndexRoute() {
@@ -45,14 +103,39 @@ function ValueStreamsIndexRoute() {
     variables: { enterpriseId: enterprise?.id },
     skip: !enterprise,
   });
+  const [deleteValueStream] = useMutation(DELETE_VALUE_STREAM, {
+    update(cache, _result, { variables }) {
+      if (!variables?.id) return;
+      cache.evict({ id: cache.identify({ __typename: 'ValueStream', id: variables.id }) });
+      cache.gc();
+    },
+  });
+
+  const [editingStream, setEditingStream] = useState<ValueStreamSummary | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
+
+  const openCreate = () => {
+    setEditingStream(null);
+    setSheetOpen(true);
+  };
+
+  const openEdit = (vs: ValueStreamSummary) => {
+    setEditingStream(vs);
+    setSheetOpen(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('Delete this value stream?')) return;
+    await deleteValueStream({ variables: { id } });
+    await refetch();
+  };
 
   return (
     <div className={contentWidthClassName}>
       <PageHeader
         title="Value Streams"
         action={
-          <Button onClick={() => setSheetOpen(true)} disabled={!enterprise}>
+          <Button onClick={openCreate} disabled={!enterprise}>
             New value stream
           </Button>
         }
@@ -66,38 +149,12 @@ function ValueStreamsIndexRoute() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {data?.valueStreams.map((vs) => (
-          <Link
+          <ValueStreamCard
             key={vs.id}
-            to="/value-streams/$valueStreamId"
-            params={{ valueStreamId: vs.id }}
-            className="group flex flex-col rounded-xl border border-border bg-card shadow-xs overflow-hidden hover:border-violet-300 dark:hover:border-violet-700 hover:shadow-md transition-all duration-150"
-          >
-            {/* Mini chevron strip preview */}
-            <div className="px-4 pt-4 pb-2">
-              <MiniChevronStrip stages={vs.stages.map((s) => s.name)} />
-            </div>
-
-            {/* Card body */}
-            <div className="flex flex-col flex-1 gap-3 px-4 py-4">
-              <div>
-                <h2 className="text-base font-semibold text-foreground group-hover:text-violet-700 dark:group-hover:text-violet-300 transition-colors">
-                  {vs.name}
-                </h2>
-                <p className="mt-1 text-xs text-muted-foreground leading-relaxed line-clamp-2">
-                  {vs.description}
-                </p>
-              </div>
-
-              <div className="mt-auto flex items-center justify-between">
-                <span className="inline-flex items-center rounded-full bg-violet-50 dark:bg-violet-950/50 px-2.5 py-0.5 text-xs font-medium text-violet-700 dark:text-violet-300">
-                  {vs.stages.length} stages
-                </span>
-                <span className="flex items-center gap-1 text-xs font-medium text-violet-600 dark:text-violet-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                  Explore <ArrowRight className="size-3" />
-                </span>
-              </div>
-            </div>
-          </Link>
+            vs={vs}
+            onEdit={() => openEdit(vs)}
+            onDelete={() => handleDelete(vs.id)}
+          />
         ))}
       </div>
 
@@ -107,7 +164,8 @@ function ValueStreamsIndexRoute() {
           onOpenChange={setSheetOpen}
           enterpriseId={enterprise.id}
           capabilities={data?.businessCapabilities ?? []}
-          onCreated={() => refetch()}
+          valueStream={editingStream}
+          onSaved={refetch}
         />
       )}
     </div>

@@ -20,4 +20,14 @@ export class ValueStreamsResolver {
   createValueStream(@Args('input') input: ValueStreamInput) {
     return this.service.create(input);
   }
+
+  @Mutation(() => ValueStream)
+  updateValueStream(@Args('id') id: string, @Args('input') input: ValueStreamInput) {
+    return this.service.update(id, input);
+  }
+
+  @Mutation(() => Boolean)
+  deleteValueStream(@Args('id') id: string) {
+    return this.service.delete(id);
+  }
 }

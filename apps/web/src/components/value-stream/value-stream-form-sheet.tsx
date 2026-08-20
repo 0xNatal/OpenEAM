@@ -23,13 +23,43 @@ const CREATE_VALUE_STREAM = gql`
       stages {
         id
         name
+        capabilityIds
       }
     }
   }
 `;
 
-// One stage as the form edits it — before saving, a stage has no id of its
-// own yet, so the list needs a separate client-only key for React.
+const UPDATE_VALUE_STREAM = gql`
+  mutation UpdateValueStream($id: String!, $input: ValueStreamInput!) {
+    updateValueStream(id: $id, input: $input) {
+      id
+      name
+      description
+      stages {
+        id
+        name
+        capabilityIds
+      }
+    }
+  }
+`;
+
+export const DELETE_VALUE_STREAM = gql`
+  mutation DeleteValueStream($id: String!) {
+    deleteValueStream(id: $id)
+  }
+`;
+
+export interface ValueStreamFormValue {
+  id: string;
+  name: string;
+  description?: string | null;
+  stages: Array<{ id: string; name: string; capabilityIds: string[] }>;
+}
+
+// One stage as the form edits it — an unsaved stage has no real id yet, so
+// the list needs a client-only key for React regardless of whether it's a
+// new stage or one loaded from an existing value stream.
 interface StageDraft {
   key: string;
   name: string;
@@ -40,32 +70,45 @@ function emptyStage(): StageDraft {
   return { key: crypto.randomUUID(), name: '', capabilityIds: [] };
 }
 
+function toStageDrafts(valueStream: ValueStreamFormValue | null): StageDraft[] {
+  if (!valueStream || valueStream.stages.length === 0) return [emptyStage()];
+  return valueStream.stages.map((s) => ({
+    key: s.id,
+    name: s.name,
+    capabilityIds: s.capabilityIds,
+  }));
+}
+
 export function ValueStreamFormSheet({
   open,
   onOpenChange,
   enterpriseId,
   capabilities,
-  onCreated,
+  valueStream,
+  onSaved,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   enterpriseId: string;
   capabilities: NamedRef[];
-  onCreated: () => void;
+  // null creates a new value stream; passing one edits it in place.
+  valueStream: ValueStreamFormValue | null;
+  onSaved: () => void;
 }) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [stages, setStages] = useState<StageDraft[]>([emptyStage()]);
-  const [createValueStream, { error }] = useMutation(CREATE_VALUE_STREAM);
+  const [createValueStream, { error: createError }] = useMutation(CREATE_VALUE_STREAM);
+  const [updateValueStream, { error: updateError }] = useMutation(UPDATE_VALUE_STREAM);
 
-  // Reset to a blank form each time the sheet opens, so a previous draft
-  // doesn't linger into the next "New value stream" click.
+  // Load the form from `valueStream` (edit) or blank it (create) each time
+  // the sheet opens, so a previous draft never leaks into the next open.
   useEffect(() => {
     if (!open) return;
-    setName('');
-    setDescription('');
-    setStages([emptyStage()]);
-  }, [open]);
+    setName(valueStream?.name ?? '');
+    setDescription(valueStream?.description ?? '');
+    setStages(toStageDrafts(valueStream));
+  }, [open, valueStream]);
 
   const updateStage = (key: string, patch: Partial<StageDraft>) =>
     setStages((prev) => prev.map((s) => (s.key === key ? { ...s, ...patch } : s)));
@@ -78,27 +121,29 @@ export function ValueStreamFormSheet({
   };
 
   const canSubmit = name.trim() !== '' && stages.every((s) => s.name.trim() !== '');
+  const error = createError ?? updateError;
 
   const handleSubmit = async () => {
-    await createValueStream({
-      variables: {
-        input: {
-          enterpriseId,
-          name,
-          description: description || null,
-          stages: stages.map((s) => ({ name: s.name, capabilityIds: s.capabilityIds })),
-        },
-      },
-    });
+    const input = {
+      enterpriseId,
+      name,
+      description: description || null,
+      stages: stages.map((s) => ({ name: s.name, capabilityIds: s.capabilityIds })),
+    };
+    if (valueStream) {
+      await updateValueStream({ variables: { id: valueStream.id, input } });
+    } else {
+      await createValueStream({ variables: { input } });
+    }
     onOpenChange(false);
-    onCreated();
+    onSaved();
   };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="overflow-y-auto">
         <SheetHeader>
-          <SheetTitle>New value stream</SheetTitle>
+          <SheetTitle>{valueStream ? 'Edit value stream' : 'New value stream'}</SheetTitle>
           <SheetDescription>
             An end-to-end sequence of stages that delivers value to a stakeholder, triggered by a
             need and ending when it's satisfied — e.g. "Order to Cash", not a single process step.
@@ -188,7 +233,7 @@ export function ValueStreamFormSheet({
 
         <SheetFooter>
           <Button onClick={handleSubmit} disabled={!canSubmit}>
-            Create
+            {valueStream ? 'Save changes' : 'Create'}
           </Button>
         </SheetFooter>
       </SheetContent>

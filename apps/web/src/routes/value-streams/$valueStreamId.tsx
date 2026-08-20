@@ -1,13 +1,19 @@
 import { gql } from '@apollo/client';
-import { useQuery } from '@apollo/client/react';
-import { createFileRoute, Link, notFound } from '@tanstack/react-router';
+import { useMutation, useQuery } from '@apollo/client/react';
+import { createFileRoute, Link, notFound, useNavigate } from '@tanstack/react-router';
 import { ChevronLeft } from 'lucide-react';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 import {
   contentWidthClassName,
   PageHeader,
   pageBackLinkClassName,
 } from '@/components/ui/page-header';
 import { ValueStreamDiagram } from '@/components/value-stream/diagram';
+import {
+  DELETE_VALUE_STREAM,
+  ValueStreamFormSheet,
+} from '@/components/value-stream/value-stream-form-sheet';
 import type { ValueStream, ValueStreamCapability } from '@/lib/entities';
 
 const VALUE_STREAM_QUERY = gql`
@@ -48,7 +54,8 @@ interface StreamCapabilitiesData {
 
 function ValueStreamDetailRoute() {
   const { valueStreamId } = Route.useParams();
-  const { data, loading, error } = useQuery<ValueStreamDetailData>(VALUE_STREAM_QUERY, {
+  const navigate = useNavigate();
+  const { data, loading, error, refetch } = useQuery<ValueStreamDetailData>(VALUE_STREAM_QUERY, {
     variables: { id: valueStreamId },
   });
   const enterpriseId = data?.valueStream?.enterpriseId;
@@ -56,6 +63,14 @@ function ValueStreamDetailRoute() {
     variables: { enterpriseId },
     skip: !enterpriseId,
   });
+  const [deleteValueStream] = useMutation(DELETE_VALUE_STREAM);
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  const handleDelete = async () => {
+    if (!window.confirm('Delete this value stream?')) return;
+    await deleteValueStream({ variables: { id: valueStreamId } });
+    navigate({ to: '/value-streams' });
+  };
 
   if (loading) return <p className="px-6 py-8 text-sm text-muted-foreground">Loading…</p>;
   if (error)
@@ -74,6 +89,16 @@ function ValueStreamDetailRoute() {
             Value Streams
           </Link>
         }
+        action={
+          <>
+            <Button variant="ghost" size="sm" onClick={() => setSheetOpen(true)}>
+              Edit
+            </Button>
+            <Button variant="destructive" size="sm" onClick={handleDelete}>
+              Delete
+            </Button>
+          </>
+        }
       />
 
       {/* Diagram */}
@@ -83,6 +108,15 @@ function ValueStreamDetailRoute() {
         </p>
         <ValueStreamDiagram stream={stream} capabilities={capsData?.businessCapabilities ?? []} />
       </div>
+
+      <ValueStreamFormSheet
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+        enterpriseId={stream.enterpriseId}
+        capabilities={capsData?.businessCapabilities ?? []}
+        valueStream={stream}
+        onSaved={refetch}
+      />
     </div>
   );
 }
