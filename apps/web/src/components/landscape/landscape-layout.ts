@@ -10,6 +10,7 @@
 
 import CoreModule from 'diagram-js/lib/core';
 import Diagram from 'diagram-js/lib/Diagram';
+import InteractionEventsModule from 'diagram-js/lib/features/interaction-events';
 import MoveCanvasModule from 'diagram-js/lib/navigation/movecanvas';
 import ZoomScrollModule from 'diagram-js/lib/navigation/zoomscroll';
 import ELK, { type ElkNode } from 'elkjs/lib/elk.bundled.js';
@@ -173,12 +174,14 @@ interface PositionedNode {
   absY: number;
 }
 
-interface CanvasApi {
+export interface CanvasApi {
   addShape: (shape: unknown, parent?: unknown) => void;
   addConnection: (connection: unknown, parent: unknown) => void;
   getRootElement: () => unknown;
   getContainer: () => HTMLElement;
   zoom: (mode: string) => void;
+  addMarker: (element: unknown, marker: string) => void;
+  removeMarker: (element: unknown, marker: string) => void;
 }
 
 interface ElementFactoryApi {
@@ -312,7 +315,13 @@ export async function layoutAndRender(
 
   const diagram = new Diagram({
     canvas: { container },
-    modules: [CoreModule, ZoomScrollModule, MoveCanvasModule, LandscapeRendererModule],
+    modules: [
+      CoreModule,
+      ZoomScrollModule,
+      MoveCanvasModule,
+      InteractionEventsModule,
+      LandscapeRendererModule,
+    ],
   });
 
   const canvas = diagram.get('canvas') as CanvasApi;

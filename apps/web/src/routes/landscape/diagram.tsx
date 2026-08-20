@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client/react';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { lazy, Suspense, useMemo, useState } from 'react';
 import type {
   DiagramEdge,
@@ -123,6 +123,7 @@ function LandscapeDiagramRoute() {
   });
 
   const { enterprise } = useEnterprise();
+  const navigate = useNavigate();
   const { data, loading, error } = useQuery<LandscapeDiagramData>(LANDSCAPE_DIAGRAM_QUERY, {
     variables: {
       enterpriseId: enterprise?.id,
@@ -167,7 +168,16 @@ function LandscapeDiagramRoute() {
                 <p className="p-4 text-xs text-muted-foreground italic">Loading diagram…</p>
               }
             >
-              <LandscapeDiagram nodes={nodes} edges={edges} />
+              <LandscapeDiagram
+                nodes={nodes}
+                edges={edges}
+                onNodeClick={(nodeId) =>
+                  navigate({
+                    to: '/building-blocks/$buildingBlockId',
+                    params: { buildingBlockId: nodeId },
+                  })
+                }
+              />
             </Suspense>
           )}
         </div>
