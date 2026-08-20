@@ -16,11 +16,14 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
+  SidebarSeparator,
   SidebarTrigger,
 } from './ui/sidebar';
 import { TooltipProvider } from './ui/tooltip';
@@ -68,84 +71,131 @@ export function AppShell() {
           </SidebarHeader>
           <SidebarContent>
             <SidebarGroup>
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={isOverview} tooltip="Overview">
-                    <Link to="/">
-                      <Home strokeWidth={2} />
-                      <span className="group-data-[collapsible=icon]:hidden">Overview</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={isValueStreams} tooltip="Value Streams">
-                    <Link to="/value-streams">
-                      <Route strokeWidth={2} />
-                      <span className="group-data-[collapsible=icon]:hidden">Value Streams</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isCapabilities}
-                    tooltip="Business Capabilities"
-                  >
-                    <Link to="/capabilities">
-                      <Target strokeWidth={2} />
-                      <span className="group-data-[collapsible=icon]:hidden">
-                        Business Capabilities
-                      </span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isBusinessProcesses}
-                    tooltip="Business Processes"
-                  >
-                    <Link to="/business-processes">
-                      <Workflow strokeWidth={2} />
-                      <span className="group-data-[collapsible=icon]:hidden">
-                        Business Processes
-                      </span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={isBuildingBlocks} tooltip="Building Blocks">
-                    <Link to="/building-blocks">
-                      <Blocks strokeWidth={2} />
-                      <span className="group-data-[collapsible=icon]:hidden">Building Blocks</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={isLandscapeDiagram} tooltip="Landscape">
-                    <Link to="/landscape/diagram">
-                      <MapIcon strokeWidth={2} />
-                      <span className="group-data-[collapsible=icon]:hidden">Landscape</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={isLandscapeTable} tooltip="Landscape Table">
-                    <Link to="/landscape">
-                      <Table2 strokeWidth={2} />
-                      <span className="group-data-[collapsible=icon]:hidden">Landscape Table</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={isDataExchange} tooltip="Data Exchange">
-                    <Link to="/data-exchange">
-                      <ArrowLeftRight strokeWidth={2} />
-                      <span className="group-data-[collapsible=icon]:hidden">Data Exchange</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isOverview} tooltip="Overview">
+                      <Link to="/">
+                        <Home strokeWidth={2} />
+                        <span className="group-data-[collapsible=icon]:hidden">Overview</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+
+            {/* Business and Architecture mirror the layers this app already
+                models (business capabilities/processes vs. building blocks/
+                landscape). The sidebar defaults to collapsed/icon-only,
+                which is the primary way it's used (see CLAUDE.md) — group
+                *labels* vanish there, but SidebarSeparator is a plain rule,
+                not text, so it still marks the boundary between groups even
+                with icons alone. */}
+            <SidebarSeparator />
+            <SidebarGroup>
+              <SidebarGroupLabel>Business</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isValueStreams} tooltip="Value Streams">
+                      <Link to="/value-streams">
+                        <Route strokeWidth={2} />
+                        <span className="group-data-[collapsible=icon]:hidden">Value Streams</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isCapabilities}
+                      tooltip="Business Capabilities"
+                    >
+                      <Link to="/capabilities">
+                        <Target strokeWidth={2} />
+                        <span className="group-data-[collapsible=icon]:hidden">
+                          Business Capabilities
+                        </span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isBusinessProcesses}
+                      tooltip="Business Processes"
+                    >
+                      <Link to="/business-processes">
+                        <Workflow strokeWidth={2} />
+                        <span className="group-data-[collapsible=icon]:hidden">
+                          Business Processes
+                        </span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+
+            <SidebarSeparator />
+            <SidebarGroup>
+              <SidebarGroupLabel>Architecture</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isBuildingBlocks}
+                      tooltip="Building Blocks"
+                    >
+                      <Link to="/building-blocks">
+                        <Blocks strokeWidth={2} />
+                        <span className="group-data-[collapsible=icon]:hidden">
+                          Building Blocks
+                        </span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isLandscapeDiagram} tooltip="Landscape">
+                      <Link to="/landscape/diagram">
+                        <MapIcon strokeWidth={2} />
+                        <span className="group-data-[collapsible=icon]:hidden">Landscape</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isLandscapeTable}
+                      tooltip="Landscape Table"
+                    >
+                      <Link to="/landscape">
+                        <Table2 strokeWidth={2} />
+                        <span className="group-data-[collapsible=icon]:hidden">
+                          Landscape Table
+                        </span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+
+            <SidebarSeparator />
+            <SidebarGroup>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isDataExchange} tooltip="Data Exchange">
+                      <Link to="/data-exchange">
+                        <ArrowLeftRight strokeWidth={2} />
+                        <span className="group-data-[collapsible=icon]:hidden">Data Exchange</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
             </SidebarGroup>
           </SidebarContent>
           <SidebarFooter>
