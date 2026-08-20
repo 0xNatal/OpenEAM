@@ -89,6 +89,11 @@ export default function LandscapeDiagram({ nodes, edges, onNodeClick }: Landscap
       addNeighbor(edge.targetId, edge.sourceId, edge.id);
     }
     const edgeEndpoints = new Map(edges.map((e) => [e.id, [e.sourceId, e.targetId]]));
+    // diagram-js fires element.hover/element.click for the empty canvas
+    // itself too (its root element), not just real shapes/connections —
+    // without this guard, moving the mouse over blank space would dim the
+    // whole diagram as if hovering a (nonexistent) node.
+    const realElementIds = new Set([...nodes.map((n) => n.id), ...edges.map((e) => e.id)]);
 
     layoutAndRender(container, nodes, edges)
       .then((d) => {
@@ -109,6 +114,7 @@ export default function LandscapeDiagram({ nodes, edges, onNodeClick }: Landscap
         }
 
         function handleHover({ element }: { element: RegisteredElement }) {
+          if (!realElementIds.has(element.id)) return;
           const isConnection = element.waypoints !== undefined;
           const related = isConnection
             ? { edgeIds: [element.id], nodeIds: edgeEndpoints.get(element.id) ?? [] }
@@ -134,6 +140,7 @@ export default function LandscapeDiagram({ nodes, edges, onNodeClick }: Landscap
         }
 
         function handleClick({ element }: { element: RegisteredElement }) {
+          if (!realElementIds.has(element.id)) return; // background/root
           if (element.waypoints !== undefined) return; // ignore edge clicks
           onNodeClick?.(element.id);
         }
@@ -180,6 +187,17 @@ export default function LandscapeDiagram({ nodes, edges, onNodeClick }: Landscap
           not part of a node/edge's own drawn appearance. */}
       <style>{`
         .landscape-diagram-surface .djs-element { cursor: pointer; }
+        /* diagram-js's core Canvas always makes its <svg> focusable and
+           focuses it on every click, for a keyboard-pan feature this view
+           doesn't even wire up (no Keyboard module in landscape-layout.ts's
+           module list) — so the resulting focus ring around the whole
+           diagram on every click serves no function here. This view is
+           read-only and meant to feel like a stable surface, not an
+           editor, so drop the ring unconditionally rather than trying to
+           distinguish real keyboard focus from it. */
+        .landscape-diagram-surface svg:focus {
+          outline: none;
+        }
         .landscape-diagram-surface .${ACTIVE_MARKER} .djs-visual > :first-child {
           stroke-width: 3px;
         }
