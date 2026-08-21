@@ -148,7 +148,7 @@ function LandscapeDiagramRoute() {
             themed tokens (bg-card/border-border) — the diagram surface
             underneath follows the theme too now, so there's no light/dark
             mismatch to work around here. */}
-        <div className="absolute left-4 top-4 z-10 flex items-center gap-4 rounded-full border border-border bg-card/95 px-4 py-2 text-foreground shadow-sm backdrop-blur">
+        <div className="absolute left-4 top-4 z-10 flex items-center gap-4 rounded-xl border border-border bg-card/95 px-4 py-2 text-foreground shadow-sm backdrop-blur">
           <LandscapeFilters
             value={filters}
             onChange={setFilters}
