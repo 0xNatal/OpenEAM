@@ -8,6 +8,7 @@ import {
 } from '@/components/capabilities/capability-form-sheet';
 import { Button } from '@/components/ui/button';
 import { contentWidthClassName, PageHeader } from '@/components/ui/page-header';
+import { CAPABILITY_DIRECTION_LABEL, CAPABILITY_DIRECTION_STYLE } from '@/lib/capability-direction';
 import { useEnterprise } from '@/lib/enterprise';
 import type { BusinessCapabilitySummary } from '@/lib/entities';
 
@@ -17,6 +18,7 @@ const BUSINESS_CAPABILITIES_QUERY = gql`
       id
       name
       description
+      direction
       businessProcesses {
         id
       }
@@ -51,13 +53,22 @@ function CapabilityCard({
   return (
     <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4 text-sm shadow-xs">
       <div className="flex items-start justify-between gap-2">
-        <Link
-          to="/capabilities/$capabilityId"
-          params={{ capabilityId: cap.id }}
-          className="font-medium text-foreground hover:text-violet-700 dark:hover:text-violet-300"
-        >
-          {cap.name}
-        </Link>
+        <div className="flex min-w-0 items-center gap-2">
+          <Link
+            to="/capabilities/$capabilityId"
+            params={{ capabilityId: cap.id }}
+            className="truncate font-medium text-foreground hover:text-violet-700 dark:hover:text-violet-300"
+          >
+            {cap.name}
+          </Link>
+          {cap.direction && (
+            <span
+              className={`shrink-0 rounded-full border px-2 py-0.5 text-[10px] ${CAPABILITY_DIRECTION_STYLE[cap.direction]}`}
+            >
+              {CAPABILITY_DIRECTION_LABEL[cap.direction]}
+            </span>
+          )}
+        </div>
         <div className="flex shrink-0 gap-1">
           <Button variant="ghost" size="sm" onClick={onEdit}>
             Edit

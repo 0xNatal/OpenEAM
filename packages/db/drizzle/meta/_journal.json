@@ -43,6 +43,13 @@
       "when": 1786897373397,
       "tag": "0005_white_pandemic",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1787337274330,
+      "tag": "0006_lazy_ares",
+      "breakpoints": true
     }
   ]
 }

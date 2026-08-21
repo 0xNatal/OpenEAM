@@ -12,6 +12,7 @@ export interface BusinessCapabilityRow {
   enterpriseId: string;
   name: string;
   description: string | null;
+  direction: string | null;
   businessProcesses: BusinessProcess[];
   resources: MappedBuildingBlock[];
   valueStreamStages: ValueStreamStageLink[];
@@ -56,6 +57,7 @@ export class BusinessCapabilitiesService {
         enterpriseId: input.enterpriseId,
         name: input.name,
         description: input.description ?? null,
+        direction: input.direction ?? null,
       })
       .returning({ id: schema.businessCapabilities.id });
 
@@ -72,7 +74,11 @@ export class BusinessCapabilitiesService {
   async update(id: string, input: BusinessCapabilityInput): Promise<BusinessCapabilityRow> {
     const [updated] = await this.db
       .update(schema.businessCapabilities)
-      .set({ name: input.name, description: input.description ?? null })
+      .set({
+        name: input.name,
+        description: input.description ?? null,
+        direction: input.direction ?? null,
+      })
       .where(eq(schema.businessCapabilities.id, id))
       .returning({ id: schema.businessCapabilities.id });
 
@@ -98,6 +104,7 @@ function toCapabilityRow(row: {
   enterpriseId: string;
   name: string;
   description: string | null;
+  direction: string | null;
   businessProcesses: BusinessProcess[];
   buildingBlockLinks: Array<{ buildingBlock: Parameters<typeof toBuildingBlock>[0] }>;
   stageCapabilities: Array<{
@@ -109,6 +116,7 @@ function toCapabilityRow(row: {
     enterpriseId: row.enterpriseId,
     name: row.name,
     description: row.description,
+    direction: row.direction,
     businessProcesses: row.businessProcesses,
     resources: row.buildingBlockLinks.map((link) => toBuildingBlock(link.buildingBlock)),
     valueStreamStages: row.stageCapabilities.map((sc) => ({

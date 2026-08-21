@@ -14,6 +14,7 @@ import {
   pageBackLinkClassName,
   TitledCard,
 } from '@/components/ui/page-header';
+import { CAPABILITY_DIRECTION_LABEL, CAPABILITY_DIRECTION_STYLE } from '@/lib/capability-direction';
 import type { BusinessCapabilityDetail, CapabilityResource } from '@/lib/entities';
 
 const BUSINESS_CAPABILITY_QUERY = gql`
@@ -23,6 +24,7 @@ const BUSINESS_CAPABILITY_QUERY = gql`
       enterpriseId
       name
       description
+      direction
       people {
         id
         name
@@ -102,7 +104,18 @@ function CapabilityDetail({
   return (
     <div className={contentWidthClassName}>
       <PageHeader
-        title={cap.name}
+        title={
+          <span className="flex items-center gap-2">
+            {cap.name}
+            {cap.direction && (
+              <span
+                className={`rounded-full border px-2 py-0.5 text-[10px] ${CAPABILITY_DIRECTION_STYLE[cap.direction]}`}
+              >
+                {CAPABILITY_DIRECTION_LABEL[cap.direction]}
+              </span>
+            )}
+          </span>
+        }
         back={
           <Link to="/capabilities" className={pageBackLinkClassName}>
             <ChevronLeft className="size-3.5" />

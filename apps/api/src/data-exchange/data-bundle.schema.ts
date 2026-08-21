@@ -26,6 +26,7 @@ const businessCapabilitySchema = z.object({
   enterpriseId: z.string(),
   name: z.string(),
   description: z.string().nullable(),
+  direction: z.enum(['invest', 'sustain', 'commodity', 'sunset']).nullable().default(null),
   ...timestampFields,
 });
 

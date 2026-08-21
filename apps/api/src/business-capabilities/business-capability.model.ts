@@ -1,6 +1,21 @@
-import { Field, InputType, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { BuildingBlock } from '../building-blocks/building-block.model';
 import { BusinessProcess } from '../business-processes/business-process.model';
+
+// Strategic-architecture direction: where investment goes, where it
+// deliberately doesn't. See packages/db/src/schema/business-capabilities.ts.
+export enum CapabilityDirection {
+  INVEST = 'invest',
+  SUSTAIN = 'sustain',
+  COMMODITY = 'commodity',
+  SUNSET = 'sunset',
+}
+
+registerEnumType(CapabilityDirection, {
+  name: 'CapabilityDirection',
+  description:
+    'Strategic direction for a business capability: invest (differentiating, gets budget), sustain (keep it working, no growth), commodity (buy/outsource rather than build), sunset (being wound down).',
+});
 
 @ObjectType()
 export class Person {
@@ -30,6 +45,7 @@ export class BusinessCapability {
   @Field() enterpriseId!: string;
   @Field() name!: string;
   @Field(() => String, { nullable: true }) description?: string | null;
+  @Field(() => CapabilityDirection, { nullable: true }) direction?: CapabilityDirection | null;
   @Field(() => [BusinessProcess]) businessProcesses!: BusinessProcess[];
   @Field(() => [Person]) people!: Person[];
   // Building blocks linked to this capability (the reverse of
@@ -44,4 +60,5 @@ export class BusinessCapabilityInput {
   @Field() enterpriseId!: string;
   @Field() name!: string;
   @Field(() => String, { nullable: true }) description?: string | null;
+  @Field(() => CapabilityDirection, { nullable: true }) direction?: CapabilityDirection | null;
 }

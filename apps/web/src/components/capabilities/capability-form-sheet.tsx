@@ -4,6 +4,13 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
   Sheet,
   SheetContent,
   SheetDescription,
@@ -11,6 +18,9 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import { CAPABILITY_DIRECTION_LABEL, CAPABILITY_DIRECTIONS } from '@/lib/capability-direction';
+import type { CapabilityDirection } from '@/lib/entities';
+import { SELECT_EMPTY_VALUE } from '@/lib/utils';
 
 export const CREATE_BUSINESS_CAPABILITY = gql`
   mutation CreateBusinessCapability($input: BusinessCapabilityInput!) {
@@ -38,14 +48,16 @@ export interface CapabilityFormValue {
   id: string;
   name: string;
   description?: string | null;
+  direction?: CapabilityDirection | null;
 }
 
 interface FormState {
   name: string;
   description: string;
+  direction: CapabilityDirection | '';
 }
 
-const emptyForm: FormState = { name: '', description: '' };
+const emptyForm: FormState = { name: '', description: '', direction: '' };
 
 // Shared create/edit sheet: the capabilities list opens it in create mode
 // (capability: null) or edit mode from a card; the capability detail page
@@ -76,12 +88,23 @@ export function CapabilityFormSheet({
   useEffect(() => {
     if (!open) return;
     setForm(
-      capability ? { name: capability.name, description: capability.description ?? '' } : emptyForm,
+      capability
+        ? {
+            name: capability.name,
+            description: capability.description ?? '',
+            direction: capability.direction ?? '',
+          }
+        : emptyForm,
     );
   }, [open, capability]);
 
   const handleSubmit = async () => {
-    const input = { enterpriseId, name: form.name, description: form.description || null };
+    const input = {
+      enterpriseId,
+      name: form.name,
+      description: form.description || null,
+      direction: form.direction || null,
+    };
     if (capability) {
       await updateBusinessCapability({ variables: { id: capability.id, input } });
     } else {
@@ -126,6 +149,34 @@ export function CapabilityFormSheet({
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
             />
+          </label>
+
+          <label
+            htmlFor="cap-direction"
+            className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
+          >
+            Direction
+            <Select
+              value={form.direction || SELECT_EMPTY_VALUE}
+              onValueChange={(v) =>
+                setForm({
+                  ...form,
+                  direction: v === SELECT_EMPTY_VALUE ? '' : (v as CapabilityDirection),
+                })
+              }
+            >
+              <SelectTrigger id="cap-direction" className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={SELECT_EMPTY_VALUE}>Not set</SelectItem>
+                {CAPABILITY_DIRECTIONS.map((d) => (
+                  <SelectItem key={d} value={d}>
+                    {CAPABILITY_DIRECTION_LABEL[d]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </label>
         </div>
 

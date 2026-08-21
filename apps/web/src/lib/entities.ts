@@ -39,6 +39,7 @@ export interface BusinessCapabilityDetail {
   enterpriseId: string;
   name: string;
   description?: string | null;
+  direction?: CapabilityDirection | null;
   people: NamedRef[];
   resources: CapabilityResource[];
   information: NamedRef[];
@@ -50,6 +51,7 @@ export interface BusinessCapabilitySummary {
   id: string;
   name: string;
   description?: string | null;
+  direction?: CapabilityDirection | null;
   businessProcesses: { id: string }[];
   resources: { id: string }[];
   valueStreamStages: ValueStreamStageLink[];
@@ -77,6 +79,7 @@ export interface ValueStream {
 export type BuildingBlockKind = 'ARCHITECTURE' | 'SOLUTION';
 export type ArchitectureLevel = 'STRATEGIC' | 'SEGMENT' | 'CAPABILITY';
 export type LifecyclePhase = 'PLANNED' | 'ACTIVE' | 'PHASING_OUT' | 'RETIRED';
+export type CapabilityDirection = 'INVEST' | 'SUSTAIN' | 'COMMODITY' | 'SUNSET';
 
 export interface OrganizationUnitLink {
   organizationUnitId: string;
