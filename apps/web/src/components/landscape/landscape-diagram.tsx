@@ -164,7 +164,9 @@ export default function LandscapeDiagram({ nodes, edges, onNodeClick }: Landscap
 
   if (nodes.length === 0) {
     return (
-      <p className="p-4 text-sm text-muted-foreground">No building blocks match this viewpoint.</p>
+      <div className="flex h-full w-full items-center justify-center p-4">
+        <p className="text-sm text-muted-foreground">No building blocks match this viewpoint.</p>
+      </div>
     );
   }
 
