@@ -103,9 +103,6 @@ function ValueStreamDetailRoute() {
 
       {/* Diagram */}
       <div className="rounded-2xl border border-border bg-muted/30 p-6 shadow-xs">
-        <p className="mb-5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-          Click a stage to explore its business capabilities and business processes
-        </p>
         <ValueStreamDiagram stream={stream} capabilities={capsData?.businessCapabilities ?? []} />
       </div>
 
