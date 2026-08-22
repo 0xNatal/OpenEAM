@@ -1,11 +1,9 @@
 import { gql } from '@apollo/client';
-import { useMutation, useQuery } from '@apollo/client/react';
+import { useQuery } from '@apollo/client/react';
 import { createFileRoute, Link } from '@tanstack/react-router';
+import { Pencil } from 'lucide-react';
 import { useState } from 'react';
-import {
-  DELETE_BUSINESS_PROCESS,
-  ProcessFormSheet,
-} from '@/components/business-processes/process-form-sheet';
+import { ProcessFormSheet } from '@/components/business-processes/process-form-sheet';
 import { Button } from '@/components/ui/button';
 import { contentWidthClassName, PageHeader } from '@/components/ui/page-header';
 import { useEnterprise } from '@/lib/enterprise';
@@ -42,17 +40,9 @@ interface BusinessProcessesData {
   businessCapabilities: NamedRef[];
 }
 
-function ProcessCard({
-  process,
-  onEdit,
-  onDelete,
-}: {
-  process: BusinessProcessRef;
-  onEdit: () => void;
-  onDelete: () => void;
-}) {
+function ProcessCard({ process, onEdit }: { process: BusinessProcessRef; onEdit: () => void }) {
   return (
-    <div className="flex flex-col gap-2 rounded-xl border border-border bg-card px-4 py-3 text-sm shadow-xs">
+    <div className="group flex flex-col gap-2 rounded-xl border border-border bg-card px-4 py-3 text-sm shadow-xs">
       <div className="flex items-start justify-between gap-2">
         <Link
           to="/business-processes/$processId"
@@ -61,14 +51,15 @@ function ProcessCard({
         >
           {process.name}
         </Link>
-        <div className="flex shrink-0 gap-1">
-          <Button variant="ghost" size="sm" onClick={onEdit}>
-            Edit
-          </Button>
-          <Button variant="destructive" size="sm" onClick={onDelete}>
-            Delete
-          </Button>
-        </div>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          onClick={onEdit}
+          className="shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
+        >
+          <Pencil strokeWidth={2} />
+          <span className="sr-only">Edit</span>
+        </Button>
       </div>
       {!process.bpmnXml && (
         <span className="w-fit rounded-full border border-border px-2 py-0.5 text-[10px] text-muted-foreground italic">
@@ -85,14 +76,6 @@ function BusinessProcessesIndexRoute() {
     BUSINESS_PROCESSES_QUERY,
     { variables: { enterpriseId: enterprise?.id }, skip: !enterprise },
   );
-  const [deleteBusinessProcess] = useMutation(DELETE_BUSINESS_PROCESS, {
-    update(cache, _result, { variables }) {
-      if (!variables?.id) return;
-      cache.evict({ id: cache.identify({ __typename: 'BusinessProcess', id: variables.id }) });
-      cache.gc();
-    },
-  });
-
   const [editingProcess, setEditingProcess] = useState<BusinessProcessRef | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -124,12 +107,6 @@ function BusinessProcessesIndexRoute() {
     setSheetOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm('Delete this business process?')) return;
-    await deleteBusinessProcess({ variables: { id } });
-    await refetch();
-  };
-
   return (
     <div className={contentWidthClassName}>
       <PageHeader
@@ -158,7 +135,6 @@ function BusinessProcessesIndexRoute() {
                     key={process.id}
                     process={process}
                     onEdit={() => openEdit(process)}
-                    onDelete={() => handleDelete(process.id)}
                   />
                 ))}
               </div>
