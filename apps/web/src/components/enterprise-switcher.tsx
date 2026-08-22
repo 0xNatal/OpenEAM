@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import { useMutation } from '@apollo/client/react';
-import { Check, ChevronsUpDown, Pencil, Plus } from 'lucide-react';
+import { Check, ChevronsUpDown, Pencil, Plus, Trash2 } from 'lucide-react';
 import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -36,6 +36,12 @@ const UPDATE_ENTERPRISE = gql`
     updateEnterprise(id: $id, input: $input) {
       id
     }
+  }
+`;
+
+const DELETE_ENTERPRISE = gql`
+  mutation DeleteEnterprise($id: String!) {
+    deleteEnterprise(id: $id)
   }
 `;
 
@@ -81,6 +87,7 @@ export function EnterpriseSwitcher() {
   const [createEnterprise, { error: createError }] =
     useMutation<CreateEnterpriseData>(CREATE_ENTERPRISE);
   const [updateEnterprise, { error: updateError }] = useMutation(UPDATE_ENTERPRISE);
+  const [deleteEnterprise] = useMutation(DELETE_ENTERPRISE);
 
   const [editingId, setEditingId] = React.useState<string | null>(null);
   const [sheetOpen, setSheetOpen] = React.useState(false);
@@ -131,6 +138,21 @@ export function EnterpriseSwitcher() {
     if (newId) setEnterpriseId(newId);
   };
 
+  // Cascades to every entity modeled within it (see enterprises.service.ts),
+  // so this needs a clear, specific warning — not the generic one-liner
+  // other list pages use for a single row. If the deleted enterprise was
+  // the selected one, useEnterprise()'s own fallback (first remaining
+  // enterprise, or null) takes over once refetch() drops it from the list.
+  const handleDelete = async (e: Enterprise) => {
+    const confirmed = window.confirm(
+      `Delete "${e.name}"? This permanently deletes everything modeled in it — capabilities, ` +
+        'value streams, business processes, and building blocks. This cannot be undone.',
+    );
+    if (!confirmed) return;
+    await deleteEnterprise({ variables: { id: e.id } });
+    refetch();
+  };
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -177,6 +199,17 @@ export function EnterpriseSwitcher() {
                   }}
                 >
                   <Pencil className="size-3.5" />
+                </button>
+                <button
+                  type="button"
+                  className="shrink-0 rounded p-0.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                  aria-label={`Delete ${e.name}`}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleDelete(e);
+                  }}
+                >
+                  <Trash2 className="size-3.5" />
                 </button>
               </DropdownMenuItem>
             ))}
