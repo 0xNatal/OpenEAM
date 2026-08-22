@@ -1,11 +1,9 @@
 import { gql } from '@apollo/client';
-import { useMutation, useQuery } from '@apollo/client/react';
+import { useQuery } from '@apollo/client/react';
 import { createFileRoute, Link } from '@tanstack/react-router';
+import { Pencil } from 'lucide-react';
 import { useState } from 'react';
-import {
-  CapabilityFormSheet,
-  DELETE_BUSINESS_CAPABILITY,
-} from '@/components/capabilities/capability-form-sheet';
+import { CapabilityFormSheet } from '@/components/capabilities/capability-form-sheet';
 import { Button } from '@/components/ui/button';
 import { contentWidthClassName, PageHeader } from '@/components/ui/page-header';
 import { CAPABILITY_DIRECTION_LABEL, CAPABILITY_DIRECTION_STYLE } from '@/lib/capability-direction';
@@ -39,19 +37,11 @@ interface BusinessCapabilitiesData {
   businessCapabilities: BusinessCapabilitySummary[];
 }
 
-function CapabilityCard({
-  cap,
-  onEdit,
-  onDelete,
-}: {
-  cap: BusinessCapabilitySummary;
-  onEdit: () => void;
-  onDelete: () => void;
-}) {
+function CapabilityCard({ cap, onEdit }: { cap: BusinessCapabilitySummary; onEdit: () => void }) {
   const [firstStage, ...restStages] = cap.valueStreamStages;
 
   return (
-    <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4 text-sm shadow-xs">
+    <div className="group flex flex-col gap-2 rounded-xl border border-border bg-card p-4 text-sm shadow-xs">
       <div className="flex items-start justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2">
           <Link
@@ -69,14 +59,15 @@ function CapabilityCard({
             </span>
           )}
         </div>
-        <div className="flex shrink-0 gap-1">
-          <Button variant="ghost" size="sm" onClick={onEdit}>
-            Edit
-          </Button>
-          <Button variant="destructive" size="sm" onClick={onDelete}>
-            Delete
-          </Button>
-        </div>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          onClick={onEdit}
+          className="shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
+        >
+          <Pencil strokeWidth={2} />
+          <span className="sr-only">Edit</span>
+        </Button>
       </div>
 
       {cap.description && (
@@ -115,14 +106,6 @@ function CapabilitiesIndexRoute() {
     BUSINESS_CAPABILITIES_QUERY,
     { variables: { enterpriseId: enterprise?.id }, skip: !enterprise },
   );
-  const [deleteBusinessCapability] = useMutation(DELETE_BUSINESS_CAPABILITY, {
-    update(cache, _result, { variables }) {
-      if (!variables?.id) return;
-      cache.evict({ id: cache.identify({ __typename: 'BusinessCapability', id: variables.id }) });
-      cache.gc();
-    },
-  });
-
   const [editingCap, setEditingCap] = useState<BusinessCapabilitySummary | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -137,12 +120,6 @@ function CapabilitiesIndexRoute() {
     setCreating(false);
     setEditingCap(cap);
     setSheetOpen(true);
-  };
-
-  const handleDelete = async (id: string) => {
-    if (!window.confirm('Delete this business capability?')) return;
-    await deleteBusinessCapability({ variables: { id } });
-    await refetch();
   };
 
   return (
@@ -164,12 +141,7 @@ function CapabilitiesIndexRoute() {
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {data?.businessCapabilities.map((cap) => (
-          <CapabilityCard
-            key={cap.id}
-            cap={cap}
-            onEdit={() => openEdit(cap)}
-            onDelete={() => handleDelete(cap.id)}
-          />
+          <CapabilityCard key={cap.id} cap={cap} onEdit={() => openEdit(cap)} />
         ))}
         {data?.businessCapabilities.length === 0 && (
           <p className="text-sm text-muted-foreground">No business capabilities yet.</p>
