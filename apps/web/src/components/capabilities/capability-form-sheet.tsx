@@ -18,6 +18,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import { Textarea } from '@/components/ui/textarea';
 import { CAPABILITY_DIRECTION_LABEL, CAPABILITY_DIRECTIONS } from '@/lib/capability-direction';
 import type { CapabilityDirection } from '@/lib/entities';
 import { SELECT_EMPTY_VALUE } from '@/lib/utils';
@@ -144,8 +145,9 @@ export function CapabilityFormSheet({
             className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
           >
             Description
-            <Input
+            <Textarea
               id="cap-description"
+              rows={3}
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
             />
