@@ -148,7 +148,7 @@ function BusinessProcessDetail({
             <Link
               to="/capabilities/$capabilityId"
               params={{ capabilityId: cap.id }}
-              className="rounded-md border border-border bg-muted/50 px-3 py-2 text-xs text-violet-700 dark:text-violet-300 font-medium hover:border-violet-300 dark:hover:border-violet-700 transition-colors"
+              className="rounded-md border border-border bg-muted/50 px-3 py-2 text-xs text-foreground font-medium hover:border-foreground/30 transition-colors"
             >
               {cap.name}
             </Link>

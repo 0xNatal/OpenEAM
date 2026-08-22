@@ -70,7 +70,7 @@ function ProcessLink({ id, label }: { id: string; label: string }) {
     <Link
       to="/business-processes/$processId"
       params={{ processId: id }}
-      className="rounded-md border border-border bg-muted/50 px-3 py-2 text-xs text-violet-700 dark:text-violet-300 font-medium hover:border-violet-300 dark:hover:border-violet-700 transition-colors"
+      className="rounded-md border border-border bg-muted/50 px-3 py-2 text-xs text-foreground font-medium hover:border-foreground/30 transition-colors"
     >
       {label}
     </Link>
@@ -141,7 +141,7 @@ function CapabilityDetail({
               key={`${link.valueStreamId}-${link.stageId}`}
               to="/value-streams/$valueStreamId"
               params={{ valueStreamId: link.valueStreamId }}
-              className="rounded-full border border-border bg-muted/50 px-3 py-1 text-xs text-muted-foreground hover:border-violet-300 dark:hover:border-violet-700 hover:text-violet-700 dark:hover:text-violet-300 transition-colors"
+              className="rounded-full border border-border bg-muted/50 px-3 py-1 text-xs text-muted-foreground hover:border-foreground/30 hover:text-foreground transition-colors"
             >
               {link.valueStreamName} <span className="opacity-60">›</span> {link.stageName}
             </Link>

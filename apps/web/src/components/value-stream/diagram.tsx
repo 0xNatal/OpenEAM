@@ -33,9 +33,7 @@ function Chevron({ label, isFirst, isLast, isSelected, onClick }: ChevronProps) 
       }}
       className={cn(
         'relative flex flex-1 items-center justify-center min-h-[56px] py-3 text-[13px] font-medium text-center leading-snug transition-colors duration-150 cursor-pointer select-none',
-        isSelected
-          ? 'bg-violet-600 text-white'
-          : 'bg-violet-100 dark:bg-violet-950 text-violet-900 dark:text-violet-100 hover:bg-violet-200 dark:hover:bg-violet-900',
+        isSelected ? 'bg-foreground text-background' : 'bg-muted text-foreground hover:bg-accent',
       )}
     >
       {label}
@@ -83,7 +81,7 @@ export function ValueStreamDiagram({
   return (
     <div className="relative w-full">
       {/* Row 1 — Stages */}
-      <div className="flex w-full rounded-lg overflow-hidden shadow-sm border border-violet-200 dark:border-violet-800">
+      <div className="flex w-full rounded-lg overflow-hidden shadow-sm border border-border">
         {stream.stages.map((stage, i) => (
           <Chevron
             key={stage.id}
@@ -101,13 +99,13 @@ export function ValueStreamDiagram({
           same width, so the caret's position is a plain percentage). */}
       <div className="relative mt-3">
         <div
-          className="absolute -top-1.5 size-3 -translate-x-1/2 rotate-45 border-t border-l border-violet-200 dark:border-violet-800 bg-card"
+          className="absolute -top-1.5 size-3 -translate-x-1/2 rotate-45 border-t border-l border-border bg-card"
           style={{ left: caretPosition }}
         />
         {selectedStage && (
-          <div className="relative flex flex-col gap-0 rounded-xl border border-violet-200 dark:border-violet-800 bg-card overflow-hidden shadow-sm">
+          <div className="relative flex flex-col gap-0 rounded-xl border border-border bg-card overflow-hidden shadow-sm">
             <div
-              className="grid gap-0 divide-x divide-violet-100 dark:divide-violet-900"
+              className="grid gap-0 divide-x divide-border"
               style={{ gridTemplateColumns: `repeat(${selectedCapabilities.length}, 1fr)` }}
             >
               {selectedCapabilities.map((cap) => (
@@ -115,7 +113,7 @@ export function ValueStreamDiagram({
                   <Link
                     to="/capabilities/$capabilityId"
                     params={{ capabilityId: cap.id }}
-                    className="text-sm font-semibold text-violet-800 dark:text-violet-200 hover:text-violet-600 dark:hover:text-violet-400 hover:underline"
+                    className="text-sm font-semibold text-foreground hover:underline"
                   >
                     {cap.name}
                   </Link>

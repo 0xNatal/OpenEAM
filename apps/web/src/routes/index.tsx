@@ -64,7 +64,7 @@ function StatTile({ label, value, to }: { label: string; value: number; to: stri
   return (
     <Link
       to={to}
-      className="flex flex-col gap-1 rounded-xl border border-border bg-card p-5 shadow-xs transition-colors hover:border-violet-300 dark:hover:border-violet-700"
+      className="flex flex-col gap-1 rounded-xl border border-border bg-card p-5 shadow-xs transition-colors hover:border-foreground/30"
     >
       <span className="text-2xl font-semibold text-foreground">{value}</span>
       <span className="text-xs text-muted-foreground">{label}</span>
@@ -150,7 +150,7 @@ function HomeRoute() {
                     key={p.id}
                     to="/business-processes/$processId"
                     params={{ processId: p.id }}
-                    className="flex items-center justify-between gap-2 rounded-lg border border-border bg-card px-4 py-2.5 text-sm hover:border-violet-300 dark:hover:border-violet-700"
+                    className="flex items-center justify-between gap-2 rounded-lg border border-border bg-card px-4 py-2.5 text-sm hover:border-foreground/30"
                   >
                     <span className="text-foreground">{p.name}</span>
                     <span className="text-xs text-muted-foreground italic">No diagram yet</span>

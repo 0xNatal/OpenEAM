@@ -57,7 +57,7 @@ function CapabilityCard({
           <Link
             to="/capabilities/$capabilityId"
             params={{ capabilityId: cap.id }}
-            className="truncate font-medium text-foreground hover:text-violet-700 dark:hover:text-violet-300"
+            className="truncate font-medium text-foreground hover:text-foreground"
           >
             {cap.name}
           </Link>

@@ -64,12 +64,10 @@ function ValueStreamCard({
       <Link
         to="/value-streams/$valueStreamId"
         params={{ valueStreamId: vs.id }}
-        className="flex items-center justify-between gap-2 overflow-hidden rounded-xl border border-border bg-card px-4 py-4 shadow-xs transition-all duration-150 group-hover:border-violet-300 group-hover:shadow-md dark:group-hover:border-violet-700"
+        className="flex items-center justify-between gap-2 overflow-hidden rounded-xl border border-border bg-card px-4 py-4 shadow-xs transition-all duration-150 group-hover:border-foreground/30 group-hover:shadow-md"
       >
-        <h2 className="text-base font-semibold text-foreground transition-colors group-hover:text-violet-700 dark:group-hover:text-violet-300">
-          {vs.name}
-        </h2>
-        <span className="flex shrink-0 items-center gap-1 text-xs font-medium text-violet-600 opacity-0 transition-opacity group-hover:opacity-100 dark:text-violet-400">
+        <h2 className="text-base font-semibold text-foreground">{vs.name}</h2>
+        <span className="flex shrink-0 items-center gap-1 text-xs font-medium text-foreground opacity-0 transition-opacity group-hover:opacity-100">
           Explore <ArrowRight className="size-3" />
         </span>
       </Link>

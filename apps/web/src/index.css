@@ -49,6 +49,21 @@
     --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* OpenEAM's brand mark color — a muted terracotta (hex #b5452f), chosen to
+   sit outside the four ArchiMate-ish domain colors the landscape diagram
+   already claims (--landscape-domain-* below — amber/teal/blue/green) and
+   outside the blue every other EAM tool sits in. Deliberately NOT a UI
+   accent: this app is color-coded for information everywhere (domain
+   colors, strategic direction, edge types), so a decorative accent on top
+   would compete with those meanings. Used in exactly two places — the
+   "OpenEAM" wordmark in the expanded sidebar (app-shell.tsx) and the
+   favicon's top-left square (public/favicon.svg, kept in hex there since
+   favicons don't reliably support oklch()) — and reserved as the primary
+   color for the marketing site once one exists. See docs/IDEAS.md. */
+@theme {
+    --color-brand: oklch(0.54 0.15 33);
+}
+
 :root {
     color-scheme: light;
     --background: oklch(0.98 0 0);
@@ -134,8 +149,12 @@
     --chart-5: oklch(0.269 0 0);
     --sidebar: oklch(0.205 0 0);
     --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
+    /* Matches --primary's dark value (near-white on near-black), not the
+       stock shadcn blue this token used to carry — that was a leftover
+       default no one had customized, unrelated to the sidebar's actual
+       (greyscale) theme. */
+    --sidebar-primary: oklch(0.922 0 0);
+    --sidebar-primary-foreground: oklch(0.205 0 0);
     --sidebar-accent: oklch(0.269 0 0);
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);

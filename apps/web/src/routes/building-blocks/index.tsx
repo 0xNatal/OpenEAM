@@ -576,7 +576,7 @@ function BuildingBlocksIndexRoute() {
                   <Link
                     to="/building-blocks/$buildingBlockId"
                     params={{ buildingBlockId: block.id }}
-                    className="text-foreground hover:text-violet-700 dark:hover:text-violet-300"
+                    className="text-foreground hover:text-foreground"
                   >
                     {block.name}
                   </Link>

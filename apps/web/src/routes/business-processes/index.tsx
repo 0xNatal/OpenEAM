@@ -57,7 +57,7 @@ function ProcessCard({
         <Link
           to="/business-processes/$processId"
           params={{ processId: process.id }}
-          className="font-medium text-foreground hover:text-violet-700 dark:hover:text-violet-300"
+          className="font-medium text-foreground hover:text-foreground"
         >
           {process.name}
         </Link>

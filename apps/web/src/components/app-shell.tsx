@@ -63,7 +63,7 @@ export function AppShell() {
         <Sidebar collapsible="icon">
           <SidebarHeader className="font-semibold text-base">
             <div className="flex items-center justify-between">
-              <span className="px-1 group-data-[collapsible=icon]:hidden">OpenEAM</span>
+              <span className="px-1 text-brand group-data-[collapsible=icon]:hidden">OpenEAM</span>
               <SidebarTrigger size="icon-lg" />
             </div>
             <EnterpriseSwitcher />

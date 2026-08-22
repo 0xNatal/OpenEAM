@@ -150,7 +150,7 @@ function RelationshipRow({
           <Link
             to="/building-blocks/$buildingBlockId"
             params={{ buildingBlockId: otherBlockId }}
-            className="truncate font-medium text-violet-700 hover:underline dark:text-violet-300"
+            className="truncate font-medium text-foreground hover:underline"
           >
             {otherBlockName}
           </Link>

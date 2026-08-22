@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 // Shared style for the "back to list" link rendered above a detail page's
 // title, so every route (including the two canvas routes) looks the same.
 export const pageBackLinkClassName =
-  'mb-1 inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-violet-600 dark:hover:text-violet-400';
+  'mb-1 inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground';
 
 // Width convention: "content" pages (lists, forms, detail views) are capped
 // and centered; "canvas" pages (BPMN modeler, landscape diagram) need the
