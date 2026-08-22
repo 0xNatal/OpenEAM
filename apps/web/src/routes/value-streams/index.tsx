@@ -5,7 +5,6 @@ import { ArrowRight, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { contentWidthClassName, PageHeader } from '@/components/ui/page-header';
-import { MiniChevronStrip } from '@/components/value-stream/diagram';
 import {
   DELETE_VALUE_STREAM,
   ValueStreamFormSheet,
@@ -65,33 +64,14 @@ function ValueStreamCard({
       <Link
         to="/value-streams/$valueStreamId"
         params={{ valueStreamId: vs.id }}
-        className="flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-xs transition-all duration-150 group-hover:border-violet-300 group-hover:shadow-md dark:group-hover:border-violet-700"
+        className="flex items-center justify-between gap-2 overflow-hidden rounded-xl border border-border bg-card px-4 py-4 shadow-xs transition-all duration-150 group-hover:border-violet-300 group-hover:shadow-md dark:group-hover:border-violet-700"
       >
-        {/* Mini chevron strip preview */}
-        <div className="px-4 pt-4 pb-2">
-          <MiniChevronStrip stages={vs.stages.map((s) => s.name)} />
-        </div>
-
-        {/* Card body */}
-        <div className="flex flex-1 flex-col gap-3 px-4 py-4">
-          <div>
-            <h2 className="text-base font-semibold text-foreground transition-colors group-hover:text-violet-700 dark:group-hover:text-violet-300">
-              {vs.name}
-            </h2>
-            <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
-              {vs.description}
-            </p>
-          </div>
-
-          <div className="mt-auto flex items-center justify-between">
-            <span className="inline-flex items-center rounded-full bg-violet-50 px-2.5 py-0.5 text-xs font-medium text-violet-700 dark:bg-violet-950/50 dark:text-violet-300">
-              {vs.stages.length} stages
-            </span>
-            <span className="flex items-center gap-1 text-xs font-medium text-violet-600 opacity-0 transition-opacity group-hover:opacity-100 dark:text-violet-400">
-              Explore <ArrowRight className="size-3" />
-            </span>
-          </div>
-        </div>
+        <h2 className="text-base font-semibold text-foreground transition-colors group-hover:text-violet-700 dark:group-hover:text-violet-300">
+          {vs.name}
+        </h2>
+        <span className="flex shrink-0 items-center gap-1 text-xs font-medium text-violet-600 opacity-0 transition-opacity group-hover:opacity-100 dark:text-violet-400">
+          Explore <ArrowRight className="size-3" />
+        </span>
       </Link>
     </div>
   );

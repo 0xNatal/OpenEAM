@@ -43,39 +43,6 @@ function Chevron({ label, isFirst, isLast, isSelected, onClick }: ChevronProps) 
   );
 }
 
-// ---------- Mini chevron strip (for overview cards) ----------
-
-export function MiniChevronStrip({ stages }: { stages: string[] }) {
-  const D = 10;
-  return (
-    <div className="flex overflow-hidden">
-      {stages.map((name, i) => {
-        const isFirst = i === 0;
-        const isLast = i === stages.length - 1;
-        const clipPath = isFirst
-          ? `polygon(0 0, calc(100% - ${D}px) 0, 100% 50%, calc(100% - ${D}px) 100%, 0 100%)`
-          : `polygon(${D}px 0, calc(100% - ${D}px) 0, 100% 50%, calc(100% - ${D}px) 100%, ${D}px 100%, 0 50%)`;
-        return (
-          <div
-            key={name}
-            title={name}
-            style={{
-              clipPath,
-              marginLeft: isFirst ? 0 : -D,
-              paddingLeft: isFirst ? 6 : D + 4,
-              paddingRight: isLast ? 6 : D + 4,
-              opacity: 0.85 - i * (0.5 / stages.length),
-            }}
-            className="flex-1 h-6 bg-violet-500 flex items-center min-w-0"
-          >
-            <span className="text-white text-[9px] font-medium truncate leading-none">{name}</span>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
 function getStageBusinessCapabilities(
   stage: ValueStreamStage | undefined,
   capabilitiesById: Map<string, ValueStreamCapability>,

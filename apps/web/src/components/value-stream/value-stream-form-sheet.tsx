@@ -12,6 +12,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import { Textarea } from '@/components/ui/textarea';
 import type { NamedRef } from '@/lib/entities';
 
 const CREATE_VALUE_STREAM = gql`
@@ -164,9 +165,10 @@ export function ValueStreamFormSheet({
             className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
           >
             Description
-            <Input
+            <Textarea
               id="vs-description"
               placeholder="Stakeholder: … Trigger: … End state: …"
+              rows={3}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
