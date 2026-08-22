@@ -118,7 +118,13 @@ export function EnterpriseSwitcher() {
           >
             {enterprises.map((e: Enterprise) => (
               <DropdownMenuItem key={e.id} onSelect={() => setEnterpriseId(e.id)} className="gap-2">
-                <div className="flex aspect-square size-6 shrink-0 items-center justify-center rounded bg-sidebar-primary text-sidebar-primary-foreground text-xs font-semibold">
+                {/* !text-sidebar-primary-foreground: DropdownMenuItem forces
+                    every descendant's text color on hover/focus (see its
+                    `focus:**:text-accent-foreground`), which would otherwise
+                    tint the avatar's initials on hover — differently, and
+                    inconsistently, per theme. The avatar isn't meant to
+                    react to hover at all, so its own color wins. */}
+                <div className="flex aspect-square size-6 shrink-0 items-center justify-center rounded bg-sidebar-primary text-xs font-semibold !text-sidebar-primary-foreground">
                   {initials(e.name)}
                 </div>
                 <span className="truncate">{e.name}</span>
