@@ -154,6 +154,8 @@ type CapabilityLink {
 }
 
 type Enterprise {
+  avatarBgColor: String
+  avatarTextColor: String
   description: String
   goal: String
   id: String!
@@ -161,6 +163,8 @@ type Enterprise {
 }
 
 input EnterpriseInput {
+  avatarBgColor: String
+  avatarTextColor: String
   description: String
   goal: String
   name: String!

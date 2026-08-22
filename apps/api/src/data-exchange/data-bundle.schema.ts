@@ -18,6 +18,8 @@ const enterpriseSchema = z.object({
   name: z.string(),
   description: z.string().nullable(),
   goal: z.string().nullable().optional(),
+  avatarBgColor: z.string().nullable().optional(),
+  avatarTextColor: z.string().nullable().optional(),
   ...timestampFields,
 });
 

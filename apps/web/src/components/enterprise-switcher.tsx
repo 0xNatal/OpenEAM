@@ -48,6 +48,30 @@ function initials(name: string) {
     .toUpperCase();
 }
 
+// Always set as inline style (never mixed with a Tailwind bg-*/text-*
+// class) — falling back to var(--sidebar-primary...) rather than a
+// literal color when unset, so an uncustomized avatar still resolves to
+// the current theme's value instead of a fixed one. Inline style, even a
+// var() reference, beats a plain (non-!important) class-based rule
+// regardless of the ancestor's specificity tricks — which matters here:
+// DropdownMenuItem forces every descendant's text color on hover/focus
+// (see its `focus:**:text-accent-foreground`), and a Tailwind class on the
+// avatar itself can't reliably out-specificity that without `!important`,
+// which would then also block a real per-enterprise custom color.
+function avatarStyle(e: Pick<Enterprise, 'avatarBgColor' | 'avatarTextColor'>) {
+  return {
+    backgroundColor: e.avatarBgColor || 'var(--sidebar-primary)',
+    color: e.avatarTextColor || 'var(--sidebar-primary-foreground)',
+  };
+}
+
+// A free-form bg/text color can end up close to the sidebar's own
+// background in either theme (a white avatar in light mode, a black one in
+// dark mode) — border-border is the app's themed "visible against the
+// current surface" token (light grey on light, faint white-on-dark), so it
+// keeps the avatar's edge legible regardless of what color was picked.
+const AVATAR_BORDER = 'border border-border';
+
 interface CreateEnterpriseData {
   createEnterprise: { id: string };
 }
@@ -60,17 +84,29 @@ export function EnterpriseSwitcher() {
 
   const [editingId, setEditingId] = React.useState<string | null>(null);
   const [sheetOpen, setSheetOpen] = React.useState(false);
-  const [form, setForm] = React.useState({ name: '', description: '', goal: '' });
+  const [form, setForm] = React.useState({
+    name: '',
+    description: '',
+    goal: '',
+    avatarBgColor: '',
+    avatarTextColor: '',
+  });
 
   const openCreate = () => {
     setEditingId(null);
-    setForm({ name: '', description: '', goal: '' });
+    setForm({ name: '', description: '', goal: '', avatarBgColor: '', avatarTextColor: '' });
     setSheetOpen(true);
   };
 
   const openEdit = (e: Enterprise) => {
     setEditingId(e.id);
-    setForm({ name: e.name, description: e.description ?? '', goal: e.goal ?? '' });
+    setForm({
+      name: e.name,
+      description: e.description ?? '',
+      goal: e.goal ?? '',
+      avatarBgColor: e.avatarBgColor ?? '',
+      avatarTextColor: e.avatarTextColor ?? '',
+    });
     setSheetOpen(true);
   };
 
@@ -79,6 +115,8 @@ export function EnterpriseSwitcher() {
       name: form.name,
       description: form.description || null,
       goal: form.goal || null,
+      avatarBgColor: form.avatarBgColor || null,
+      avatarTextColor: form.avatarTextColor || null,
     };
     if (editingId) {
       await updateEnterprise({ variables: { id: editingId, input } });
@@ -102,7 +140,10 @@ export function EnterpriseSwitcher() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground text-xs font-semibold">
+              <div
+                className={`flex aspect-square size-8 items-center justify-center rounded-lg text-xs font-semibold ${AVATAR_BORDER}`}
+                style={avatarStyle(enterprise ?? {})}
+              >
                 {enterprise ? initials(enterprise.name) : '?'}
               </div>
               <div className="flex flex-col gap-0.5 leading-none min-w-0">
@@ -118,13 +159,10 @@ export function EnterpriseSwitcher() {
           >
             {enterprises.map((e: Enterprise) => (
               <DropdownMenuItem key={e.id} onSelect={() => setEnterpriseId(e.id)} className="gap-2">
-                {/* !text-sidebar-primary-foreground: DropdownMenuItem forces
-                    every descendant's text color on hover/focus (see its
-                    `focus:**:text-accent-foreground`), which would otherwise
-                    tint the avatar's initials on hover — differently, and
-                    inconsistently, per theme. The avatar isn't meant to
-                    react to hover at all, so its own color wins. */}
-                <div className="flex aspect-square size-6 shrink-0 items-center justify-center rounded bg-sidebar-primary text-xs font-semibold !text-sidebar-primary-foreground">
+                <div
+                  className={`flex aspect-square size-6 shrink-0 items-center justify-center rounded text-xs font-semibold ${AVATAR_BORDER}`}
+                  style={avatarStyle(e)}
+                >
                   {initials(e.name)}
                 </div>
                 <span className="truncate">{e.name}</span>
@@ -199,6 +237,58 @@ export function EnterpriseSwitcher() {
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
               />
             </label>
+
+            <div className="flex gap-4">
+              <label
+                htmlFor="ent-avatar-bg"
+                className="flex flex-1 flex-col gap-1 text-xs font-medium text-muted-foreground"
+              >
+                Avatar background
+                <div className="flex items-center gap-2">
+                  <input
+                    id="ent-avatar-bg"
+                    type="color"
+                    className="h-7 w-10 cursor-pointer rounded border border-input bg-input/20"
+                    value={form.avatarBgColor || '#171717'}
+                    onChange={(e) => setForm({ ...form, avatarBgColor: e.target.value })}
+                  />
+                  {form.avatarBgColor && (
+                    <button
+                      type="button"
+                      className="text-xs text-muted-foreground hover:text-foreground hover:underline"
+                      onClick={() => setForm({ ...form, avatarBgColor: '' })}
+                    >
+                      Reset
+                    </button>
+                  )}
+                </div>
+              </label>
+
+              <label
+                htmlFor="ent-avatar-text"
+                className="flex flex-1 flex-col gap-1 text-xs font-medium text-muted-foreground"
+              >
+                Avatar text
+                <div className="flex items-center gap-2">
+                  <input
+                    id="ent-avatar-text"
+                    type="color"
+                    className="h-7 w-10 cursor-pointer rounded border border-input bg-input/20"
+                    value={form.avatarTextColor || '#ffffff'}
+                    onChange={(e) => setForm({ ...form, avatarTextColor: e.target.value })}
+                  />
+                  {form.avatarTextColor && (
+                    <button
+                      type="button"
+                      className="text-xs text-muted-foreground hover:text-foreground hover:underline"
+                      onClick={() => setForm({ ...form, avatarTextColor: '' })}
+                    >
+                      Reset
+                    </button>
+                  )}
+                </div>
+              </label>
+            </div>
           </div>
 
           {(createError || updateError) && (

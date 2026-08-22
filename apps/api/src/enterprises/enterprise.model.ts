@@ -9,6 +9,8 @@ export class Enterprise {
   @Field() name!: string;
   @Field(() => String, { nullable: true }) description?: string | null;
   @Field(() => String, { nullable: true }) goal?: string | null;
+  @Field(() => String, { nullable: true }) avatarBgColor?: string | null;
+  @Field(() => String, { nullable: true }) avatarTextColor?: string | null;
 }
 
 @InputType()
@@ -16,4 +18,6 @@ export class EnterpriseInput {
   @Field() name!: string;
   @Field(() => String, { nullable: true }) description?: string | null;
   @Field(() => String, { nullable: true }) goal?: string | null;
+  @Field(() => String, { nullable: true }) avatarBgColor?: string | null;
+  @Field(() => String, { nullable: true }) avatarTextColor?: string | null;
 }

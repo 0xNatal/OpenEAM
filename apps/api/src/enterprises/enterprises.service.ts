@@ -47,6 +47,8 @@ export class EnterprisesService {
           name: input.name,
           description: input.description ?? null,
           goal: input.goal ?? null,
+          avatarBgColor: input.avatarBgColor ?? null,
+          avatarTextColor: input.avatarTextColor ?? null,
         })
         .returning();
 
@@ -68,7 +70,13 @@ export class EnterprisesService {
   async update(id: string, input: EnterpriseInput): Promise<Enterprise> {
     const [updated] = await this.db
       .update(schema.enterprises)
-      .set({ name: input.name, description: input.description ?? null, goal: input.goal ?? null })
+      .set({
+        name: input.name,
+        description: input.description ?? null,
+        goal: input.goal ?? null,
+        avatarBgColor: input.avatarBgColor ?? null,
+        avatarTextColor: input.avatarTextColor ?? null,
+      })
       .where(eq(schema.enterprises.id, id))
       .returning();
 

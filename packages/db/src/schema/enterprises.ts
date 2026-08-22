@@ -16,5 +16,11 @@ export const enterprises = pgTable('enterprises', {
   // The shared goal that defines the scope — part of the definition of an
   // enterprise, not documentation.
   goal: text('goal'),
+  // Free-form hex colors for the enterprise switcher's avatar. Nullable —
+  // unset means "use the app's neutral default", not "black"; the UI adds
+  // a themed border around the avatar regardless, so a user-chosen white
+  // or black still reads against the sidebar in both light and dark mode.
+  avatarBgColor: text('avatar_bg_color'),
+  avatarTextColor: text('avatar_text_color'),
   ...timestamps,
 });

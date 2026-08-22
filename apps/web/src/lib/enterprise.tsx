@@ -12,6 +12,8 @@ const ENTERPRISES_QUERY = gql`
       name
       description
       goal
+      avatarBgColor
+      avatarTextColor
     }
   }
 `;
@@ -21,6 +23,8 @@ export interface Enterprise {
   name: string;
   description?: string | null;
   goal?: string | null;
+  avatarBgColor?: string | null;
+  avatarTextColor?: string | null;
 }
 
 interface EnterprisesData {
