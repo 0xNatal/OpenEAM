@@ -31,7 +31,14 @@ export function ThemeToggle() {
               <span>Theme: {active.label}</span>
             </SidebarMenuButton>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" side="top">
+          <DropdownMenuContent
+            // See enterprise-switcher.tsx: prevents the trigger's focus
+            // ring from lingering after picking an option (Radix's
+            // close-time refocus reads as keyboard focus to the browser).
+            onCloseAutoFocus={(event) => event.preventDefault()}
+            align="start"
+            side="top"
+          >
             {options.map((option) => (
               <DropdownMenuItem
                 key={option.value}

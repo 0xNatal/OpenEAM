@@ -176,6 +176,13 @@ export function EnterpriseSwitcher() {
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
+            // Radix returns focus to the trigger button when the menu
+            // closes; unlike a mouse click, that's a programmatic focus()
+            // call, which the browser's :focus-visible heuristic treats as
+            // real keyboard focus — so the trigger's focus ring lingers
+            // after picking an enterprise, even though nothing else in the
+            // sidebar leaves a ring behind after a plain click.
+            onCloseAutoFocus={(event) => event.preventDefault()}
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56"
             align="start"
           >
