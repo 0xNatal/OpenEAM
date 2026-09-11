@@ -1,0 +1,22 @@
+# Line endings. Normalize to LF everywhere — in the repository and in the
+# working tree, on every platform.
+#
+# Without this, `core.autocrlf=true` on Windows checks files out as CRLF while
+# git stores them as LF. Biome's formatter then rejects the working-tree copy
+# locally while CI (on Linux, where the checkout is LF) passes, so `pnpm lint`
+# fails on a developer machine for a file nobody edited. The `eol` attribute
+# takes precedence over `core.autocrlf`, so this settles it for everyone.
+* text=auto eol=lf
+
+# Files git must never line-ending-convert or diff as text.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.woff binary
+*.woff2 binary
+
+# Generated: collapse in diffs and keep out of language statistics.
+pnpm-lock.yaml              linguist-generated=true
+apps/web/src/routeTree.gen.ts linguist-generated=true
