@@ -18,6 +18,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import { Textarea } from '@/components/ui/textarea';
 import type { NamedRef } from '@/lib/entities';
 
 export const CREATE_BUSINESS_PROCESS = gql`
@@ -154,8 +155,9 @@ export function ProcessFormSheet({
             className="flex flex-col gap-1 text-xs font-medium text-muted-foreground"
           >
             Description
-            <Input
+            <Textarea
               id="proc-description"
+              rows={3}
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
             />
