@@ -1,9 +1,9 @@
 import { Field, InputType, ObjectType, registerEnumType } from '@nestjs/graphql';
 
 export enum InformationUsage {
-  owns = 'owns',
-  creates = 'creates',
-  uses = 'uses',
+  OWNS = 'owns',
+  CREATES = 'creates',
+  USES = 'uses',
 }
 
 registerEnumType(InformationUsage, {

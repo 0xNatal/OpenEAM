@@ -47,18 +47,22 @@ export interface BusinessCapabilityDetail {
   valueStreamStages: ValueStreamStageLink[];
 }
 
+export type ActorKind = 'ROLE' | 'TEAM' | 'INDIVIDUAL' | 'EXTERNAL';
+export type ActorInvolvement = 'ACCOUNTABLE' | 'PERFORMS' | 'CONSULTED';
+export type InformationUsage = 'OWNS' | 'CREATES' | 'USES';
+
 // One actor involved in a capability. The UI card is titled "People" because
 // that is the classic capability dimension; the entity is an actor, because
 // accountability usually sits with a role or a team rather than a person.
 export interface CapabilityActor extends NamedRef {
-  kind: 'role' | 'team' | 'individual' | 'external';
-  involvement: 'accountable' | 'performs' | 'consulted';
+  kind: ActorKind;
+  involvement: ActorInvolvement;
 }
 
 // One information object as seen from a capability: what it is, and how the
 // capability relates to it.
 export interface CapabilityInformation extends NamedRef {
-  usage: 'owns' | 'creates' | 'uses';
+  usage: InformationUsage;
 }
 
 export interface BusinessCapabilitySummary {
@@ -136,4 +140,49 @@ export interface OrganizationUnit {
   id: string;
   name: string;
   parentId?: string | null;
+}
+
+// --- Actors and information objects, as their own pages see them ---------
+
+export interface ActorCapabilityLink {
+  linkId: string;
+  capabilityId: string;
+  capabilityName: string;
+  involvement: ActorInvolvement;
+  validFrom?: string | null;
+  validTo?: string | null;
+}
+
+export interface ActorSummary {
+  id: string;
+  name: string;
+  description?: string | null;
+  kind: ActorKind;
+  organizationUnitId?: string | null;
+  organizationUnitName?: string | null;
+  capabilities: ActorCapabilityLink[];
+}
+
+export interface ActorDetail extends ActorSummary {
+  enterpriseId: string;
+}
+
+export interface InformationCapabilityLink {
+  linkId: string;
+  capabilityId: string;
+  capabilityName: string;
+  usage: InformationUsage;
+  validFrom?: string | null;
+  validTo?: string | null;
+}
+
+export interface InformationObjectSummary {
+  id: string;
+  name: string;
+  description?: string | null;
+  capabilities: InformationCapabilityLink[];
+}
+
+export interface InformationObjectDetail extends InformationObjectSummary {
+  enterpriseId: string;
 }

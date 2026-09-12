@@ -1,10 +1,10 @@
 import { Field, InputType, ObjectType, registerEnumType } from '@nestjs/graphql';
 
 export enum ActorKind {
-  role = 'role',
-  team = 'team',
-  individual = 'individual',
-  external = 'external',
+  ROLE = 'role',
+  TEAM = 'team',
+  INDIVIDUAL = 'individual',
+  EXTERNAL = 'external',
 }
 
 registerEnumType(ActorKind, {
@@ -14,9 +14,9 @@ registerEnumType(ActorKind, {
 });
 
 export enum ActorInvolvement {
-  accountable = 'accountable',
-  performs = 'performs',
-  consulted = 'consulted',
+  ACCOUNTABLE = 'accountable',
+  PERFORMS = 'performs',
+  CONSULTED = 'consulted',
 }
 
 registerEnumType(ActorInvolvement, {

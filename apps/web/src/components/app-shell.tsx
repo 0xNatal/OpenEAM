@@ -3,10 +3,12 @@ import {
   ArrowLeftRight,
   Blocks,
   Home,
+  Library,
   Map as MapIcon,
   Route,
   Table2,
   Target,
+  Users,
   Workflow,
 } from 'lucide-react';
 import { EnterpriseSwitcher } from './enterprise-switcher';
@@ -39,6 +41,12 @@ export function AppShell() {
   });
   const isBusinessProcesses = useRouterState({
     select: (s) => s.location.pathname.startsWith('/business-processes'),
+  });
+  const isActors = useRouterState({
+    select: (s) => s.location.pathname.startsWith('/actors'),
+  });
+  const isInformation = useRouterState({
+    select: (s) => s.location.pathname.startsWith('/information-objects'),
   });
   const isBuildingBlocks = useRouterState({
     select: (s) => s.location.pathname.startsWith('/building-blocks'),
@@ -128,6 +136,22 @@ export function AppShell() {
                         <span className="group-data-[collapsible=icon]:hidden">
                           Business Processes
                         </span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActors} tooltip="Actors">
+                      <Link to="/actors">
+                        <Users strokeWidth={2} />
+                        <span className="group-data-[collapsible=icon]:hidden">Actors</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isInformation} tooltip="Information">
+                      <Link to="/information-objects">
+                        <Library strokeWidth={2} />
+                        <span className="group-data-[collapsible=icon]:hidden">Information</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>

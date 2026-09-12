@@ -82,7 +82,16 @@ deletable. Harmless while there is one user; it must close before there are two
 ## The web app (`apps/web`)
 
 - **Routing** — TanStack Router, file-based in `src/routes/`. `$param` files are
-  detail routes; `$param_.model.tsx` is the BPMN modeller.
+  detail routes; `$param_.model.tsx` is the BPMN modeller. The route tree is
+  generated (`pnpm --filter @openeam/web exec tsr generate`), so a new file is a
+  new route.
+- **Index + detail + form sheet** is the shape every entity follows: a list page
+  with a create button, a detail page, and one shared `*-form-sheet.tsx` the list
+  opens in create mode and the detail page opens in edit mode. `actors` and
+  `information-objects` are the most recent pair to copy from.
+- **Deleting** evicts the row from the Apollo cache in the mutation's `update`,
+  then `cache.gc()` — without it, navigating back shows a list still containing
+  the deleted row.
 - **Data** — Apollo Client against `/graphql`, proxied by Vite in dev.
 - **Enterprise scope** — `src/lib/enterprise.tsx` holds the selected enterprise in
   a context, persisted in `localStorage` under `enterpriseId`. Every scoped page

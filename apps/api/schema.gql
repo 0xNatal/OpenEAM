@@ -34,19 +34,19 @@ input ActorInput {
 In what capacity an actor is involved in a capability: accountable (answers for it), performs (does the work), consulted (has a say without owning it).
 """
 enum ActorInvolvement {
-  accountable
-  consulted
-  performs
+  ACCOUNTABLE
+  CONSULTED
+  PERFORMS
 }
 
 """
 What kind of actor this is: role (a position, which outlives whoever holds it), team (an internal group, normally pointing at an organization unit), individual (a named person), external (a party outside the enterprise).
 """
 enum ActorKind {
-  external
-  individual
-  role
-  team
+  EXTERNAL
+  INDIVIDUAL
+  ROLE
+  TEAM
 }
 
 type ArchitectureBuildingBlock implements BuildingBlock {
@@ -281,9 +281,9 @@ input InformationObjectInput {
 How a capability relates to a piece of information: owns (accountable for it being correct), creates (brings it into existence), uses (consumes it without owning it).
 """
 enum InformationUsage {
-  creates
-  owns
-  uses
+  CREATES
+  OWNS
+  USES
 }
 
 enum LifecyclePhase {
