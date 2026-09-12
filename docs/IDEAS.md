@@ -1,42 +1,59 @@
 # Ideas
 
-A parking lot for things deliberately left out of the init — possible directions, not a plan or a commitment, in no particular order. Each line notes roughly when it might become worth doing, so an idea isn't lost and the init stays small.
+A parking lot for things deliberately left out — possible directions, not a plan
+or a commitment, in no particular order. Each line notes roughly when it might
+become worth doing, so an idea isn't lost and the current scope stays small.
 
-These are technical choices. What they're *for* — the stakeholder questions we intend to answer, ranked — lives in [USE-CASES.md](USE-CASES.md); an idea usually gets picked up because a use case pulls it in.
+Nothing here is decided. Three neighbours hold the things that are:
+
+- **[BACKLOG.md](BACKLOG.md)** — known defects and committed next steps. Work
+  waiting on someone doing it, not on a decision.
+- **[DECISIONS.md](DECISIONS.md)** — choices already made, with the reasoning, plus
+  upgrades that are blocked upstream and why.
+- **[USE-CASES.md](USE-CASES.md)** — what all of this is *for*: the stakeholder
+  questions we intend to answer, ranked. An idea usually gets picked up because a
+  use case pulls it in.
+
+## Model and product
 
 - **Links between enterprises** — when one enterprise's model needs to reference another's (same real-world system, data exchange, roll-up to a coarser scope), add link tables between their artifacts rather than sharing rows. Additive on top of the per-enterprise ownership already in place; see [VISION.md](VISION.md).
-- **Auth (Keycloak)** — with the first multi-user feature; enterprise scoping today is a modelling boundary, not access control. Keycloak in Compose, OIDC on the API (passport-jwt + JWKS), OIDC client on the web.
-- **First EAM entities** (Applications, Capabilities, Technologies) — once scope is agreed. Over GraphQL.
-- **REST facade** — only when a real third-party integrator needs it (CMDB sync, ServiceNow, iPaaS, scripts). REST + OpenAPI for core resources, sharing the service layer with GraphQL.
-- **TanStack Query** — when the frontend calls a REST endpoint other than /health.
-- **GraphQL Codegen + `packages/graphql`** — the API already emits its SDL to a committed `apps/api/schema.gql` (reviewable in PRs, codegen-ready). When the first real operations land: add graphql-codegen on the web, with the generated types in a shared `@openeam/graphql` package (so a future REST client / second consumer can reuse them), plus a CI check that the committed schema is in sync. Note: `autoSchemaFile` writes the SDL at runtime — if the API container is later hardened to a read-only FS, generate the schema at build time instead.
-- **shadcn/ui** — when the UI is more than a demo.
-- **Persisted, hand-editable diagram layout** — the landscape diagram (diagram-js + elkjs, shipped — see README) is read-only and recomputes layout from scratch every load. Turning it into an editable, persistable document (own notation: palette, connector tool, manual repositioning) — the same generate-then-hand-edit-then-keep workflow already solved for business processes via `bpmnXml` — is the natural next step, once someone actually wants to rearrange a diagram and keep it that way.
-- **Cytoscape.js** — alternative to diagram-js if the landscape view turns out to be more "explore the dependency graph" than "author and keep a diagram": strong built-in layouts (cose, dagre, an elk extension), handles large graphs well, click-to-expand/collapse. Weaker as an authoring tool — no palette/connector UX — so only worth it if exploration ends up mattering more than persisted, hand-adjusted diagrams.
+- **Outcome/health metrics on a capability or building block** — value streams only model *triggered* value (a stakeholder need, start to finish); they structurally can't represent the passive, ambient value of a capability just quietly working (e.g. a customer fully happy with the product who never contacts support). That value is real but currently invisible in the model — nothing captures it, not even as a number. A measured signal attached to a capability or ABB (e.g. "% of clients with zero support cases this quarter", churn rate) would surface it without forcing a fake trigger into a value stream just to have something to model. Surfaced while modelling value streams through the running app.
 - **Capability-to-architecture drill-down view** — a small, focused diagram/list on the business capability detail page showing just its realizing building blocks (and maybe their dependency subgraph). Tried as a layer on the main landscape diagram first (pills + a `serves` edge) and taken back out — capability-to-architecture is a different question ("what fulfills this?") from whole-landscape ("what's the architecture of the whole thing?"), and answering both in one picture just added noise. Revisit once the main diagram is in good shape.
-- **Mutation to link a building block to a business capability** — `buildingBlockCapabilities` (which ABBs realize which capability) can only be set by the data-exchange bundle importer today; there's no GraphQL mutation and no UI for it, on either the building block detail page or the capability detail page. Found while modelling ABBs by hand through the running app. Linking them required a direct DB insert mirroring what the importer does, because the API had no path for it. Small slice: a `linkBuildingBlockCapability`/`unlinkBuildingBlockCapability` mutation pair plus a way to add/remove links from one of the two detail pages.
-- **Outcome/health metrics on a capability or building block** — value streams only model *triggered* value (a stakeholder need, start to finish); they structurally can't represent the passive, ambient value of a capability just quietly working (e.g. a hotel that's fully happy with the PMS and never contacts support). That value is real but currently invisible in the model — nothing captures it, not even as a number. A measured signal attached to a capability or ABB (e.g. "% of clients with zero support cases this quarter", churn rate) would surface it without forcing a fake trigger into a value stream just to have something to model. Surfaced while modelling value streams through the running app.
 - **Diagram support for indirect/transitive dependencies** — "what depends on this, directly and indirectly" (US-3.2) needs a graph traversal the diagram doesn't do today; it only ever shows one hop.
 - **Multi-enterprise landscape view** — an enterprise's own landscape is sometimes only part of the picture (e.g. a vendor's product plugged into each client's own IT architecture). Depends on the cross-enterprise link tables in [VISION.md](VISION.md)/UC-8, which aren't built yet.
 - **Audit log** — when there are real write operations.
 - **Entity versioning** — when entity history needs preserving.
+
+## Diagramming
+
+- **Persisted, hand-editable diagram layout** — the landscape diagram (diagram-js + elkjs, shipped — see README) is read-only and recomputes layout from scratch every load. Turning it into an editable, persistable document (own notation: palette, connector tool, manual repositioning) — the same generate-then-hand-edit-then-keep workflow already solved for business processes via `bpmnXml` — is the natural next step, once someone actually wants to rearrange a diagram and keep it that way.
+- **Cytoscape.js** — alternative to diagram-js if the landscape view turns out to be more "explore the dependency graph" than "author and keep a diagram": strong built-in layouts (cose, dagre, an elk extension), handles large graphs well, click-to-expand/collapse. Weaker as an authoring tool — no palette/connector UX — so only worth it if exploration ends up mattering more than persisted, hand-adjusted diagrams.
+
+## Platform and interfaces
+
+- **Auth (Keycloak)** — with the first multi-user feature; enterprise scoping today is a modelling boundary, not access control. Keycloak in Compose, OIDC on the API (passport-jwt + JWKS), OIDC client on the web.
+- **REST facade** — only when a real third-party integrator needs it (CMDB sync, ServiceNow, iPaaS, scripts). REST + OpenAPI for core resources, sharing the service layer with GraphQL.
+- **TanStack Query** — when the frontend calls a REST endpoint other than /health.
+- **GraphQL Codegen + `packages/graphql`** — the API already emits its SDL to a committed `apps/api/schema.gql` (reviewable in diffs, codegen-ready). When the first real operations land: add graphql-codegen on the web, with the generated types in a shared `@openeam/graphql` package (so a future REST client / second consumer can reuse them). Note: `autoSchemaFile` writes the SDL at runtime — if the API container is later hardened to a read-only FS, generate the schema at build time instead.
+- **Persisted queries** — during production hardening.
 - **BullMQ + Redis** — first async job (e.g. CSV import).
 - **MinIO** — first file upload.
-- **OpenTelemetry** — when there's a tracing backend to send to.
-- **i18n** — when a second language is actually needed.
-- **Full-text search** — Postgres `tsvector` first, Meilisearch later.
-- **Persisted queries** — during production hardening.
-- **Gate GraphiQL and disable introspection outside dev** — `graphiql: true` in `GraphQLModule.forRoot` (`apps/api/src/app.module.ts`) is hardcoded on with no environment check, and introspection isn't explicitly disabled either, so the full schema and an interactive query IDE would be exposed in any real deployment. Worth doing before the API is ever reachable from outside `localhost` — gate both behind `NODE_ENV !== 'production'` (or a dedicated env flag).
-- **Validate env vars at boot** — `apps/api/src/main.ts` reads `DATABASE_URL`/`API_PORT`/`WEB_ORIGIN` ad hoc via `process.env` with `??` fallbacks; a missing or malformed value fails at first request instead of at startup. A small zod-validated config object (zod's already a dependency, see `data-bundle.schema.ts`) would fail fast with a clear message.
-- **Dependency-update automation (Renovate or Dependabot)** — nothing currently surfaces outdated packages; a manual `pnpm -r outdated` pass in 2026-08 found 31 stale packages, including a stale peer-dependency ghost in `node_modules` that silently broke a typecheck. A weekly, patch/minor-grouped bot config would catch drift (and security patches) before it piles up.
-- **Security headers / rate limiting (helmet, throttling)** — no `helmet`, no request throttling on the API. Low urgency pre-auth (see Auth idea above), but cheap to add now and easy to forget once the API is reachable from outside `localhost`.
-- **Apache AGE** — if relational + recursive CTEs get limiting for graph queries.
-- **Turborepo** — if CI builds get slow (~2 min+).
-- **Unit/integration tests (Vitest)** — removed from the init (the only test was a health smoke test with nothing real to cover yet). Re-add with the first real feature: `vitest` devDep + `test`/`test:watch` scripts per package, the root `test` script, and the CI test step. Tool choice stays Vitest.
-- **Playwright** — when UI flows need E2E coverage.
-- **App containers + Compose app services** — Dockerfiles for `apps/api` (Node runtime; multi-stage with `pnpm deploy --prod`, `node dist/main.js`) and `apps/web` (multi-stage build → nginx serving the SPA, proxying `/graphql` + `/health`), the `api` + `web` services in `compose.yml`, and a root `.dockerignore`. Then `docker compose up` runs the whole stack — the project's core "easy self-host" promise. Left out of init: dev runs everything via `pnpm dev` with only Postgres in Docker. Would matter for the first end-to-end demo / self-hosting. Gotcha already solved once: the API container must build `@openeam/db` before `apps/api`, since the API consumes the package's compiled `dist`.
-- **`graphql` 17** — blocked, not a scope choice: `@apollo/server` peers on `graphql: ^16.11.0` and `graphql-ws` (used by `@nestjs/graphql` subscriptions) peers on `^15.10.1 || ^16`, so `apps/api` can't move even though `@nestjs/graphql`/`@apollo/client` already support 17. Revisit once Apollo Server ships graphql-17 support.
-- **`typescript` 7** — blocked, not a scope choice: TS7 dropped the classic `moduleResolution: "Node"`, forcing `apps/api`/`packages/db` onto `Node16` (required alongside `module: "CommonJS"`). That surfaces a real dual-package hazard in Drizzle ORM 0.45.2 — its separate `.d.ts`/`.d.cts` declarations for the same internal `SQL` class get loaded as two distinct types once `apps/api` code compares values from different Drizzle entry points, breaking `~10` service files with `TS2769`/`TS2322`. Confirmed the fix isn't in `@openeam/db`'s own `exports` (it typechecks clean standalone; adding an explicit `require` condition didn't help either) — this is upstream in Drizzle's package structure. Revisit once Drizzle fixes Node16/NodeNext resolution, or only if `apps/api`/`packages/db` drop CommonJS emit for ESM (a real architecture change, not a bump).
 - **Helm chart** — for Kubernetes.
+
+## Data and search
+
+- **Full-text search** — Postgres `tsvector` first, Meilisearch later.
+- **Apache AGE** — if relational + recursive CTEs get limiting for graph queries.
+
+## Operations and tooling
+
+- **OpenTelemetry** — when there's a tracing backend to send to.
+- **Playwright** — when UI flows need E2E coverage. (Unit and integration tests are
+  not an idea — see [BACKLOG.md](BACKLOG.md).)
+- **Turborepo** — if CI builds get slow (~2 min+).
+- **i18n** — when a second language is actually needed.
+
+## Public face
+
 - **Community channels / demo hosting** — when there's activity and something to show.
 - **Marketing site brand color** — a muted terracotta, `#b5452f` (`oklch(0.54 0.15 33)`), is reserved as OpenEAM's primary brand color for whenever a public/marketing site gets built. Deliberately *not* a UI accent inside the app itself — the app is color-coded for information everywhere (architecture domain, strategic direction, edge type), so a decorative accent on top of that would compete with those meanings rather than add identity. Today it appears in exactly one place in the app: the top-left square of the favicon (`apps/web/public/favicon.svg`, hardcoded hex since favicons don't reliably support `oklch()`) — it was briefly also on the "OpenEAM" sidebar wordmark, taken back out. No `index.css` token for it currently; add one back (`--color-brand`) if a second use case shows up.

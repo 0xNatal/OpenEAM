@@ -4,7 +4,15 @@ Self-hosted, open-source Enterprise Architecture Management tool.
 
 Early WIP, but past the skeleton stage: value streams, business capabilities, business processes (with BPMN modelling), and an architecture/solutions landscape of building blocks with typed relationships between them (depends on, exchanges data with, runs on) and a diagram view of that landscape with automatic layout, all over a GraphQL API with a React SPA and Postgres.
 
-Everything is scoped to an **enterprise** — the scope of an architecture effort, from a whole corporate group down to a household. See [docs/VISION.md](docs/VISION.md) for where this is headed (meeting your architecture wherever it is, from fully manual to API-driven; baseline/target and the work in between; many views for many stakeholders), [docs/USE-CASES.md](docs/USE-CASES.md) for what we're building next and why that one first (broken into stories in [docs/USER-STORIES.md](docs/USER-STORIES.md)), and [docs/IDEAS.md](docs/IDEAS.md) for the parking lot of possible directions.
+Everything is scoped to an **enterprise** — the scope of an architecture effort, from a whole corporate group down to a household.
+
+**Why and what next:** [docs/VISION.md](docs/VISION.md) for where this is headed (meeting your architecture wherever it is, from fully manual to API-driven; baseline/target and the work in between; many views for many stakeholders), [docs/USE-CASES.md](docs/USE-CASES.md) for what we're building next and why that one first, broken into stories in [docs/USER-STORIES.md](docs/USER-STORIES.md).
+
+**How it's built:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the map of the codebase and the invariants the model depends on, [docs/GLOSSARY.md](docs/GLOSSARY.md) for what each EAM term means here, and [docs/DECISIONS.md](docs/DECISIONS.md) for the choices that are deliberate and why.
+
+**What's next and what's merely possible:** [docs/BACKLOG.md](docs/BACKLOG.md) for known defects and committed work, [docs/IDEAS.md](docs/IDEAS.md) for the parking lot.
+
+There are two example models in [examples/](examples/) you can import to see the metamodel working: `household.json`, the smallest possible one, and `alderbrook.json`, a fictional SaaS company with a runtime migration in flight so the `asOf` date visibly changes the landscape.
 
 ## Run it
 

@@ -20,4 +20,12 @@ The sidebar defaults to collapsed/icon-only (`SidebarProvider defaultOpen={false
 
 ## Docs update order
 
-When a change touches more than one doc: [docs/VISION.md](docs/VISION.md) → [docs/USE-CASES.md](docs/USE-CASES.md) → [docs/USER-STORIES.md](docs/USER-STORIES.md) → [docs/IDEAS.md](docs/IDEAS.md) → `README.md`. Vision is the foundation everything else derives from or links back to; README summarizes the settled state last.
+When a change touches more than one doc: [docs/VISION.md](docs/VISION.md) → [docs/USE-CASES.md](docs/USE-CASES.md) → [docs/USER-STORIES.md](docs/USER-STORIES.md) → [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) → [docs/DECISIONS.md](docs/DECISIONS.md) → [docs/GLOSSARY.md](docs/GLOSSARY.md) → [docs/BACKLOG.md](docs/BACKLOG.md) → [docs/IDEAS.md](docs/IDEAS.md) → `README.md`. Vision is the foundation everything else derives from or links back to; README summarizes the settled state last.
+
+## Read these before changing code
+
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) is the map: package layout, where the rules live, and the numbered invariants (INV-1 … INV-10) that the model would silently lie about if broken. [docs/GLOSSARY.md](docs/GLOSSARY.md) defines the EAM vocabulary as *this* codebase uses it — a term used loosely in a comment becomes a field name and then a label an architect mistrusts, so check a name against it before inventing one.
+
+Before changing something that looks arbitrary, check [docs/DECISIONS.md](docs/DECISIONS.md) — several shapes here are deliberate and the reasoning is recorded. If you decide something worth recording, append an entry rather than editing an existing one.
+
+Known defects and committed work go in [docs/BACKLOG.md](docs/BACKLOG.md), not [docs/IDEAS.md](docs/IDEAS.md). Ideas is for things still waiting on a decision; anything with a reason to be done belongs in the backlog, where it can't be camouflaged among forty maybes.
