@@ -96,11 +96,6 @@ These are the reason "basic access restriction" cannot be the last thing done.
 
 ## Model and data
 
-- **`household.json` still uses bare ids** — `abb-durable-storage`, `sbb-nas` and
-  friends are not globally unique, and `id` is a plain primary key (INV-10), so
-  the bundle cannot be imported alongside any other bundle using the same
-  convention. Regenerate it the way `alderbrook.json` is built (D-8).
-
 - **Id collisions surface as a 500** — importing a bundle whose ids already exist
   under a different enterprise fails with a Drizzle duplicate-key stack trace
   rather than a readable error naming the offending id. Belongs with T2.6.

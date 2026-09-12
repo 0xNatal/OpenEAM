@@ -139,8 +139,9 @@ so a diff shows only what actually changed.
 **Cost:** deep links are no longer human-readable. Judged not to matter — nobody
 types those URLs.
 
-**Not done yet:** `examples/household.json` still carries bare `abb-`/`sbb-` ids
-and cannot be imported alongside another bundle using the same convention.
+**Applies to every bundle.** `examples/household.json` was remapped to the same
+scheme; its ids derive from the slugs it used to carry, so the two bundles can be
+imported into one database.
 
 ---
 

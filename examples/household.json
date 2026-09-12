@@ -1,7 +1,7 @@
 {
   "enterprises": [
     {
-      "id": "household",
+      "id": "afe62f56-c094-56c4-8b76-ea7d1cf16540",
       "name": "Household",
       "description": "A family household as an enterprise: everyone under one roof, sharing data and media infrastructure.",
       "goal": "Preserve personal data durably and enjoy media on demand at home."
@@ -9,383 +9,383 @@
   ],
   "businessCapabilities": [
     {
-      "id": "data-capture",
+      "id": "ef41c128-8d69-56d6-b0e4-1189d8e95f1e",
       "name": "Data Capture",
       "description": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "storage-management",
+      "id": "48b87fef-303b-5c28-92af-1b3a94b27f6c",
       "name": "Storage Management",
       "description": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "backup-management",
+      "id": "dc7c068f-7147-5e5b-8d1f-e652459bb965",
       "name": "Backup Management",
       "description": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "data-retrieval",
+      "id": "b9809bbf-67f0-50f4-886e-297f87b59aac",
       "name": "Data Retrieval",
       "description": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "media-discovery",
+      "id": "eca0d173-18fe-5234-8a8c-6449c34e2fb2",
       "name": "Media Discovery",
       "description": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "content-request-handling",
+      "id": "2fda3e09-e87a-59a1-ac8e-cb2fd28a1555",
       "name": "Content Request Handling",
       "description": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "streaming-delivery",
+      "id": "6fa63fb6-fa9c-533d-8ea1-1ac5dc25ba50",
       "name": "Streaming Delivery",
       "description": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "playback-management",
+      "id": "a2392ced-a200-597d-b2d2-41d5514a1046",
       "name": "Playback Management",
       "description": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     }
   ],
   "businessProcesses": [
     {
-      "id": "import-file",
+      "id": "59dddcac-5307-55f7-9ba8-d6d482477467",
       "name": "Import file/photo/document",
       "description": null,
-      "capabilityId": "data-capture",
+      "capabilityId": "ef41c128-8d69-56d6-b0e4-1189d8e95f1e",
       "triggerEvent": null,
       "outcome": null,
       "bpmnXml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" id=\"Definitions_ImportFile\" targetNamespace=\"http://openeam.org/bpmn\"><bpmn:process id=\"Process_ImportFile\" isExecutable=\"false\"><bpmn:startEvent id=\"StartEvent_1\" name=\"File, photo, or document ready to import\"><bpmn:outgoing>Flow_1</bpmn:outgoing></bpmn:startEvent><bpmn:task id=\"Task_Select\" name=\"Select file\"><bpmn:incoming>Flow_1</bpmn:incoming><bpmn:outgoing>Flow_2</bpmn:outgoing></bpmn:task><bpmn:task id=\"Task_Validate\" name=\"Validate file format\"><bpmn:incoming>Flow_2</bpmn:incoming><bpmn:outgoing>Flow_3</bpmn:outgoing></bpmn:task><bpmn:task id=\"Task_Copy\" name=\"Copy file to storage location\"><bpmn:incoming>Flow_3</bpmn:incoming><bpmn:outgoing>Flow_4</bpmn:outgoing></bpmn:task><bpmn:endEvent id=\"EndEvent_1\" name=\"File imported\"><bpmn:incoming>Flow_4</bpmn:incoming></bpmn:endEvent><bpmn:sequenceFlow id=\"Flow_1\" sourceRef=\"StartEvent_1\" targetRef=\"Task_Select\"/><bpmn:sequenceFlow id=\"Flow_2\" sourceRef=\"Task_Select\" targetRef=\"Task_Validate\"/><bpmn:sequenceFlow id=\"Flow_3\" sourceRef=\"Task_Validate\" targetRef=\"Task_Copy\"/><bpmn:sequenceFlow id=\"Flow_4\" sourceRef=\"Task_Copy\" targetRef=\"EndEvent_1\"/></bpmn:process><bpmndi:BPMNDiagram id=\"BPMNDiagram_1\"><bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"Process_ImportFile\"><bpmndi:BPMNShape id=\"StartEvent_1_di\" bpmnElement=\"StartEvent_1\"><dc:Bounds x=\"152\" y=\"182\" width=\"36\" height=\"36\"/><bpmndi:BPMNLabel><dc:Bounds x=\"128\" y=\"225\" width=\"84\" height=\"40\"/></bpmndi:BPMNLabel></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Task_Select_di\" bpmnElement=\"Task_Select\"><dc:Bounds x=\"250\" y=\"160\" width=\"100\" height=\"80\"/></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Task_Validate_di\" bpmnElement=\"Task_Validate\"><dc:Bounds x=\"410\" y=\"160\" width=\"100\" height=\"80\"/></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Task_Copy_di\" bpmnElement=\"Task_Copy\"><dc:Bounds x=\"570\" y=\"160\" width=\"100\" height=\"80\"/></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"EndEvent_1_di\" bpmnElement=\"EndEvent_1\"><dc:Bounds x=\"732\" y=\"182\" width=\"36\" height=\"36\"/><bpmndi:BPMNLabel><dc:Bounds x=\"720\" y=\"225\" width=\"60\" height=\"27\"/></bpmndi:BPMNLabel></bpmndi:BPMNShape><bpmndi:BPMNEdge id=\"Flow_1_di\" bpmnElement=\"Flow_1\"><di:waypoint x=\"188\" y=\"200\"/><di:waypoint x=\"250\" y=\"200\"/></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_2_di\" bpmnElement=\"Flow_2\"><di:waypoint x=\"350\" y=\"200\"/><di:waypoint x=\"410\" y=\"200\"/></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_3_di\" bpmnElement=\"Flow_3\"><di:waypoint x=\"510\" y=\"200\"/><di:waypoint x=\"570\" y=\"200\"/></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_4_di\" bpmnElement=\"Flow_4\"><di:waypoint x=\"670\" y=\"200\"/><di:waypoint x=\"732\" y=\"200\"/></bpmndi:BPMNEdge></bpmndi:BPMNPlane></bpmndi:BPMNDiagram></bpmn:definitions>\n",
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "tag-metadata",
+      "id": "893df2d4-6cae-5041-9a44-4be7c9001964",
       "name": "Tag metadata (date, source, type)",
       "description": null,
-      "capabilityId": "data-capture",
+      "capabilityId": "ef41c128-8d69-56d6-b0e4-1189d8e95f1e",
       "triggerEvent": null,
       "outcome": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "allocate-storage",
+      "id": "a8ebed45-e4da-58c8-918b-0a4305913160",
       "name": "Allocate storage location",
       "description": null,
-      "capabilityId": "storage-management",
+      "capabilityId": "48b87fef-303b-5c28-92af-1b3a94b27f6c",
       "triggerEvent": null,
       "outcome": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "organize-files",
+      "id": "1de359ed-ed91-5ad7-a970-9dbacd9f290a",
       "name": "Organize into folders/albums",
       "description": null,
-      "capabilityId": "storage-management",
+      "capabilityId": "48b87fef-303b-5c28-92af-1b3a94b27f6c",
       "triggerEvent": null,
       "outcome": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "schedule-backup",
+      "id": "d9d499e6-c1d5-5fe2-aea5-6372c0ec874e",
       "name": "Schedule recurring backup",
       "description": null,
-      "capabilityId": "backup-management",
+      "capabilityId": "dc7c068f-7147-5e5b-8d1f-e652459bb965",
       "triggerEvent": null,
       "outcome": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "verify-backup-integrity",
+      "id": "86e7c2ee-6c4d-5667-be4f-33c801dc3e62",
       "name": "Verify backup integrity",
       "description": null,
-      "capabilityId": "backup-management",
+      "capabilityId": "dc7c068f-7147-5e5b-8d1f-e652459bb965",
       "triggerEvent": null,
       "outcome": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "search-files",
+      "id": "4259b13a-af64-5ece-b937-f95ba6f485a6",
       "name": "Search/browse for file",
       "description": null,
-      "capabilityId": "data-retrieval",
+      "capabilityId": "b9809bbf-67f0-50f4-886e-297f87b59aac",
       "triggerEvent": null,
       "outcome": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "restore-from-backup",
+      "id": "174da671-de5d-54be-9f75-15bc15b04242",
       "name": "Restore from backup if missing",
       "description": null,
-      "capabilityId": "data-retrieval",
+      "capabilityId": "b9809bbf-67f0-50f4-886e-297f87b59aac",
       "triggerEvent": null,
       "outcome": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "browse-catalog",
+      "id": "226f5afd-6086-59db-94c6-d67524bc8030",
       "name": "Browse catalog/library",
       "description": null,
-      "capabilityId": "media-discovery",
+      "capabilityId": "eca0d173-18fe-5234-8a8c-6449c34e2fb2",
       "triggerEvent": null,
       "outcome": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "search-content",
+      "id": "d5302fe3-d9fb-5bad-9b71-900e85d88fb9",
       "name": "Search for content",
       "description": null,
-      "capabilityId": "media-discovery",
+      "capabilityId": "eca0d173-18fe-5234-8a8c-6449c34e2fb2",
       "triggerEvent": null,
       "outcome": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "select-title",
+      "id": "1a3740ea-03e1-51c5-ad10-291d4e0c32fb",
       "name": "Select title",
       "description": null,
-      "capabilityId": "content-request-handling",
+      "capabilityId": "2fda3e09-e87a-59a1-ac8e-cb2fd28a1555",
       "triggerEvent": null,
       "outcome": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "check-availability",
+      "id": "cbde29e0-db1d-513b-a155-63443873c803",
       "name": "Check availability/licensing",
       "description": null,
-      "capabilityId": "content-request-handling",
+      "capabilityId": "2fda3e09-e87a-59a1-ac8e-cb2fd28a1555",
       "triggerEvent": null,
       "outcome": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "transcode-stream",
+      "id": "a54f9841-4574-58b4-85f6-ed2d72232c08",
       "name": "Transcode for target device",
       "description": null,
-      "capabilityId": "streaming-delivery",
+      "capabilityId": "6fa63fb6-fa9c-533d-8ea1-1ac5dc25ba50",
       "triggerEvent": null,
       "outcome": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "deliver-to-device",
+      "id": "109d01b5-1020-5ae5-8980-572af437b3de",
       "name": "Deliver stream to device",
       "description": null,
-      "capabilityId": "streaming-delivery",
+      "capabilityId": "6fa63fb6-fa9c-533d-8ea1-1ac5dc25ba50",
       "triggerEvent": null,
       "outcome": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "start-playback",
+      "id": "15e1a5d4-4d98-52b3-aa3e-46c81db6a414",
       "name": "Start playback",
       "description": null,
-      "capabilityId": "playback-management",
+      "capabilityId": "a2392ced-a200-597d-b2d2-41d5514a1046",
       "triggerEvent": null,
       "outcome": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "track-watch-progress",
+      "id": "f56e2d40-b2b7-500d-91be-45d6bfcfe814",
       "name": "Track watch/listen progress",
       "description": null,
-      "capabilityId": "playback-management",
+      "capabilityId": "a2392ced-a200-597d-b2d2-41d5514a1046",
       "triggerEvent": null,
       "outcome": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     }
   ],
   "processSteps": [
     {
-      "id": "import-file-step-1",
+      "id": "fbfe0934-0c0e-579b-96b4-0cfcdbf042fe",
       "name": "Select file",
-      "processId": "import-file",
+      "processId": "59dddcac-5307-55f7-9ba8-d6d482477467",
       "position": 0
     },
     {
-      "id": "import-file-step-2",
+      "id": "41187c96-8fdb-59b8-97ab-fc5b968de5b5",
       "name": "Validate file format",
-      "processId": "import-file",
+      "processId": "59dddcac-5307-55f7-9ba8-d6d482477467",
       "position": 1
     },
     {
-      "id": "import-file-step-3",
+      "id": "42794b63-b467-5b42-96d1-5a6229a72998",
       "name": "Copy file to storage location",
-      "processId": "import-file",
+      "processId": "59dddcac-5307-55f7-9ba8-d6d482477467",
       "position": 2
     }
   ],
   "valueStreams": [
     {
-      "id": "preserve-retrieve-personal-data",
+      "id": "5c81cf19-5805-54eb-9d98-70459aea198c",
       "name": "Preserve & Retrieve Personal Data",
       "description": "Stakeholder: You/household. Trigger: A file/photo/document is created or needs to be stored. End state: Data is durably stored, backed up, and retrievable on demand.",
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "consume-media-on-demand",
+      "id": "3163bd5f-6df0-5d19-93c1-e7389b562f69",
       "name": "Consume Media on Demand",
       "description": "Stakeholder: You/household. Trigger: Desire to watch/listen to something. End state: Content streams to the requested device.",
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     }
   ],
   "valueStreamStages": [
     {
-      "id": "capture",
+      "id": "71df2ddf-11be-5e21-a9f9-96ff1cef7de2",
       "name": "Capture",
-      "valueStreamId": "preserve-retrieve-personal-data",
+      "valueStreamId": "5c81cf19-5805-54eb-9d98-70459aea198c",
       "position": 0
     },
     {
-      "id": "store",
+      "id": "002be948-dbf2-59d7-877c-702136710c0e",
       "name": "Store",
-      "valueStreamId": "preserve-retrieve-personal-data",
+      "valueStreamId": "5c81cf19-5805-54eb-9d98-70459aea198c",
       "position": 1
     },
     {
-      "id": "protect",
+      "id": "804b0dfd-ac44-58cc-8a9c-8480297bfbc3",
       "name": "Protect",
-      "valueStreamId": "preserve-retrieve-personal-data",
+      "valueStreamId": "5c81cf19-5805-54eb-9d98-70459aea198c",
       "position": 2
     },
     {
-      "id": "retrieve",
+      "id": "867b5a28-f1f9-58e3-bad0-a4894e46d21e",
       "name": "Retrieve",
-      "valueStreamId": "preserve-retrieve-personal-data",
+      "valueStreamId": "5c81cf19-5805-54eb-9d98-70459aea198c",
       "position": 3
     },
     {
-      "id": "discover",
+      "id": "fc208dbb-9bc6-58e5-87c6-2d98f0a6d1cf",
       "name": "Discover",
-      "valueStreamId": "consume-media-on-demand",
+      "valueStreamId": "3163bd5f-6df0-5d19-93c1-e7389b562f69",
       "position": 0
     },
     {
-      "id": "request",
+      "id": "c5000683-84a6-5307-9417-5036c4954672",
       "name": "Request",
-      "valueStreamId": "consume-media-on-demand",
+      "valueStreamId": "3163bd5f-6df0-5d19-93c1-e7389b562f69",
       "position": 1
     },
     {
-      "id": "stream",
+      "id": "6e44e689-9342-5341-9926-041a0a7b0107",
       "name": "Stream",
-      "valueStreamId": "consume-media-on-demand",
+      "valueStreamId": "3163bd5f-6df0-5d19-93c1-e7389b562f69",
       "position": 2
     },
     {
-      "id": "playback",
+      "id": "6ab68eda-3394-5c53-a9db-678b3d974a81",
       "name": "Playback",
-      "valueStreamId": "consume-media-on-demand",
+      "valueStreamId": "3163bd5f-6df0-5d19-93c1-e7389b562f69",
       "position": 3
     }
   ],
   "stageCapabilities": [
     {
-      "stageId": "capture",
-      "capabilityId": "data-capture",
+      "stageId": "71df2ddf-11be-5e21-a9f9-96ff1cef7de2",
+      "capabilityId": "ef41c128-8d69-56d6-b0e4-1189d8e95f1e",
       "position": 0
     },
     {
-      "stageId": "store",
-      "capabilityId": "storage-management",
+      "stageId": "002be948-dbf2-59d7-877c-702136710c0e",
+      "capabilityId": "48b87fef-303b-5c28-92af-1b3a94b27f6c",
       "position": 0
     },
     {
-      "stageId": "protect",
-      "capabilityId": "backup-management",
+      "stageId": "804b0dfd-ac44-58cc-8a9c-8480297bfbc3",
+      "capabilityId": "dc7c068f-7147-5e5b-8d1f-e652459bb965",
       "position": 0
     },
     {
-      "stageId": "retrieve",
-      "capabilityId": "data-retrieval",
+      "stageId": "867b5a28-f1f9-58e3-bad0-a4894e46d21e",
+      "capabilityId": "b9809bbf-67f0-50f4-886e-297f87b59aac",
       "position": 0
     },
     {
-      "stageId": "discover",
-      "capabilityId": "media-discovery",
+      "stageId": "fc208dbb-9bc6-58e5-87c6-2d98f0a6d1cf",
+      "capabilityId": "eca0d173-18fe-5234-8a8c-6449c34e2fb2",
       "position": 0
     },
     {
-      "stageId": "request",
-      "capabilityId": "content-request-handling",
+      "stageId": "c5000683-84a6-5307-9417-5036c4954672",
+      "capabilityId": "2fda3e09-e87a-59a1-ac8e-cb2fd28a1555",
       "position": 0
     },
     {
-      "stageId": "stream",
-      "capabilityId": "streaming-delivery",
+      "stageId": "6e44e689-9342-5341-9926-041a0a7b0107",
+      "capabilityId": "6fa63fb6-fa9c-533d-8ea1-1ac5dc25ba50",
       "position": 0
     },
     {
-      "stageId": "playback",
-      "capabilityId": "playback-management",
+      "stageId": "6ab68eda-3394-5c53-a9db-678b3d974a81",
+      "capabilityId": "a2392ced-a200-597d-b2d2-41d5514a1046",
       "position": 0
     }
   ],
   "architectureDomains": [
     {
-      "id": "household-domain-business",
+      "id": "db924d6f-2cee-50e9-9af7-cfc268b5d29f",
       "name": "Business Architecture",
       "description": "Business strategy, governance, organization, and key business processes.",
       "isDefault": true,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "household-domain-data",
+      "id": "d49e5239-ccc3-519b-ba10-efb2fec0c390",
       "name": "Data Architecture",
       "description": "Structure of logical and physical data assets and data management resources.",
       "isDefault": true,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "household-domain-application",
+      "id": "8d82ada8-6f74-58a7-a807-269abdb0c51e",
       "name": "Application Architecture",
       "description": "Individual applications, their interactions, and their relationships to business processes.",
       "isDefault": true,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "household-domain-technology",
+      "id": "a66e907c-ea40-5f05-88c6-6d2ed7464c6d",
       "name": "Technology Architecture",
       "description": "Software and hardware capabilities required to support business, data, and application services.",
       "isDefault": true,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     }
   ],
   "organizationUnits": [
     {
-      "id": "household",
+      "id": "afe62f56-c094-56c4-8b76-ea7d1cf16540",
       "name": "Household",
       "description": null,
       "parentId": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "living-room",
+      "id": "0f61b24a-c941-5a9b-a53b-112e3dbc5e89",
       "name": "Living Room",
       "description": null,
-      "parentId": "household",
-      "enterpriseId": "household"
+      "parentId": "afe62f56-c094-56c4-8b76-ea7d1cf16540",
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "home-office",
+      "id": "00529b9d-14f9-5a50-81bf-2259a93390cc",
       "name": "Home Office",
       "description": null,
-      "parentId": "household",
-      "enterpriseId": "household"
+      "parentId": "afe62f56-c094-56c4-8b76-ea7d1cf16540",
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     }
   ],
   "buildingBlocks": [
     {
-      "id": "abb-durable-storage",
+      "id": "ab741381-68b9-56ed-8f88-f6df1762ad17",
       "kind": "architecture",
       "name": "Durable Storage",
       "description": "Needed capability: files must be stored redundantly and be recoverable if a device fails.",
@@ -393,10 +393,10 @@
       "lifecyclePhase": "active",
       "validFrom": "2022-01-01",
       "validTo": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "abb-media-streaming",
+      "id": "1ecefb85-be68-59e6-a567-c49ae6594e25",
       "kind": "architecture",
       "name": "Media Streaming Platform",
       "description": "Needed capability: browse a media library and stream it to any device in the household.",
@@ -404,10 +404,10 @@
       "lifecyclePhase": "active",
       "validFrom": "2021-01-01",
       "validTo": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "sbb-nas",
+      "id": "279b0a88-b4f5-5ac4-886f-2211b9779101",
       "kind": "solution",
       "name": "Synology NAS",
       "description": "On-premises RAID storage box in the home office.",
@@ -415,10 +415,10 @@
       "lifecyclePhase": "active",
       "validFrom": "2022-01-01",
       "validTo": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "sbb-backblaze",
+      "id": "fbc97746-c4ff-5a34-ac99-542eebfd4870",
       "kind": "solution",
       "name": "Backblaze B2",
       "description": "Off-site cloud backup target, added later for 3-2-1 backup compliance.",
@@ -426,10 +426,10 @@
       "lifecyclePhase": "active",
       "validFrom": "2024-06-01",
       "validTo": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "sbb-plex",
+      "id": "bec5b8bb-a80f-5b76-af48-3cab58c8eb3f",
       "kind": "solution",
       "name": "Plex",
       "description": "Original media server, replaced by Jellyfin.",
@@ -437,10 +437,10 @@
       "lifecyclePhase": "retired",
       "validFrom": "2021-01-01",
       "validTo": "2023-01-01",
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     },
     {
-      "id": "sbb-jellyfin",
+      "id": "0f39ef09-8f42-5af0-8b54-c9c27bbb81b7",
       "kind": "solution",
       "name": "Jellyfin",
       "description": "Self-hosted media server running on the NAS, in the living room's TV app.",
@@ -448,135 +448,135 @@
       "lifecyclePhase": "active",
       "validFrom": "2023-01-01",
       "validTo": null,
-      "enterpriseId": "household"
+      "enterpriseId": "afe62f56-c094-56c4-8b76-ea7d1cf16540"
     }
   ],
   "buildingBlockArchitectureDomains": [
     {
-      "buildingBlockId": "abb-durable-storage",
-      "architectureDomainId": "household-domain-data"
+      "buildingBlockId": "ab741381-68b9-56ed-8f88-f6df1762ad17",
+      "architectureDomainId": "d49e5239-ccc3-519b-ba10-efb2fec0c390"
     },
     {
-      "buildingBlockId": "abb-media-streaming",
-      "architectureDomainId": "household-domain-application"
+      "buildingBlockId": "1ecefb85-be68-59e6-a567-c49ae6594e25",
+      "architectureDomainId": "8d82ada8-6f74-58a7-a807-269abdb0c51e"
     },
     {
-      "buildingBlockId": "sbb-nas",
-      "architectureDomainId": "household-domain-technology"
+      "buildingBlockId": "279b0a88-b4f5-5ac4-886f-2211b9779101",
+      "architectureDomainId": "a66e907c-ea40-5f05-88c6-6d2ed7464c6d"
     },
     {
-      "buildingBlockId": "sbb-backblaze",
-      "architectureDomainId": "household-domain-technology"
+      "buildingBlockId": "fbc97746-c4ff-5a34-ac99-542eebfd4870",
+      "architectureDomainId": "a66e907c-ea40-5f05-88c6-6d2ed7464c6d"
     },
     {
-      "buildingBlockId": "sbb-plex",
-      "architectureDomainId": "household-domain-application"
+      "buildingBlockId": "bec5b8bb-a80f-5b76-af48-3cab58c8eb3f",
+      "architectureDomainId": "8d82ada8-6f74-58a7-a807-269abdb0c51e"
     },
     {
-      "buildingBlockId": "sbb-jellyfin",
-      "architectureDomainId": "household-domain-application"
+      "buildingBlockId": "0f39ef09-8f42-5af0-8b54-c9c27bbb81b7",
+      "architectureDomainId": "8d82ada8-6f74-58a7-a807-269abdb0c51e"
     }
   ],
   "buildingBlockOrganizationUnits": [
     {
-      "id": "bbou-durable-storage-household",
-      "buildingBlockId": "abb-durable-storage",
-      "organizationUnitId": "household",
+      "id": "242c0671-2eba-587c-9ed8-1a910836373a",
+      "buildingBlockId": "ab741381-68b9-56ed-8f88-f6df1762ad17",
+      "organizationUnitId": "afe62f56-c094-56c4-8b76-ea7d1cf16540",
       "validFrom": null,
       "validTo": null
     },
     {
-      "id": "bbou-media-streaming-household",
-      "buildingBlockId": "abb-media-streaming",
-      "organizationUnitId": "household",
+      "id": "1c654832-0d23-56a0-8309-738f608f3c6c",
+      "buildingBlockId": "1ecefb85-be68-59e6-a567-c49ae6594e25",
+      "organizationUnitId": "afe62f56-c094-56c4-8b76-ea7d1cf16540",
       "validFrom": null,
       "validTo": null
     },
     {
-      "id": "bbou-nas-home-office",
-      "buildingBlockId": "sbb-nas",
-      "organizationUnitId": "home-office",
+      "id": "4cf47944-3717-5ab4-8735-111b09a0eaa5",
+      "buildingBlockId": "279b0a88-b4f5-5ac4-886f-2211b9779101",
+      "organizationUnitId": "00529b9d-14f9-5a50-81bf-2259a93390cc",
       "validFrom": "2022-01-01",
       "validTo": null
     },
     {
-      "id": "bbou-plex-living-room",
-      "buildingBlockId": "sbb-plex",
-      "organizationUnitId": "living-room",
+      "id": "12944a3e-6467-5972-a0d6-694270a3dfeb",
+      "buildingBlockId": "bec5b8bb-a80f-5b76-af48-3cab58c8eb3f",
+      "organizationUnitId": "0f61b24a-c941-5a9b-a53b-112e3dbc5e89",
       "validFrom": "2021-01-01",
       "validTo": "2023-01-01"
     },
     {
-      "id": "bbou-jellyfin-living-room",
-      "buildingBlockId": "sbb-jellyfin",
-      "organizationUnitId": "living-room",
+      "id": "b9c2fba9-54e7-53e4-82c6-16bb6b703f03",
+      "buildingBlockId": "0f39ef09-8f42-5af0-8b54-c9c27bbb81b7",
+      "organizationUnitId": "0f61b24a-c941-5a9b-a53b-112e3dbc5e89",
       "validFrom": "2023-01-01",
       "validTo": null
     }
   ],
   "buildingBlockRealizations": [
     {
-      "id": "real-nas",
-      "architectureBuildingBlockId": "abb-durable-storage",
-      "solutionBuildingBlockId": "sbb-nas",
+      "id": "4499eff9-ed0d-5151-9067-e2b368dde225",
+      "architectureBuildingBlockId": "ab741381-68b9-56ed-8f88-f6df1762ad17",
+      "solutionBuildingBlockId": "279b0a88-b4f5-5ac4-886f-2211b9779101",
       "validFrom": "2022-01-01",
       "validTo": null
     },
     {
-      "id": "real-backblaze",
-      "architectureBuildingBlockId": "abb-durable-storage",
-      "solutionBuildingBlockId": "sbb-backblaze",
+      "id": "43766c92-c0e3-5eb4-b68d-f1fde49877ae",
+      "architectureBuildingBlockId": "ab741381-68b9-56ed-8f88-f6df1762ad17",
+      "solutionBuildingBlockId": "fbc97746-c4ff-5a34-ac99-542eebfd4870",
       "validFrom": "2024-06-01",
       "validTo": null
     },
     {
-      "id": "real-plex",
-      "architectureBuildingBlockId": "abb-media-streaming",
-      "solutionBuildingBlockId": "sbb-plex",
+      "id": "05231033-4e46-5b11-8efe-9db436c698e7",
+      "architectureBuildingBlockId": "1ecefb85-be68-59e6-a567-c49ae6594e25",
+      "solutionBuildingBlockId": "bec5b8bb-a80f-5b76-af48-3cab58c8eb3f",
       "validFrom": "2021-01-01",
       "validTo": "2023-01-01"
     },
     {
-      "id": "real-jellyfin",
-      "architectureBuildingBlockId": "abb-media-streaming",
-      "solutionBuildingBlockId": "sbb-jellyfin",
+      "id": "578037b9-108a-55b2-8d95-21abfc807a4b",
+      "architectureBuildingBlockId": "1ecefb85-be68-59e6-a567-c49ae6594e25",
+      "solutionBuildingBlockId": "0f39ef09-8f42-5af0-8b54-c9c27bbb81b7",
       "validFrom": "2023-01-01",
       "validTo": null
     }
   ],
   "buildingBlockCapabilities": [
     {
-      "id": "bbc-storage-1",
-      "buildingBlockId": "abb-durable-storage",
-      "capabilityId": "storage-management",
+      "id": "11345a77-e577-51c1-802c-3933b1073b47",
+      "buildingBlockId": "ab741381-68b9-56ed-8f88-f6df1762ad17",
+      "capabilityId": "48b87fef-303b-5c28-92af-1b3a94b27f6c",
       "validFrom": "2022-01-01",
       "validTo": null
     },
     {
-      "id": "bbc-storage-2",
-      "buildingBlockId": "abb-durable-storage",
-      "capabilityId": "backup-management",
+      "id": "c73d5e38-8491-5482-ab98-23bb6d59cdf0",
+      "buildingBlockId": "ab741381-68b9-56ed-8f88-f6df1762ad17",
+      "capabilityId": "dc7c068f-7147-5e5b-8d1f-e652459bb965",
       "validFrom": "2022-01-01",
       "validTo": null
     },
     {
-      "id": "bbc-streaming-1",
-      "buildingBlockId": "abb-media-streaming",
-      "capabilityId": "media-discovery",
+      "id": "eee4b78e-3268-5c8c-8a89-ef1795e00d46",
+      "buildingBlockId": "1ecefb85-be68-59e6-a567-c49ae6594e25",
+      "capabilityId": "eca0d173-18fe-5234-8a8c-6449c34e2fb2",
       "validFrom": "2021-01-01",
       "validTo": null
     },
     {
-      "id": "bbc-streaming-2",
-      "buildingBlockId": "abb-media-streaming",
-      "capabilityId": "streaming-delivery",
+      "id": "e3899304-5e25-53c3-a62b-bb955060046a",
+      "buildingBlockId": "1ecefb85-be68-59e6-a567-c49ae6594e25",
+      "capabilityId": "6fa63fb6-fa9c-533d-8ea1-1ac5dc25ba50",
       "validFrom": "2021-01-01",
       "validTo": null
     },
     {
-      "id": "bbc-streaming-3",
-      "buildingBlockId": "abb-media-streaming",
-      "capabilityId": "playback-management",
+      "id": "607968d6-4a52-5ef1-acd7-bdbc73a25cb9",
+      "buildingBlockId": "1ecefb85-be68-59e6-a567-c49ae6594e25",
+      "capabilityId": "a2392ced-a200-597d-b2d2-41d5514a1046",
       "validFrom": "2021-01-01",
       "validTo": null
     }
