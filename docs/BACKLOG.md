@@ -108,6 +108,15 @@ These are the reason "basic access restriction" cannot be the last thing done.
   `linkBuildingBlockCapability` / `unlinkBuildingBlockCapability` pair plus a way to
   add and remove links from one of the two detail pages.
 
+- **The building block detail page ignores `asOf`** — it lists every relationship
+  the block ever had, oldest first, with closed and live ones visually identical
+  apart from their dates. On the Self-Managed VM Fleet in `alderbrook.json` that
+  means the three live `hosted_on` edges sit below seven historical ones. This is
+  the page that most directly answers "what is still running on this?", and it is
+  the one page that does not honour the time dimension the rest of the app is
+  built around. At minimum: separate live from closed, or respect the landscape's
+  `asOf`.
+
 - **The landscape diagram does not fit to the viewport** — at ~58 building blocks
   the graph renders clipped at the top with dead space below, and there is no
   fit-to-view or zoom-to-extent. Invisible with a six-block model; obvious with a
