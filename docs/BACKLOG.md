@@ -57,7 +57,7 @@ These are the reason "basic access restriction" cannot be the last thing done.
   this existing. Tool choice stays Vitest; the `test` / `test:watch` scripts and
   the CI step go in with it.
 
-- **Invariant tests** (T1.4) — turn INV-1 … INV-10 in
+- **Invariant tests** (T1.4) — turn INV-1 … INV-12 in
   [ARCHITECTURE.md](ARCHITECTURE.md) into tests. They are already written down as
   rules; this is the cheapest test anyone will ever write, and the current
   Definition of Done (lint, typecheck, build) proves only that the code compiles.
@@ -99,6 +99,13 @@ These are the reason "basic access restriction" cannot be the last thing done.
 - **Id collisions surface as a 500** — importing a bundle whose ids already exist
   under a different enterprise fails with a Drizzle duplicate-key stack trace
   rather than a readable error naming the offending id. Belongs with T2.6.
+
+- **No UI to add or remove information on a capability** — the GraphQL mutations
+  exist (`createInformationObject`, `linkCapabilityInformation` and their
+  counterparts), and the Information quadrant renders what is linked, but there is
+  no way to do it from the capability page. Same gap as the building block one
+  below, and worth fixing in one pass: both are "the read path is real, the write
+  path is API-only".
 
 - **No mutation to link a building block to a business capability** —
   `buildingBlockCapabilities` (which ABBs realize which capability) can only be set

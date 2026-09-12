@@ -147,6 +147,14 @@ enum CapabilityDirection {
   SUSTAIN
 }
 
+input CapabilityInformationInput {
+  capabilityId: String!
+  informationObjectId: String!
+  usage: InformationUsage
+  validFrom: String
+  validTo: String
+}
+
 type CapabilityLink {
   capabilityId: String!
   validFrom: String
@@ -171,8 +179,45 @@ input EnterpriseInput {
 }
 
 type Information {
+  description: String
+  id: String!
+  linkId: String!
+  name: String!
+  usage: InformationUsage!
+  validFrom: String
+  validTo: String
+}
+
+type InformationCapabilityLink {
+  capabilityId: String!
+  capabilityName: String!
+  linkId: String!
+  usage: InformationUsage!
+  validFrom: String
+  validTo: String
+}
+
+type InformationObject {
+  capabilities: [InformationCapabilityLink!]!
+  description: String
+  enterpriseId: String!
   id: String!
   name: String!
+}
+
+input InformationObjectInput {
+  description: String
+  enterpriseId: String!
+  name: String!
+}
+
+"""
+How a capability relates to a piece of information: owns (accountable for it being correct), creates (brings it into existence), uses (consumes it without owning it).
+"""
+enum InformationUsage {
+  creates
+  owns
+  uses
 }
 
 enum LifecyclePhase {
@@ -188,18 +233,23 @@ type Mutation {
   createBusinessCapability(input: BusinessCapabilityInput!): BusinessCapability!
   createBusinessProcess(input: BusinessProcessInput!): BusinessProcess!
   createEnterprise(input: EnterpriseInput!): Enterprise!
+  createInformationObject(input: InformationObjectInput!): InformationObject!
   createValueStream(input: ValueStreamInput!): ValueStream!
   deleteBuildingBlock(id: String!): Boolean!
   deleteBuildingBlockRelationship(id: String!): Boolean!
   deleteBusinessCapability(id: String!): Boolean!
   deleteBusinessProcess(id: String!): Boolean!
   deleteEnterprise(id: String!): Boolean!
+  deleteInformationObject(id: String!): Boolean!
   deleteValueStream(id: String!): Boolean!
+  linkCapabilityInformation(input: CapabilityInformationInput!): InformationObject!
+  unlinkCapabilityInformation(linkId: String!): Boolean!
   updateBuildingBlock(id: String!, input: BuildingBlockInput!): BuildingBlock!
   updateBusinessCapability(id: String!, input: BusinessCapabilityInput!): BusinessCapability!
   updateBusinessProcess(id: String!, input: BusinessProcessInput!): BusinessProcess!
   updateBusinessProcessDiagram(bpmnXml: String!, id: String!): BusinessProcess!
   updateEnterprise(id: String!, input: EnterpriseInput!): Enterprise!
+  updateInformationObject(id: String!, input: InformationObjectInput!): InformationObject!
   updateValueStream(id: String!, input: ValueStreamInput!): ValueStream!
 }
 
@@ -247,6 +297,8 @@ type Query {
   businessProcesses(enterpriseId: String!): [BusinessProcess!]!
   enterprise(id: String!): Enterprise
   enterprises: [Enterprise!]!
+  informationObject(id: String!): InformationObject
+  informationObjects(enterpriseId: String!): [InformationObject!]!
   organizationUnit(id: String!): OrganizationUnit
   organizationUnits(enterpriseId: String!): [OrganizationUnit!]!
 

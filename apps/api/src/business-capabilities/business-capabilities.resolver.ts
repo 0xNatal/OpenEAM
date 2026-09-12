@@ -1,12 +1,7 @@
 import { Args, Mutation, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import type { BusinessCapabilityRow } from './business-capabilities.service';
 import { BusinessCapabilitiesService } from './business-capabilities.service';
-import {
-  BusinessCapability,
-  BusinessCapabilityInput,
-  Information,
-  Person,
-} from './business-capability.model';
+import { BusinessCapability, BusinessCapabilityInput, Person } from './business-capability.model';
 
 @Resolver(() => BusinessCapability)
 export class BusinessCapabilitiesResolver {
@@ -44,14 +39,10 @@ export class BusinessCapabilitiesResolver {
     return this.service.delete(id);
   }
 
-  // No DB tables yet for these — see docs/IDEAS.md.
+  // No DB table yet — see docs/BACKLOG.md. `information` is resolved from the
+  // capability row itself now that information_objects exists.
   @ResolveField(() => [Person])
   people(): Person[] {
-    return [];
-  }
-
-  @ResolveField(() => [Information])
-  information(): Information[] {
     return [];
   }
 }

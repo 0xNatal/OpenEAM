@@ -2859,5 +2859,309 @@
       "validFrom": "2020-06-01",
       "validTo": "2026-12-31"
     }
+  ],
+  "informationObjects": [
+    {
+      "id": "ad29b16d-ba52-5505-9867-2f7528e29a59",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "name": "Customer Account",
+      "description": "Who the customer is, which plan they are on, and who at Alderbrook is responsible for them."
+    },
+    {
+      "id": "19b5143f-99e3-55d5-a0c1-e11233f2f6ce",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "name": "Subscription Contract",
+      "description": "Agreed term, seats and price. The thing an invoice is derived from."
+    },
+    {
+      "id": "700648c2-2200-504a-8d11-8a888b31e59d",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "name": "Invoice",
+      "description": "What was billed, when, and against which contract."
+    },
+    {
+      "id": "e71167f4-b12c-56f3-8048-cbf542929b97",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "name": "Accounting Ledger Entry",
+      "description": "The double-entry record. Authoritative for anything anyone reports externally."
+    },
+    {
+      "id": "61a3ba25-ed3d-50be-8bf9-cca066b06370",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "name": "Revenue Schedule",
+      "description": "How a contract’s value is recognised across its term."
+    },
+    {
+      "id": "29bc0527-5afa-5b85-b867-4a5aa2cdc6b7",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "name": "Expense Claim",
+      "description": "A customer employee’s claim, with amounts, tax and approval state. Customer data held on their behalf, not Alderbrook’s."
+    },
+    {
+      "id": "afd3164e-54e2-51fd-901c-4cd31ce761f4",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "name": "Receipt Image",
+      "description": "The scanned original behind a claim. Carries the longest retention obligation in the estate — seven years — which is why compliance owns it rather than the product team."
+    },
+    {
+      "id": "9462cc01-de6b-59f0-822e-f68ff294c03a",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "name": "Card Transaction",
+      "description": "An authorisation or settlement from the card network, matched to a claim."
+    },
+    {
+      "id": "943e170f-23be-5973-8af6-4c79afb00450",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "name": "Spend Policy",
+      "description": "The customer’s own rules about what may be spent, by whom, up to what limit."
+    },
+    {
+      "id": "7b7c3a5b-309c-5981-b443-571b09359b2e",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "name": "Employee Record",
+      "description": "Alderbrook’s own people. The joiner-mover-leaver source that access provisioning depends on."
+    },
+    {
+      "id": "01453c3b-f45f-5b8c-bd75-4e1fdf357fa5",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "name": "Access Grant",
+      "description": "Who can reach which system, and who approved it. The artifact every SOC 2 audit asks to see."
+    },
+    {
+      "id": "c341db25-ea6b-5f3d-b8a0-ebe8f27da86f",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "name": "Product Usage Event",
+      "description": "What customers actually do in the product. Feeds both the roadmap and expansion signals."
+    },
+    {
+      "id": "6e1cb349-3f44-5022-9793-30bfabea2a28",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "name": "Support Ticket",
+      "description": "A customer question and everything said about it."
+    },
+    {
+      "id": "27ba2493-622c-535e-8afb-dc1aafa82fa5",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "name": "Incident Record",
+      "description": "What broke, for how long, who was affected, and what was changed afterwards."
+    }
+  ],
+  "capabilityInformation": [
+    {
+      "id": "0cdc47b0-38a5-56fe-b6a2-978f2ede66d9",
+      "capabilityId": "b0608656-f338-5500-9df8-c14c15d19280",
+      "informationObjectId": "ad29b16d-ba52-5505-9867-2f7528e29a59",
+      "usage": "owns",
+      "validFrom": "2019-04-01",
+      "validTo": null
+    },
+    {
+      "id": "9ec03d81-1e47-583c-8fff-5b5e370dac34",
+      "capabilityId": "b0608656-f338-5500-9df8-c14c15d19280",
+      "informationObjectId": "943e170f-23be-5973-8af6-4c79afb00450",
+      "usage": "creates",
+      "validFrom": "2019-08-01",
+      "validTo": null
+    },
+    {
+      "id": "d2bc97d5-f7f7-58fd-a35a-ed466c20de1a",
+      "capabilityId": "e9c90917-9556-5d80-8bae-e32c1a1f0ec7",
+      "informationObjectId": "ad29b16d-ba52-5505-9867-2f7528e29a59",
+      "usage": "uses",
+      "validFrom": "2019-05-01",
+      "validTo": null
+    },
+    {
+      "id": "aab828ae-edd4-564d-9192-54012e751a11",
+      "capabilityId": "e9c90917-9556-5d80-8bae-e32c1a1f0ec7",
+      "informationObjectId": "19b5143f-99e3-55d5-a0c1-e11233f2f6ce",
+      "usage": "creates",
+      "validFrom": "2019-05-01",
+      "validTo": null
+    },
+    {
+      "id": "5cca3ef0-cb03-5213-b825-8279ef3630b7",
+      "capabilityId": "0c5055bf-2599-56f2-9257-b58c228887c5",
+      "informationObjectId": "c341db25-ea6b-5f3d-b8a0-ebe8f27da86f",
+      "usage": "uses",
+      "validFrom": "2021-03-01",
+      "validTo": null
+    },
+    {
+      "id": "df631665-e815-5d0a-9722-3f114f95cf29",
+      "capabilityId": "9019c240-1783-5533-9b6d-336869e673d0",
+      "informationObjectId": "19b5143f-99e3-55d5-a0c1-e11233f2f6ce",
+      "usage": "owns",
+      "validFrom": "2020-01-01",
+      "validTo": null
+    },
+    {
+      "id": "97834d06-6461-51be-a453-05d39da71964",
+      "capabilityId": "9019c240-1783-5533-9b6d-336869e673d0",
+      "informationObjectId": "700648c2-2200-504a-8d11-8a888b31e59d",
+      "usage": "creates",
+      "validFrom": "2020-01-01",
+      "validTo": null
+    },
+    {
+      "id": "2d0eaeb8-e749-5e5c-b81a-9c6d53108a10",
+      "capabilityId": "9019c240-1783-5533-9b6d-336869e673d0",
+      "informationObjectId": "ad29b16d-ba52-5505-9867-2f7528e29a59",
+      "usage": "uses",
+      "validFrom": "2020-01-01",
+      "validTo": null
+    },
+    {
+      "id": "fc7fbee7-5c1a-5430-b8f8-803a18ce1077",
+      "capabilityId": "a54b11e2-0b78-5e69-a77f-06f4851b1c01",
+      "informationObjectId": "61a3ba25-ed3d-50be-8bf9-cca066b06370",
+      "usage": "owns",
+      "validFrom": "2021-04-01",
+      "validTo": null
+    },
+    {
+      "id": "2eb1cdfd-98c9-5b91-b119-f7dbf9681426",
+      "capabilityId": "a54b11e2-0b78-5e69-a77f-06f4851b1c01",
+      "informationObjectId": "700648c2-2200-504a-8d11-8a888b31e59d",
+      "usage": "uses",
+      "validFrom": "2021-04-01",
+      "validTo": null
+    },
+    {
+      "id": "a20f79e1-eb3e-584a-a21b-ff1eaf9b0759",
+      "capabilityId": "00e6d494-839d-5420-b07a-5fe228199d57",
+      "informationObjectId": "e71167f4-b12c-56f3-8048-cbf542929b97",
+      "usage": "owns",
+      "validFrom": "2021-04-01",
+      "validTo": null
+    },
+    {
+      "id": "066c0fa1-7cfc-55d3-83b4-dae949d72599",
+      "capabilityId": "00e6d494-839d-5420-b07a-5fe228199d57",
+      "informationObjectId": "700648c2-2200-504a-8d11-8a888b31e59d",
+      "usage": "uses",
+      "validFrom": "2021-04-01",
+      "validTo": null
+    },
+    {
+      "id": "cd2cd9e4-3e7d-5082-809d-d3e63072a7d3",
+      "capabilityId": "5356ad97-70d2-577c-ab87-0c3f2b32e0c0",
+      "informationObjectId": "6e1cb349-3f44-5022-9793-30bfabea2a28",
+      "usage": "owns",
+      "validFrom": "2019-09-01",
+      "validTo": null
+    },
+    {
+      "id": "0534d4f2-bfdd-5ac2-8dff-a8ac9dfa6cf2",
+      "capabilityId": "5356ad97-70d2-577c-ab87-0c3f2b32e0c0",
+      "informationObjectId": "ad29b16d-ba52-5505-9867-2f7528e29a59",
+      "usage": "uses",
+      "validFrom": "2019-09-01",
+      "validTo": null
+    },
+    {
+      "id": "6b579d04-1d90-55d8-be5c-8a634615342e",
+      "capabilityId": "5356ad97-70d2-577c-ab87-0c3f2b32e0c0",
+      "informationObjectId": "29bc0527-5afa-5b85-b867-4a5aa2cdc6b7",
+      "usage": "uses",
+      "validFrom": "2019-09-01",
+      "validTo": null
+    },
+    {
+      "id": "66f8e629-dafa-5c92-82ee-3938066098a0",
+      "capabilityId": "a0974cd2-5d26-50f9-ae9b-41679241d614",
+      "informationObjectId": "27ba2493-622c-535e-8afb-dc1aafa82fa5",
+      "usage": "owns",
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "9f7d4aab-0ffa-5092-97f8-aca91e978f94",
+      "capabilityId": "00820c66-4f56-53f0-b882-5d9d647dcacd",
+      "informationObjectId": "27ba2493-622c-535e-8afb-dc1aafa82fa5",
+      "usage": "uses",
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "28a303ab-0722-5614-b70c-470946cf5ff3",
+      "capabilityId": "77b8f7eb-7ede-55e8-8ba3-b8a0690c22a6",
+      "informationObjectId": "01453c3b-f45f-5b8c-bd75-4e1fdf357fa5",
+      "usage": "owns",
+      "validFrom": "2020-07-01",
+      "validTo": null
+    },
+    {
+      "id": "02f7f7a8-de2d-59f7-a603-88ad1309f00b",
+      "capabilityId": "77b8f7eb-7ede-55e8-8ba3-b8a0690c22a6",
+      "informationObjectId": "afd3164e-54e2-51fd-901c-4cd31ce761f4",
+      "usage": "owns",
+      "validFrom": "2021-06-01",
+      "validTo": null
+    },
+    {
+      "id": "69caf551-d725-5413-938f-3c8601afb630",
+      "capabilityId": "77b8f7eb-7ede-55e8-8ba3-b8a0690c22a6",
+      "informationObjectId": "7b7c3a5b-309c-5981-b443-571b09359b2e",
+      "usage": "uses",
+      "validFrom": "2020-01-01",
+      "validTo": null
+    },
+    {
+      "id": "2a1add3a-4fe3-52e2-9269-c5b0c16f1213",
+      "capabilityId": "c518c1d0-50c6-5ae0-afa8-bc9be3902889",
+      "informationObjectId": "7b7c3a5b-309c-5981-b443-571b09359b2e",
+      "usage": "owns",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "8130cceb-13a9-54b7-a5e0-6bc1341b2b0f",
+      "capabilityId": "f83db421-e890-5dcf-9d1c-703b0d3bef1b",
+      "informationObjectId": "c341db25-ea6b-5f3d-b8a0-ebe8f27da86f",
+      "usage": "owns",
+      "validFrom": "2021-02-01",
+      "validTo": null
+    },
+    {
+      "id": "25d3e2cb-cec0-5cef-a29d-bd94df04c6f2",
+      "capabilityId": "f83db421-e890-5dcf-9d1c-703b0d3bef1b",
+      "informationObjectId": "9462cc01-de6b-59f0-822e-f68ff294c03a",
+      "usage": "uses",
+      "validFrom": "2022-05-01",
+      "validTo": null
+    },
+    {
+      "id": "42c1900d-944c-59a2-a97e-ce6a6af5762a",
+      "capabilityId": "f83db421-e890-5dcf-9d1c-703b0d3bef1b",
+      "informationObjectId": "700648c2-2200-504a-8d11-8a888b31e59d",
+      "usage": "uses",
+      "validFrom": "2021-04-01",
+      "validTo": null
+    },
+    {
+      "id": "a4247b7c-ace7-5946-9c61-99ac9c66e8ef",
+      "capabilityId": "28300039-bc5d-59af-a08e-dec84567ea47",
+      "informationObjectId": "c341db25-ea6b-5f3d-b8a0-ebe8f27da86f",
+      "usage": "uses",
+      "validFrom": "2021-03-01",
+      "validTo": null
+    },
+    {
+      "id": "d01df01d-ede2-51bf-9134-5c9d59d267b0",
+      "capabilityId": "d132905e-cc3e-581c-b795-42c624ef140a",
+      "informationObjectId": "29bc0527-5afa-5b85-b867-4a5aa2cdc6b7",
+      "usage": "uses",
+      "validFrom": "2019-04-01",
+      "validTo": null
+    },
+    {
+      "id": "615f7f60-ba33-50c8-8f65-87b246febff5",
+      "capabilityId": "8db07e43-325b-5c13-9353-51be13a045b3",
+      "informationObjectId": "ad29b16d-ba52-5505-9867-2f7528e29a59",
+      "usage": "uses",
+      "validFrom": "2020-06-01",
+      "validTo": "2026-12-31"
+    }
   ]
 }

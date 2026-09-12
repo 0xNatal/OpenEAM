@@ -93,6 +93,23 @@ const organizationUnitSchema = z.object({
   ...timestampFields,
 });
 
+const informationObjectSchema = z.object({
+  id: z.string(),
+  enterpriseId: z.string(),
+  name: z.string(),
+  description: z.string().nullable(),
+  ...timestampFields,
+});
+
+const capabilityInformationSchema = z.object({
+  id: z.string(),
+  capabilityId: z.string(),
+  informationObjectId: z.string(),
+  usage: z.enum(['owns', 'creates', 'uses']).default('uses'),
+  ...validityFields,
+  ...timestampFields,
+});
+
 const buildingBlockSchema = z.object({
   id: z.string(),
   enterpriseId: z.string(),
@@ -164,6 +181,10 @@ export const dataBundleSchema = z.object({
   buildingBlockRealizations: z.array(buildingBlockRealizationSchema).default([]),
   buildingBlockCapabilities: z.array(buildingBlockCapabilitySchema).default([]),
   buildingBlockRelationships: z.array(buildingBlockRelationshipSchema).default([]),
+  // Optional with defaults for the same reason as the landscape tables above:
+  // bundles exported before information objects existed still import.
+  informationObjects: z.array(informationObjectSchema).default([]),
+  capabilityInformation: z.array(capabilityInformationSchema).default([]),
 });
 
 export type DataBundle = z.infer<typeof dataBundleSchema>;

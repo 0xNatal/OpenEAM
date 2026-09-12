@@ -92,6 +92,25 @@ moves.
 `phasing_out` for two years while remaining perfectly valid; the phase is
 *intent*, the dates are *fact*.
 
+## Information
+
+**Information object** — something the enterprise knows about, named in business
+language and independent of whatever system holds it: "Expense Claim", "Customer
+Master Data", "Access Grant". Deliberately one level — there is no system-level
+data object beneath it the way an SBB sits beneath an ABB (D-13). Where it is
+*stored* is a separate question, answered by building blocks.
+
+**Usage** — how a capability relates to an information object, as one of three
+values. **`owns`** is the one that carries weight: it names the capability
+accountable for that information being correct, which is the question nobody can
+usually answer. **`creates`** brings it into existence; **`uses`** consumes it
+without being accountable for it. Kept small on purpose, like the relationship
+taxonomy (D-3).
+
+Note that owning information is not the same as holding it: in the Alderbrook
+example, Security &amp; Compliance owns *Receipt Image* because of a seven-year
+retention obligation, while the product team runs the store it physically sits in.
+
 ## Relationships between building blocks
 
 **`depends_on`** — the generic edge. Source needs target to function.
@@ -140,7 +159,7 @@ modelled thing.
 isolation boundary, and treating it as one would be a security assumption the code
 does not currently support.
 
-**Information / data object** — *not yet defined*, and deliberately so. It is the
-one word in EAM every framework defines differently, and the capability page's
-Information quadrant stays empty until it has a definition worth committing to.
-This is a standing question for an external EAM expert.
+**Data object** — not modelled. The system-level counterpart to an information
+object (a table, a dataset, a file store) was considered and declined; see D-13.
+Say "information object" for the business concept, and name the building block if
+you mean where it is stored.

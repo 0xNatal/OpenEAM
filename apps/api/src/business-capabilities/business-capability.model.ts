@@ -1,6 +1,7 @@
 import { Field, InputType, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { BuildingBlock } from '../building-blocks/building-block.model';
 import { BusinessProcess } from '../business-processes/business-process.model';
+import { InformationUsage } from '../information-objects/information-object.model';
 
 // Strategic-architecture direction: where investment goes, where it
 // deliberately doesn't. See packages/db/src/schema/business-capabilities.ts.
@@ -23,10 +24,17 @@ export class Person {
   @Field() name!: string;
 }
 
+// One information object as seen from a capability. `id` is the information
+// object's id; `linkId` identifies the link itself, so it can be removed.
 @ObjectType()
 export class Information {
   @Field() id!: string;
+  @Field() linkId!: string;
   @Field() name!: string;
+  @Field(() => String, { nullable: true }) description?: string | null;
+  @Field(() => InformationUsage) usage!: InformationUsage;
+  @Field(() => String, { nullable: true }) validFrom?: string | null;
+  @Field(() => String, { nullable: true }) validTo?: string | null;
 }
 
 // Where this capability is used in a value stream (the reverse of

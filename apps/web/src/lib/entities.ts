@@ -42,9 +42,15 @@ export interface BusinessCapabilityDetail {
   direction?: CapabilityDirection | null;
   people: NamedRef[];
   resources: CapabilityResource[];
-  information: NamedRef[];
+  information: CapabilityInformation[];
   businessProcesses: NamedRef[];
   valueStreamStages: ValueStreamStageLink[];
+}
+
+// One information object as seen from a capability: what it is, and how the
+// capability relates to it.
+export interface CapabilityInformation extends NamedRef {
+  usage: 'owns' | 'creates' | 'uses';
 }
 
 export interface BusinessCapabilitySummary {

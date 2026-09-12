@@ -38,6 +38,7 @@ const BUSINESS_CAPABILITY_QUERY = gql`
       information {
         id
         name
+        usage
       }
       businessProcesses {
         id
@@ -57,10 +58,15 @@ interface BusinessCapabilityData {
   businessCapability: BusinessCapabilityDetail | null;
 }
 
-function Item({ label }: { label: string }) {
+function Item({ label, tag }: { label: string; tag?: string }) {
   return (
-    <div className="rounded-md border border-border bg-muted/50 px-3 py-2 text-xs text-foreground">
-      {label}
+    <div className="flex items-center justify-between gap-2 rounded-md border border-border bg-muted/50 px-3 py-2 text-xs text-foreground">
+      <span className="min-w-0 truncate">{label}</span>
+      {tag ? (
+        <span className="shrink-0 text-[10px] uppercase tracking-wide text-muted-foreground">
+          {tag}
+        </span>
+      ) : null}
     </div>
   );
 }
@@ -179,7 +185,7 @@ function CapabilityDetail({
           subtitle="Business data, knowledge, and insight required or consumed"
         >
           {cap.information.length > 0 ? (
-            cap.information.map((i) => <Item key={i.id} label={i.name} />)
+            cap.information.map((i) => <Item key={i.id} label={i.name} tag={i.usage} />)
           ) : (
             <EmptyState label="No information defined yet" />
           )}

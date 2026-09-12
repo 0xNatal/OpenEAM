@@ -204,3 +204,32 @@ upstream in Drizzle's package structure.
 **Revisit when:** Drizzle fixes Node16/NodeNext resolution — or if `apps/api` and
 `packages/db` drop CommonJS emit for ESM, which is an architecture change rather
 than a version bump.
+
+---
+
+## D-13 · Information objects are one level, not two
+
+**Decided:** an information object is a business concept — "Expense Claim",
+"Customer Master Data" — named in business language and independent of any system
+holding it. There is **no** system-level data object beneath it realizing it the
+way an SBB realizes an ABB.
+
+**Why:** the symmetry with ABB/SBB is tempting and was declined deliberately. Two
+levels double the modelling burden for a dimension that, until now, had no rows at
+all, and an unmaintained second level is worse than an absent one. "Where does this
+information live?" is already answerable by naming the building block; it does not
+need its own entity to be answerable.
+
+**What the link carries:** a capability relates to an information object with one
+of three usages — `owns`, `creates`, `uses` — and a validity interval, like every
+other link from a capability to something else (D-4). `owns` is the one that earns
+its place: it names the capability accountable for that information being correct.
+Note that owning is not holding — in the Alderbrook example, Security & Compliance
+owns *Receipt Image* because of a retention obligation, while the product team runs
+the store it sits in.
+
+**Revisit if:** an expert says the business/system split is load-bearing in
+practice, or if people start naming systems in the `name` field, which is the
+symptom of the missing level being needed. This is a standing question for the
+external EAM review; the smallest honest version was built first so there is
+something concrete to critique.

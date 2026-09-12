@@ -5,6 +5,7 @@ import { buildingBlockCapabilities } from './building-blocks';
 import { businessProcesses } from './business-processes';
 import { enterprises } from './enterprises';
 import { timestamps } from './helpers';
+import { capabilityInformation } from './information-objects';
 import { stageCapabilities } from './value-streams';
 
 // The strategic-architecture "framework for change activity" TOGAF talks
@@ -39,4 +40,5 @@ export const businessCapabilitiesRelations = relations(businessCapabilities, ({ 
   businessProcesses: many(businessProcesses),
   stageCapabilities: many(stageCapabilities),
   buildingBlockLinks: many(buildingBlockCapabilities),
+  informationLinks: many(capabilityInformation),
 }));

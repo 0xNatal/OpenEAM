@@ -54,6 +54,8 @@ export class DataExchangeService {
       buildingBlockRealizations,
       buildingBlockCapabilities,
       buildingBlockRelationships,
+      informationObjects,
+      capabilityInformation,
     ] = await Promise.all([
       this.db.select().from(schema.enterprises),
       this.db.select().from(schema.businessCapabilities),
@@ -70,6 +72,8 @@ export class DataExchangeService {
       this.db.select().from(schema.buildingBlockRealizations),
       this.db.select().from(schema.buildingBlockCapabilities),
       this.db.select().from(schema.buildingBlockRelationships),
+      this.db.select().from(schema.informationObjects),
+      this.db.select().from(schema.capabilityInformation),
     ]);
 
     // Child/link rows have no enterpriseId of their own; they follow their
@@ -84,6 +88,8 @@ export class DataExchangeService {
     const scopedStages = valueStreamStages.filter((s) => valueStreamIds.has(s.valueStreamId));
     const stageIds = new Set(scopedStages.map((s) => s.id));
     const buildingBlockIds = new Set(scopedBuildingBlocks.map((b) => b.id));
+    const scopedInformationObjects = enterpriseFilter(informationObjects);
+    const informationObjectIds = new Set(scopedInformationObjects.map((i) => i.id));
 
     return {
       enterprises: enterpriseId ? enterprises.filter((e) => e.id === enterpriseId) : enterprises,
@@ -116,6 +122,10 @@ export class DataExchangeService {
         (l) =>
           buildingBlockIds.has(l.sourceBuildingBlockId) &&
           buildingBlockIds.has(l.targetBuildingBlockId),
+      ),
+      informationObjects: scopedInformationObjects,
+      capabilityInformation: capabilityInformation.filter(
+        (l) => informationObjectIds.has(l.informationObjectId) && capabilityIds.has(l.capabilityId),
       ),
     };
   }
@@ -178,6 +188,12 @@ export class DataExchangeService {
         await tx
           .insert(schema.buildingBlockRelationships)
           .values(bundle.buildingBlockRelationships);
+      }
+      if (bundle.informationObjects.length > 0) {
+        await tx.insert(schema.informationObjects).values(bundle.informationObjects);
+      }
+      if (bundle.capabilityInformation.length > 0) {
+        await tx.insert(schema.capabilityInformation).values(bundle.capabilityInformation);
       }
     });
   }

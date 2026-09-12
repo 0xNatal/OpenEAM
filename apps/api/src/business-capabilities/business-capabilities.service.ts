@@ -5,7 +5,12 @@ import type { MappedBuildingBlock } from '../building-blocks/building-blocks.ser
 import { toBuildingBlock, withAllLinks } from '../building-blocks/building-blocks.service';
 import type { BusinessProcess } from '../business-processes/business-process.model';
 import { DATABASE } from '../db.module';
-import type { BusinessCapabilityInput, ValueStreamStageLink } from './business-capability.model';
+import type { InformationUsage } from '../information-objects/information-object.model';
+import type {
+  BusinessCapabilityInput,
+  Information,
+  ValueStreamStageLink,
+} from './business-capability.model';
 
 export interface BusinessCapabilityRow {
   id: string;
@@ -15,6 +20,7 @@ export interface BusinessCapabilityRow {
   direction: string | null;
   businessProcesses: BusinessProcess[];
   resources: MappedBuildingBlock[];
+  information: Information[];
   valueStreamStages: ValueStreamStageLink[];
 }
 
@@ -31,6 +37,7 @@ export class BusinessCapabilitiesService {
         },
         buildingBlockLinks: { with: { buildingBlock: { with: withAllLinks } } },
         stageCapabilities: { with: { stage: { with: { valueStream: true } } } },
+        informationLinks: { with: { informationObject: true } },
       },
     });
     return rows.map(toCapabilityRow);
@@ -45,6 +52,7 @@ export class BusinessCapabilitiesService {
         },
         buildingBlockLinks: { with: { buildingBlock: { with: withAllLinks } } },
         stageCapabilities: { with: { stage: { with: { valueStream: true } } } },
+        informationLinks: { with: { informationObject: true } },
       },
     });
     return row ? toCapabilityRow(row) : undefined;
@@ -110,6 +118,13 @@ function toCapabilityRow(row: {
   stageCapabilities: Array<{
     stage: { id: string; name: string; valueStream: { id: string; name: string } };
   }>;
+  informationLinks: Array<{
+    id: string;
+    usage: string;
+    validFrom: string | null;
+    validTo: string | null;
+    informationObject: { id: string; name: string; description: string | null };
+  }>;
 }): BusinessCapabilityRow {
   return {
     id: row.id,
@@ -119,6 +134,15 @@ function toCapabilityRow(row: {
     direction: row.direction,
     businessProcesses: row.businessProcesses,
     resources: row.buildingBlockLinks.map((link) => toBuildingBlock(link.buildingBlock)),
+    information: row.informationLinks.map((link) => ({
+      id: link.informationObject.id,
+      linkId: link.id,
+      name: link.informationObject.name,
+      description: link.informationObject.description,
+      usage: link.usage as InformationUsage,
+      validFrom: link.validFrom,
+      validTo: link.validTo,
+    })),
     valueStreamStages: row.stageCapabilities.map((sc) => ({
       valueStreamId: sc.stage.valueStream.id,
       valueStreamName: sc.stage.valueStream.name,
