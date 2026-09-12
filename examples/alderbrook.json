@@ -1,0 +1,2863 @@
+{
+  "enterprises": [
+    {
+      "id": "alderbrook",
+      "name": "Alderbrook",
+      "description": "A B2B SaaS company of about 85 people selling spend and expense management to mid-market finance teams. Founded 2019, mid-way through moving off its original self-managed infrastructure.",
+      "goal": "Grow recurring revenue without growing the platform team, while keeping SOC 2 and GDPR commitments intact.",
+      "avatarBgColor": "#2f5d62",
+      "avatarTextColor": "#f4f1e8"
+    }
+  ],
+  "businessCapabilities": [
+    {
+      "id": "alderbrook-cap-product-management",
+      "enterpriseId": "alderbrook",
+      "name": "Product Management",
+      "description": "Deciding what to build and what to decline.",
+      "direction": "invest"
+    },
+    {
+      "id": "alderbrook-cap-software-engineering",
+      "enterpriseId": "alderbrook",
+      "name": "Software Engineering",
+      "description": "Designing, building and reviewing the product.",
+      "direction": "invest"
+    },
+    {
+      "id": "alderbrook-cap-platform-operations",
+      "enterpriseId": "alderbrook",
+      "name": "Platform Operations",
+      "description": "Keeping the runtime available and the delivery pipeline fast.",
+      "direction": "sustain"
+    },
+    {
+      "id": "alderbrook-cap-security-compliance",
+      "enterpriseId": "alderbrook",
+      "name": "Security & Compliance",
+      "description": "SOC 2, GDPR, customer security reviews, vulnerability response.",
+      "direction": "invest"
+    },
+    {
+      "id": "alderbrook-cap-data-analytics",
+      "enterpriseId": "alderbrook",
+      "name": "Data & Analytics",
+      "description": "Turning product and commercial events into decisions.",
+      "direction": "invest"
+    },
+    {
+      "id": "alderbrook-cap-demand-generation",
+      "enterpriseId": "alderbrook",
+      "name": "Demand Generation",
+      "description": "Creating qualified interest in the product.",
+      "direction": "invest"
+    },
+    {
+      "id": "alderbrook-cap-sales-execution",
+      "enterpriseId": "alderbrook",
+      "name": "Sales Execution",
+      "description": "Qualifying, demonstrating and closing.",
+      "direction": "sustain"
+    },
+    {
+      "id": "alderbrook-cap-customer-onboarding",
+      "enterpriseId": "alderbrook",
+      "name": "Customer Onboarding",
+      "description": "Getting a signed customer to routine daily use.",
+      "direction": "invest"
+    },
+    {
+      "id": "alderbrook-cap-customer-support",
+      "enterpriseId": "alderbrook",
+      "name": "Customer Support",
+      "description": "Answering, diagnosing and escalating customer issues.",
+      "direction": "sustain"
+    },
+    {
+      "id": "alderbrook-cap-incident-management",
+      "enterpriseId": "alderbrook",
+      "name": "Incident Management",
+      "description": "Detecting, mitigating and learning from production incidents.",
+      "direction": "sustain"
+    },
+    {
+      "id": "alderbrook-cap-subscription-billing",
+      "enterpriseId": "alderbrook",
+      "name": "Subscription Billing",
+      "description": "Turning a contract into an invoice and a payment, every month.",
+      "direction": "invest"
+    },
+    {
+      "id": "alderbrook-cap-revenue-recognition",
+      "enterpriseId": "alderbrook",
+      "name": "Revenue Recognition",
+      "description": "Recognising subscription revenue over the contract term.",
+      "direction": "sustain"
+    },
+    {
+      "id": "alderbrook-cap-financial-accounting",
+      "enterpriseId": "alderbrook",
+      "name": "Financial Accounting",
+      "description": "Ledger, payables, close. Deliberately unremarkable.",
+      "direction": "commodity"
+    },
+    {
+      "id": "alderbrook-cap-people-operations",
+      "enterpriseId": "alderbrook",
+      "name": "People Operations",
+      "description": "Hiring, onboarding, payroll, leave.",
+      "direction": "commodity"
+    },
+    {
+      "id": "alderbrook-cap-on-premise-delivery",
+      "enterpriseId": "alderbrook",
+      "name": "On-Premise Delivery",
+      "description": "Installing and supporting the product inside a customer’s own data centre. Three accounts remain, all contracted to move to the hosted product by the end of 2026.",
+      "direction": "sunset"
+    }
+  ],
+  "businessProcesses": [
+    {
+      "id": "alderbrook-proc-incident-response",
+      "enterpriseId": "alderbrook",
+      "name": "Production incident response",
+      "description": "What happens between an alert firing and the incident being closed. Modelled because the hand-off between the on-call engineer and customer support was the part that kept going wrong.",
+      "capabilityId": "alderbrook-cap-incident-management",
+      "triggerEvent": "A monitor breaches its threshold and pages the on-call engineer.",
+      "outcome": "Service restored, customers informed, and a review recorded with at least one action.",
+      "bpmnXml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" id=\"Definitions_incident\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"Process_incident\" isExecutable=\"false\">\n    <bpmn:startEvent id=\"StartEvent_1\" name=\"Alert fires\">\n      <bpmn:outgoing>Flow_1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:task id=\"Task_triage\" name=\"Triage severity\">\n      <bpmn:incoming>Flow_1</bpmn:incoming>\n      <bpmn:outgoing>Flow_2</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:task id=\"Task_mitigate\" name=\"Mitigate impact\">\n      <bpmn:incoming>Flow_2</bpmn:incoming>\n      <bpmn:outgoing>Flow_3</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:task id=\"Task_notify\" name=\"Update status page\">\n      <bpmn:incoming>Flow_3</bpmn:incoming>\n      <bpmn:outgoing>Flow_4</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:task id=\"Task_review\" name=\"Run post-incident review\">\n      <bpmn:incoming>Flow_4</bpmn:incoming>\n      <bpmn:outgoing>Flow_5</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:endEvent id=\"EndEvent_1\" name=\"Incident closed\">\n      <bpmn:incoming>Flow_5</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_1\" sourceRef=\"StartEvent_1\" targetRef=\"Task_triage\" />\n    <bpmn:sequenceFlow id=\"Flow_2\" sourceRef=\"Task_triage\" targetRef=\"Task_mitigate\" />\n    <bpmn:sequenceFlow id=\"Flow_3\" sourceRef=\"Task_mitigate\" targetRef=\"Task_notify\" />\n    <bpmn:sequenceFlow id=\"Flow_4\" sourceRef=\"Task_notify\" targetRef=\"Task_review\" />\n    <bpmn:sequenceFlow id=\"Flow_5\" sourceRef=\"Task_review\" targetRef=\"EndEvent_1\" />\n  </bpmn:process>\n  <bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">\n    <bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"Process_incident\">\n      <bpmndi:BPMNShape id=\"StartEvent_1_di\" bpmnElement=\"StartEvent_1\">\n        <dc:Bounds x=\"152\" y=\"182\" width=\"36\" height=\"36\" />\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"146\" y=\"225\" width=\"49\" height=\"14\" />\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_triage_di\" bpmnElement=\"Task_triage\">\n        <dc:Bounds x=\"240\" y=\"160\" width=\"100\" height=\"80\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_mitigate_di\" bpmnElement=\"Task_mitigate\">\n        <dc:Bounds x=\"390\" y=\"160\" width=\"100\" height=\"80\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_notify_di\" bpmnElement=\"Task_notify\">\n        <dc:Bounds x=\"540\" y=\"160\" width=\"100\" height=\"80\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_review_di\" bpmnElement=\"Task_review\">\n        <dc:Bounds x=\"690\" y=\"160\" width=\"100\" height=\"80\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"EndEvent_1_di\" bpmnElement=\"EndEvent_1\">\n        <dc:Bounds x=\"842\" y=\"182\" width=\"36\" height=\"36\" />\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"820\" y=\"225\" width=\"81\" height=\"14\" />\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge id=\"Flow_1_di\" bpmnElement=\"Flow_1\">\n        <di:waypoint x=\"188\" y=\"200\" />\n        <di:waypoint x=\"240\" y=\"200\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_2_di\" bpmnElement=\"Flow_2\">\n        <di:waypoint x=\"340\" y=\"200\" />\n        <di:waypoint x=\"390\" y=\"200\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_3_di\" bpmnElement=\"Flow_3\">\n        <di:waypoint x=\"490\" y=\"200\" />\n        <di:waypoint x=\"540\" y=\"200\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_4_di\" bpmnElement=\"Flow_4\">\n        <di:waypoint x=\"640\" y=\"200\" />\n        <di:waypoint x=\"690\" y=\"200\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_5_di\" bpmnElement=\"Flow_5\">\n        <di:waypoint x=\"790\" y=\"200\" />\n        <di:waypoint x=\"842\" y=\"200\" />\n      </bpmndi:BPMNEdge>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn:definitions>\n"
+    },
+    {
+      "id": "alderbrook-proc-workspace-setup",
+      "enterpriseId": "alderbrook",
+      "name": "New customer workspace setup",
+      "description": "From countersigned contract to the customer’s first approved expense. The step that dominates the elapsed time is the accounting-ledger connection, which is why the integrations squad owns half of it.",
+      "capabilityId": "alderbrook-cap-customer-onboarding",
+      "triggerEvent": "Contract countersigned in the CRM.",
+      "outcome": "Workspace live, policy configured, ledger connected, first expense approved.",
+      "bpmnXml": null
+    },
+    {
+      "id": "alderbrook-proc-invoice-run",
+      "enterpriseId": "alderbrook",
+      "name": "Monthly invoice run",
+      "description": "Runs on the second working day of each month. Currently executes twice — once in the in-house billing service and once in Stripe Billing — while accounts are migrated across.",
+      "capabilityId": "alderbrook-cap-subscription-billing",
+      "triggerEvent": "Second working day of the month.",
+      "outcome": "Every active subscription invoiced once, and the ledger reconciled.",
+      "bpmnXml": null
+    }
+  ],
+  "processSteps": [
+    {
+      "id": "alderbrook-step-incident-triage",
+      "name": "Triage severity",
+      "processId": "alderbrook-proc-incident-response",
+      "position": 0
+    },
+    {
+      "id": "alderbrook-step-incident-mitigate",
+      "name": "Mitigate impact",
+      "processId": "alderbrook-proc-incident-response",
+      "position": 1
+    },
+    {
+      "id": "alderbrook-step-incident-notify",
+      "name": "Update status page",
+      "processId": "alderbrook-proc-incident-response",
+      "position": 2
+    },
+    {
+      "id": "alderbrook-step-incident-review",
+      "name": "Run post-incident review",
+      "processId": "alderbrook-proc-incident-response",
+      "position": 3
+    }
+  ],
+  "valueStreams": [
+    {
+      "id": "alderbrook-vs-trial-to-customer",
+      "enterpriseId": "alderbrook",
+      "name": "Trial to paying customer",
+      "description": "From a finance lead first hearing the name to their team filing expenses in it every week."
+    },
+    {
+      "id": "alderbrook-vs-idea-to-release",
+      "enterpriseId": "alderbrook",
+      "name": "Idea to released feature",
+      "description": "From a problem worth solving to the change being measurable in production."
+    },
+    {
+      "id": "alderbrook-vs-incident-to-resolution",
+      "enterpriseId": "alderbrook",
+      "name": "Incident to resolution",
+      "description": "From the first signal that something is wrong to the change that stops it recurring."
+    }
+  ],
+  "valueStreamStages": [
+    {
+      "id": "alderbrook-vs-trial-to-customer-stage-attract",
+      "name": "Attract",
+      "valueStreamId": "alderbrook-vs-trial-to-customer",
+      "position": 0
+    },
+    {
+      "id": "alderbrook-vs-trial-to-customer-stage-qualify",
+      "name": "Qualify",
+      "valueStreamId": "alderbrook-vs-trial-to-customer",
+      "position": 1
+    },
+    {
+      "id": "alderbrook-vs-trial-to-customer-stage-trial",
+      "name": "Trial",
+      "valueStreamId": "alderbrook-vs-trial-to-customer",
+      "position": 2
+    },
+    {
+      "id": "alderbrook-vs-trial-to-customer-stage-convert",
+      "name": "Convert",
+      "valueStreamId": "alderbrook-vs-trial-to-customer",
+      "position": 3
+    },
+    {
+      "id": "alderbrook-vs-trial-to-customer-stage-onboard",
+      "name": "Onboard",
+      "valueStreamId": "alderbrook-vs-trial-to-customer",
+      "position": 4
+    },
+    {
+      "id": "alderbrook-vs-idea-to-release-stage-discover",
+      "name": "Discover",
+      "valueStreamId": "alderbrook-vs-idea-to-release",
+      "position": 0
+    },
+    {
+      "id": "alderbrook-vs-idea-to-release-stage-shape",
+      "name": "Shape",
+      "valueStreamId": "alderbrook-vs-idea-to-release",
+      "position": 1
+    },
+    {
+      "id": "alderbrook-vs-idea-to-release-stage-build",
+      "name": "Build",
+      "valueStreamId": "alderbrook-vs-idea-to-release",
+      "position": 2
+    },
+    {
+      "id": "alderbrook-vs-idea-to-release-stage-release",
+      "name": "Release",
+      "valueStreamId": "alderbrook-vs-idea-to-release",
+      "position": 3
+    },
+    {
+      "id": "alderbrook-vs-idea-to-release-stage-measure",
+      "name": "Measure",
+      "valueStreamId": "alderbrook-vs-idea-to-release",
+      "position": 4
+    },
+    {
+      "id": "alderbrook-vs-incident-to-resolution-stage-detect",
+      "name": "Detect",
+      "valueStreamId": "alderbrook-vs-incident-to-resolution",
+      "position": 0
+    },
+    {
+      "id": "alderbrook-vs-incident-to-resolution-stage-triage",
+      "name": "Triage",
+      "valueStreamId": "alderbrook-vs-incident-to-resolution",
+      "position": 1
+    },
+    {
+      "id": "alderbrook-vs-incident-to-resolution-stage-mitigate",
+      "name": "Mitigate",
+      "valueStreamId": "alderbrook-vs-incident-to-resolution",
+      "position": 2
+    },
+    {
+      "id": "alderbrook-vs-incident-to-resolution-stage-communicate",
+      "name": "Communicate",
+      "valueStreamId": "alderbrook-vs-incident-to-resolution",
+      "position": 3
+    },
+    {
+      "id": "alderbrook-vs-incident-to-resolution-stage-learn",
+      "name": "Learn",
+      "valueStreamId": "alderbrook-vs-incident-to-resolution",
+      "position": 4
+    }
+  ],
+  "stageCapabilities": [
+    {
+      "stageId": "alderbrook-vs-trial-to-customer-stage-attract",
+      "capabilityId": "alderbrook-cap-demand-generation",
+      "position": 0
+    },
+    {
+      "stageId": "alderbrook-vs-trial-to-customer-stage-qualify",
+      "capabilityId": "alderbrook-cap-sales-execution",
+      "position": 0
+    },
+    {
+      "stageId": "alderbrook-vs-trial-to-customer-stage-trial",
+      "capabilityId": "alderbrook-cap-sales-execution",
+      "position": 0
+    },
+    {
+      "stageId": "alderbrook-vs-trial-to-customer-stage-trial",
+      "capabilityId": "alderbrook-cap-customer-onboarding",
+      "position": 1
+    },
+    {
+      "stageId": "alderbrook-vs-trial-to-customer-stage-convert",
+      "capabilityId": "alderbrook-cap-sales-execution",
+      "position": 0
+    },
+    {
+      "stageId": "alderbrook-vs-trial-to-customer-stage-convert",
+      "capabilityId": "alderbrook-cap-subscription-billing",
+      "position": 1
+    },
+    {
+      "stageId": "alderbrook-vs-trial-to-customer-stage-onboard",
+      "capabilityId": "alderbrook-cap-customer-onboarding",
+      "position": 0
+    },
+    {
+      "stageId": "alderbrook-vs-trial-to-customer-stage-onboard",
+      "capabilityId": "alderbrook-cap-customer-support",
+      "position": 1
+    },
+    {
+      "stageId": "alderbrook-vs-idea-to-release-stage-discover",
+      "capabilityId": "alderbrook-cap-product-management",
+      "position": 0
+    },
+    {
+      "stageId": "alderbrook-vs-idea-to-release-stage-discover",
+      "capabilityId": "alderbrook-cap-data-analytics",
+      "position": 1
+    },
+    {
+      "stageId": "alderbrook-vs-idea-to-release-stage-shape",
+      "capabilityId": "alderbrook-cap-product-management",
+      "position": 0
+    },
+    {
+      "stageId": "alderbrook-vs-idea-to-release-stage-shape",
+      "capabilityId": "alderbrook-cap-software-engineering",
+      "position": 1
+    },
+    {
+      "stageId": "alderbrook-vs-idea-to-release-stage-build",
+      "capabilityId": "alderbrook-cap-software-engineering",
+      "position": 0
+    },
+    {
+      "stageId": "alderbrook-vs-idea-to-release-stage-build",
+      "capabilityId": "alderbrook-cap-security-compliance",
+      "position": 1
+    },
+    {
+      "stageId": "alderbrook-vs-idea-to-release-stage-release",
+      "capabilityId": "alderbrook-cap-platform-operations",
+      "position": 0
+    },
+    {
+      "stageId": "alderbrook-vs-idea-to-release-stage-measure",
+      "capabilityId": "alderbrook-cap-data-analytics",
+      "position": 0
+    },
+    {
+      "stageId": "alderbrook-vs-idea-to-release-stage-measure",
+      "capabilityId": "alderbrook-cap-product-management",
+      "position": 1
+    },
+    {
+      "stageId": "alderbrook-vs-incident-to-resolution-stage-detect",
+      "capabilityId": "alderbrook-cap-platform-operations",
+      "position": 0
+    },
+    {
+      "stageId": "alderbrook-vs-incident-to-resolution-stage-detect",
+      "capabilityId": "alderbrook-cap-incident-management",
+      "position": 1
+    },
+    {
+      "stageId": "alderbrook-vs-incident-to-resolution-stage-triage",
+      "capabilityId": "alderbrook-cap-incident-management",
+      "position": 0
+    },
+    {
+      "stageId": "alderbrook-vs-incident-to-resolution-stage-mitigate",
+      "capabilityId": "alderbrook-cap-incident-management",
+      "position": 0
+    },
+    {
+      "stageId": "alderbrook-vs-incident-to-resolution-stage-mitigate",
+      "capabilityId": "alderbrook-cap-platform-operations",
+      "position": 1
+    },
+    {
+      "stageId": "alderbrook-vs-incident-to-resolution-stage-communicate",
+      "capabilityId": "alderbrook-cap-customer-support",
+      "position": 0
+    },
+    {
+      "stageId": "alderbrook-vs-incident-to-resolution-stage-learn",
+      "capabilityId": "alderbrook-cap-incident-management",
+      "position": 0
+    },
+    {
+      "stageId": "alderbrook-vs-incident-to-resolution-stage-learn",
+      "capabilityId": "alderbrook-cap-software-engineering",
+      "position": 1
+    }
+  ],
+  "architectureDomains": [
+    {
+      "id": "alderbrook-domain-business",
+      "enterpriseId": "alderbrook",
+      "name": "Business Architecture",
+      "description": "Capabilities, value streams and the processes that run the company.",
+      "isDefault": true
+    },
+    {
+      "id": "alderbrook-domain-data",
+      "enterpriseId": "alderbrook",
+      "name": "Data Architecture",
+      "description": "The information Alderbrook holds, where it lives and how it moves.",
+      "isDefault": true
+    },
+    {
+      "id": "alderbrook-domain-application",
+      "enterpriseId": "alderbrook",
+      "name": "Application Architecture",
+      "description": "The product itself and the systems the company is run on.",
+      "isDefault": true
+    },
+    {
+      "id": "alderbrook-domain-technology",
+      "enterpriseId": "alderbrook",
+      "name": "Technology Architecture",
+      "description": "Compute, storage, networking and the tooling that delivers them.",
+      "isDefault": true
+    },
+    {
+      "id": "alderbrook-domain-security",
+      "enterpriseId": "alderbrook",
+      "name": "Security Architecture",
+      "description": "Added by Alderbrook rather than seeded: SOC 2 made security a review lens of its own, so anything a customer auditor asks about carries this domain too.",
+      "isDefault": false
+    }
+  ],
+  "organizationUnits": [
+    {
+      "id": "alderbrook-org-engineering",
+      "enterpriseId": "alderbrook",
+      "name": "Engineering",
+      "description": "Builds and runs the product. Four teams, 38 people.",
+      "parentId": null
+    },
+    {
+      "id": "alderbrook-org-platform",
+      "enterpriseId": "alderbrook",
+      "name": "Platform Team",
+      "description": "Owns runtime, delivery pipeline and observability for every other squad.",
+      "parentId": "alderbrook-org-engineering"
+    },
+    {
+      "id": "alderbrook-org-squad-core",
+      "enterpriseId": "alderbrook",
+      "name": "Core Product Squad",
+      "description": "Expense capture, policy and approvals — the surface most customers touch daily.",
+      "parentId": "alderbrook-org-engineering"
+    },
+    {
+      "id": "alderbrook-org-squad-integrations",
+      "enterpriseId": "alderbrook",
+      "name": "Integrations Squad",
+      "description": "Card networks, accounting ledgers and the public API.",
+      "parentId": "alderbrook-org-engineering"
+    },
+    {
+      "id": "alderbrook-org-secops",
+      "enterpriseId": "alderbrook",
+      "name": "Security & Compliance",
+      "description": "Two people carrying SOC 2, GDPR and customer security reviews.",
+      "parentId": "alderbrook-org-engineering"
+    },
+    {
+      "id": "alderbrook-org-gtm",
+      "enterpriseId": "alderbrook",
+      "name": "Go to Market",
+      "description": "Everything from first touch to renewal. 31 people.",
+      "parentId": null
+    },
+    {
+      "id": "alderbrook-org-marketing",
+      "enterpriseId": "alderbrook",
+      "name": "Marketing",
+      "description": null,
+      "parentId": "alderbrook-org-gtm"
+    },
+    {
+      "id": "alderbrook-org-sales",
+      "enterpriseId": "alderbrook",
+      "name": "Sales",
+      "description": null,
+      "parentId": "alderbrook-org-gtm"
+    },
+    {
+      "id": "alderbrook-org-customer-success",
+      "enterpriseId": "alderbrook",
+      "name": "Customer Success",
+      "description": "Onboarding and ongoing account health; also fields tier-2 support.",
+      "parentId": "alderbrook-org-gtm"
+    },
+    {
+      "id": "alderbrook-org-ga",
+      "enterpriseId": "alderbrook",
+      "name": "General & Administrative",
+      "description": "Finance, people and the internal tooling they run on. 16 people.",
+      "parentId": null
+    },
+    {
+      "id": "alderbrook-org-finance",
+      "enterpriseId": "alderbrook",
+      "name": "Finance",
+      "description": null,
+      "parentId": "alderbrook-org-ga"
+    },
+    {
+      "id": "alderbrook-org-people",
+      "enterpriseId": "alderbrook",
+      "name": "People Operations",
+      "description": null,
+      "parentId": "alderbrook-org-ga"
+    }
+  ],
+  "buildingBlocks": [
+    {
+      "id": "alderbrook-abb-product-platform",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "Product Platform",
+      "description": "Everything Alderbrook sells. The boundary that decides whether a change is product work or internal work.",
+      "architectureLevel": "strategic",
+      "lifecyclePhase": "active",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-abb-corporate-systems",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "Corporate Systems",
+      "description": "Everything Alderbrook is run on but does not sell.",
+      "architectureLevel": "strategic",
+      "lifecyclePhase": "active",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-abb-revenue-systems",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "Revenue Systems",
+      "description": "The chain from a signed contract to recognised revenue. Currently the least settled segment in the landscape.",
+      "architectureLevel": "segment",
+      "lifecyclePhase": "active",
+      "validFrom": "2019-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-abb-engineering-platform",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "Engineering Platform",
+      "description": "The runtime, pipeline and observability every squad builds on. Owned by one team of six.",
+      "architectureLevel": "segment",
+      "lifecyclePhase": "active",
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-abb-data-platform",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "Data Platform",
+      "description": "Where product and commercial events are collected, modelled and read.",
+      "architectureLevel": "segment",
+      "lifecyclePhase": "active",
+      "validFrom": "2021-02-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-abb-workplace-systems",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "Workplace Systems",
+      "description": "Mail, chat, documents, HR. Bought, never built.",
+      "architectureLevel": "segment",
+      "lifecyclePhase": "active",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-abb-identity-access",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "Identity & Access Management",
+      "description": "One account per person, one sign-in, and a record of who can reach what. Serves both the product and the company.",
+      "architectureLevel": "capability",
+      "lifecyclePhase": "active",
+      "validFrom": "2019-02-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-abb-expense-capture",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "Expense Capture",
+      "description": "Getting a receipt off a phone and into a structured expense without anyone typing an amount twice.",
+      "architectureLevel": "capability",
+      "lifecyclePhase": "active",
+      "validFrom": "2019-04-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-abb-policy-approval",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "Policy & Approval",
+      "description": "Deciding whether a given spend is allowed, and routing it to whoever must say so.",
+      "architectureLevel": "capability",
+      "lifecyclePhase": "active",
+      "validFrom": "2019-08-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-abb-card-issuing",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "Card Issuing",
+      "description": "Issuing virtual and physical cards with the policy already applied at the point of spend.",
+      "architectureLevel": "capability",
+      "lifecyclePhase": "active",
+      "validFrom": "2022-05-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-abb-ledger-integration",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "Ledger Integration",
+      "description": "Pushing approved spend into whatever accounting system the customer already runs. The single largest source of onboarding delay.",
+      "architectureLevel": "capability",
+      "lifecyclePhase": "active",
+      "validFrom": "2020-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-abb-subscription-billing",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "Subscription Billing",
+      "description": "Turning contracts into invoices and payments. Mid-replacement: built in-house in 2020, moving to a bought service through 2026.",
+      "architectureLevel": "capability",
+      "lifecyclePhase": "active",
+      "validFrom": "2020-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-abb-customer-relationship",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "Customer Relationship Management",
+      "description": "One record of every account, from first touch to renewal.",
+      "architectureLevel": "capability",
+      "lifecyclePhase": "active",
+      "validFrom": "2019-05-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-abb-support-desk",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "Support Desk",
+      "description": "Receiving, tracking and answering customer issues.",
+      "architectureLevel": "capability",
+      "lifecyclePhase": "active",
+      "validFrom": "2019-09-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-abb-analytics-warehouse",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "Analytics Warehouse",
+      "description": "The one place where a product question and a commercial question can be answered with the same numbers.",
+      "architectureLevel": "capability",
+      "lifecyclePhase": "active",
+      "validFrom": "2021-02-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-abb-observability",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "Observability",
+      "description": "Knowing that something is wrong before a customer tells you.",
+      "architectureLevel": "capability",
+      "lifecyclePhase": "active",
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-abb-continuous-delivery",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "Continuous Delivery",
+      "description": "Getting a merged change into production without a person in the path.",
+      "architectureLevel": "capability",
+      "lifecyclePhase": "active",
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-abb-application-runtime",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "Application Runtime",
+      "description": "Where the product’s services actually execute. Being replaced wholesale: self-managed VMs out, managed Kubernetes in.",
+      "architectureLevel": "capability",
+      "lifecyclePhase": "active",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-abb-relational-store",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "Relational Data Store",
+      "description": "Durable transactional storage for the product.",
+      "architectureLevel": "capability",
+      "lifecyclePhase": "active",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-abb-object-storage",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "Object Storage",
+      "description": "Receipt images and exports. Cheap, large, and subject to the longest retention obligations in the estate.",
+      "architectureLevel": "capability",
+      "lifecyclePhase": "active",
+      "validFrom": "2019-04-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-abb-secrets-management",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "Secrets Management",
+      "description": "Issuing and rotating credentials without them landing in a repository.",
+      "architectureLevel": "capability",
+      "lifecyclePhase": "active",
+      "validFrom": "2020-07-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-abb-hr-information",
+      "enterpriseId": "alderbrook",
+      "kind": "architecture",
+      "name": "HR Information",
+      "description": "The authoritative list of who works here, which is also what joiner-mover-leaver access depends on.",
+      "architectureLevel": "capability",
+      "lifecyclePhase": "active",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-web-app",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Alderbrook Web App",
+      "description": "React SPA. The surface finance teams live in.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2019-04-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-mobile-app",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Alderbrook Mobile App",
+      "description": "Where receipts are actually captured. Two thirds of expenses start here.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2020-11-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-api-gateway",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Public API Gateway",
+      "description": "The documented, versioned entry point for customer integrations.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2021-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-expense-monolith",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Expense Monolith",
+      "description": "The original Rails application. Still owns policy evaluation and the approval queue; everything else has been carved out of it.",
+      "architectureLevel": null,
+      "lifecyclePhase": "phasing_out",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-receipt-ocr",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Receipt OCR Service",
+      "description": "Extracts merchant, amount, date and tax from an image. The one service whose failures customers notice within minutes.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2020-02-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-policy-service",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Policy Service",
+      "description": "Carves policy evaluation out of the monolith. Designed, not yet built — the last big piece before the monolith can be switched off.",
+      "architectureLevel": null,
+      "lifecyclePhase": "planned",
+      "validFrom": "2026-11-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-card-service",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Card Service",
+      "description": "Talks to the card issuing processor and applies policy at authorisation time.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2022-05-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-ledger-connector",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Ledger Connector Service",
+      "description": "One adapter per accounting system. Nine supported, three of which cover 80% of accounts.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2020-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-notification-service",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Notification Service",
+      "description": "Email, push and in-app. Shared by product and by billing.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2021-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-auth0",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Auth0",
+      "description": "Original identity provider. Replaced when per-active-user pricing overtook the cost of running Keycloak.",
+      "architectureLevel": null,
+      "lifecyclePhase": "retired",
+      "validFrom": "2019-02-01",
+      "validTo": "2024-10-01"
+    },
+    {
+      "id": "alderbrook-sbb-keycloak",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Keycloak",
+      "description": "Self-hosted identity provider. Carries customer SSO, which is now a standard requirement in mid-market deals.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2024-10-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-vault",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "HashiCorp Vault",
+      "description": "Dynamic database credentials and certificate issuance.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2020-07-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-billing-inhouse",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "In-House Billing Service",
+      "description": "Written in a fortnight in 2020 and load-bearing ever since. Being retired account by account; roughly a third of revenue still invoices through it.",
+      "architectureLevel": null,
+      "lifecyclePhase": "phasing_out",
+      "validFrom": "2020-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-stripe-billing",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Stripe Billing",
+      "description": "Bought replacement. Live for new accounts since June 2026; migration of existing accounts runs to Q1 2027.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2026-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-netsuite",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "NetSuite",
+      "description": "General ledger and revenue recognition.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2021-04-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-hubspot",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "HubSpot",
+      "description": "CRM and marketing automation on one record.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2019-05-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-zendesk",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Zendesk",
+      "description": "Customer-facing ticketing.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2019-09-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-personio",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Personio",
+      "description": "HR system of record. Joiner-mover-leaver events here drive access provisioning in Keycloak.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-google-workspace",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Google Workspace",
+      "description": "Mail, calendar, documents.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-slack",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Slack",
+      "description": "Also where incident channels are opened, which makes it load-bearing during an outage.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-postgres-primary",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Postgres (product primary)",
+      "description": "Managed Postgres. Single primary with a read replica; the read replica is what analytics extracts from.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-redis",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Redis",
+      "description": "Session cache and the approval job queue.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2019-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-s3-receipts",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "S3 Receipt Store",
+      "description": "Receipt images, seven-year retention. The bucket a customer auditor always asks about.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2019-04-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-segment",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Segment",
+      "description": "Collects product events once and fans them out to the warehouse and to marketing.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2021-02-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-snowflake",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Snowflake",
+      "description": "The warehouse. Product events, subscription data and CRM records land here.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2021-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-dbt",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "dbt",
+      "description": "Transformations and the tests that stop a broken model reaching a dashboard.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2021-05-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-metabase",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Metabase",
+      "description": "Self-service dashboards. Where a commercial question gets answered without asking an engineer.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2021-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-vm-fleet",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Self-Managed VM Fleet",
+      "description": "The original infrastructure: EC2 instances configured by hand, later by Terraform. Contracted to be switched off at the end of 2026 — the remaining question is what is still on it.",
+      "architectureLevel": null,
+      "lifecyclePhase": "phasing_out",
+      "validFrom": "2019-01-01",
+      "validTo": "2026-12-31"
+    },
+    {
+      "id": "alderbrook-sbb-kubernetes",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Managed Kubernetes Cluster",
+      "description": "The replacement runtime. Everything except the monolith and the in-house billing service now runs here.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2025-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-aws-prod",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "AWS Production Account",
+      "description": "The account everything customer-facing lives in. Separate accounts exist for staging and for the data platform.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-terraform",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Terraform",
+      "description": "Infrastructure as code. Covers the Kubernetes cluster completely and the VM fleet only partly, which is itself a reason to retire the fleet.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2020-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-github-actions",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "GitHub Actions",
+      "description": "Build, test and deploy. Replaced a self-hosted Jenkins in 2020.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2020-08-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-datadog",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Datadog",
+      "description": "Metrics, logs and traces.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-pagerduty",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "PagerDuty",
+      "description": "On-call rotation and escalation.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-status-page",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "Public Status Page",
+      "description": "Customer-facing incident communication. Deliberately hosted outside the production account.",
+      "architectureLevel": null,
+      "lifecyclePhase": "active",
+      "validFrom": "2021-10-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-sbb-onprem-installer",
+      "enterpriseId": "alderbrook",
+      "kind": "solution",
+      "name": "On-Premise Installer",
+      "description": "Packaged the product for three enterprise customers’ own data centres. No longer sold; the last contract ends with 2026.",
+      "architectureLevel": null,
+      "lifecyclePhase": "phasing_out",
+      "validFrom": "2020-06-01",
+      "validTo": "2026-12-31"
+    }
+  ],
+  "buildingBlockArchitectureDomains": [
+    {
+      "buildingBlockId": "alderbrook-abb-product-platform",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-product-platform",
+      "architectureDomainId": "alderbrook-domain-business"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-corporate-systems",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-corporate-systems",
+      "architectureDomainId": "alderbrook-domain-business"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-revenue-systems",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-revenue-systems",
+      "architectureDomainId": "alderbrook-domain-business"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-engineering-platform",
+      "architectureDomainId": "alderbrook-domain-technology"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-data-platform",
+      "architectureDomainId": "alderbrook-domain-data"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-workplace-systems",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-identity-access",
+      "architectureDomainId": "alderbrook-domain-security"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-identity-access",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-expense-capture",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-policy-approval",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-policy-approval",
+      "architectureDomainId": "alderbrook-domain-business"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-card-issuing",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-ledger-integration",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-ledger-integration",
+      "architectureDomainId": "alderbrook-domain-data"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-subscription-billing",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-subscription-billing",
+      "architectureDomainId": "alderbrook-domain-business"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-customer-relationship",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-support-desk",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-analytics-warehouse",
+      "architectureDomainId": "alderbrook-domain-data"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-observability",
+      "architectureDomainId": "alderbrook-domain-technology"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-continuous-delivery",
+      "architectureDomainId": "alderbrook-domain-technology"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-application-runtime",
+      "architectureDomainId": "alderbrook-domain-technology"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-relational-store",
+      "architectureDomainId": "alderbrook-domain-data"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-relational-store",
+      "architectureDomainId": "alderbrook-domain-technology"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-object-storage",
+      "architectureDomainId": "alderbrook-domain-data"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-object-storage",
+      "architectureDomainId": "alderbrook-domain-technology"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-secrets-management",
+      "architectureDomainId": "alderbrook-domain-security"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-secrets-management",
+      "architectureDomainId": "alderbrook-domain-technology"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-hr-information",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-abb-hr-information",
+      "architectureDomainId": "alderbrook-domain-data"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-web-app",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-mobile-app",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-api-gateway",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-api-gateway",
+      "architectureDomainId": "alderbrook-domain-security"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-expense-monolith",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-receipt-ocr",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-policy-service",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-card-service",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-card-service",
+      "architectureDomainId": "alderbrook-domain-security"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-ledger-connector",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-notification-service",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-auth0",
+      "architectureDomainId": "alderbrook-domain-security"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-auth0",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-keycloak",
+      "architectureDomainId": "alderbrook-domain-security"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-keycloak",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-vault",
+      "architectureDomainId": "alderbrook-domain-security"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-vault",
+      "architectureDomainId": "alderbrook-domain-technology"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-billing-inhouse",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-stripe-billing",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-netsuite",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-hubspot",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-zendesk",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-personio",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-personio",
+      "architectureDomainId": "alderbrook-domain-data"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-google-workspace",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-slack",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-postgres-primary",
+      "architectureDomainId": "alderbrook-domain-data"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-postgres-primary",
+      "architectureDomainId": "alderbrook-domain-technology"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-redis",
+      "architectureDomainId": "alderbrook-domain-data"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-redis",
+      "architectureDomainId": "alderbrook-domain-technology"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-s3-receipts",
+      "architectureDomainId": "alderbrook-domain-data"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-s3-receipts",
+      "architectureDomainId": "alderbrook-domain-technology"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-segment",
+      "architectureDomainId": "alderbrook-domain-data"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-snowflake",
+      "architectureDomainId": "alderbrook-domain-data"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-dbt",
+      "architectureDomainId": "alderbrook-domain-data"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-metabase",
+      "architectureDomainId": "alderbrook-domain-data"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-vm-fleet",
+      "architectureDomainId": "alderbrook-domain-technology"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-kubernetes",
+      "architectureDomainId": "alderbrook-domain-technology"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-aws-prod",
+      "architectureDomainId": "alderbrook-domain-technology"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-terraform",
+      "architectureDomainId": "alderbrook-domain-technology"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-github-actions",
+      "architectureDomainId": "alderbrook-domain-technology"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-datadog",
+      "architectureDomainId": "alderbrook-domain-technology"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-pagerduty",
+      "architectureDomainId": "alderbrook-domain-technology"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-status-page",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-onprem-installer",
+      "architectureDomainId": "alderbrook-domain-application"
+    },
+    {
+      "buildingBlockId": "alderbrook-sbb-onprem-installer",
+      "architectureDomainId": "alderbrook-domain-technology"
+    }
+  ],
+  "buildingBlockOrganizationUnits": [
+    {
+      "id": "alderbrook-bborg-01",
+      "buildingBlockId": "alderbrook-sbb-web-app",
+      "organizationUnitId": "alderbrook-org-squad-core",
+      "validFrom": "2019-04-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-02",
+      "buildingBlockId": "alderbrook-sbb-mobile-app",
+      "organizationUnitId": "alderbrook-org-squad-core",
+      "validFrom": "2020-11-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-03",
+      "buildingBlockId": "alderbrook-sbb-expense-monolith",
+      "organizationUnitId": "alderbrook-org-squad-core",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-04",
+      "buildingBlockId": "alderbrook-sbb-receipt-ocr",
+      "organizationUnitId": "alderbrook-org-squad-core",
+      "validFrom": "2020-02-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-05",
+      "buildingBlockId": "alderbrook-sbb-policy-service",
+      "organizationUnitId": "alderbrook-org-squad-core",
+      "validFrom": "2026-11-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-06",
+      "buildingBlockId": "alderbrook-sbb-api-gateway",
+      "organizationUnitId": "alderbrook-org-squad-integrations",
+      "validFrom": "2021-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-07",
+      "buildingBlockId": "alderbrook-sbb-card-service",
+      "organizationUnitId": "alderbrook-org-squad-integrations",
+      "validFrom": "2022-05-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-08",
+      "buildingBlockId": "alderbrook-sbb-ledger-connector",
+      "organizationUnitId": "alderbrook-org-squad-integrations",
+      "validFrom": "2020-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-09",
+      "buildingBlockId": "alderbrook-sbb-notification-service",
+      "organizationUnitId": "alderbrook-org-platform",
+      "validFrom": "2021-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-10",
+      "buildingBlockId": "alderbrook-sbb-billing-inhouse",
+      "organizationUnitId": "alderbrook-org-squad-integrations",
+      "validFrom": "2020-01-01",
+      "validTo": "2026-06-01"
+    },
+    {
+      "id": "alderbrook-bborg-11",
+      "buildingBlockId": "alderbrook-sbb-billing-inhouse",
+      "organizationUnitId": "alderbrook-org-platform",
+      "validFrom": "2026-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-12",
+      "buildingBlockId": "alderbrook-sbb-stripe-billing",
+      "organizationUnitId": "alderbrook-org-platform",
+      "validFrom": "2026-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-13",
+      "buildingBlockId": "alderbrook-sbb-kubernetes",
+      "organizationUnitId": "alderbrook-org-platform",
+      "validFrom": "2025-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-14",
+      "buildingBlockId": "alderbrook-sbb-vm-fleet",
+      "organizationUnitId": "alderbrook-org-platform",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-15",
+      "buildingBlockId": "alderbrook-sbb-aws-prod",
+      "organizationUnitId": "alderbrook-org-platform",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-16",
+      "buildingBlockId": "alderbrook-sbb-terraform",
+      "organizationUnitId": "alderbrook-org-platform",
+      "validFrom": "2020-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-17",
+      "buildingBlockId": "alderbrook-sbb-github-actions",
+      "organizationUnitId": "alderbrook-org-platform",
+      "validFrom": "2020-08-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-18",
+      "buildingBlockId": "alderbrook-sbb-datadog",
+      "organizationUnitId": "alderbrook-org-platform",
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-19",
+      "buildingBlockId": "alderbrook-sbb-pagerduty",
+      "organizationUnitId": "alderbrook-org-platform",
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-20",
+      "buildingBlockId": "alderbrook-sbb-postgres-primary",
+      "organizationUnitId": "alderbrook-org-platform",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-21",
+      "buildingBlockId": "alderbrook-sbb-redis",
+      "organizationUnitId": "alderbrook-org-platform",
+      "validFrom": "2019-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-22",
+      "buildingBlockId": "alderbrook-sbb-s3-receipts",
+      "organizationUnitId": "alderbrook-org-platform",
+      "validFrom": "2019-04-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-23",
+      "buildingBlockId": "alderbrook-sbb-keycloak",
+      "organizationUnitId": "alderbrook-org-secops",
+      "validFrom": "2024-10-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-24",
+      "buildingBlockId": "alderbrook-sbb-auth0",
+      "organizationUnitId": "alderbrook-org-secops",
+      "validFrom": "2019-02-01",
+      "validTo": "2024-10-01"
+    },
+    {
+      "id": "alderbrook-bborg-25",
+      "buildingBlockId": "alderbrook-sbb-vault",
+      "organizationUnitId": "alderbrook-org-secops",
+      "validFrom": "2020-07-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-26",
+      "buildingBlockId": "alderbrook-sbb-status-page",
+      "organizationUnitId": "alderbrook-org-platform",
+      "validFrom": "2021-10-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-27",
+      "buildingBlockId": "alderbrook-sbb-snowflake",
+      "organizationUnitId": "alderbrook-org-platform",
+      "validFrom": "2021-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-28",
+      "buildingBlockId": "alderbrook-sbb-dbt",
+      "organizationUnitId": "alderbrook-org-platform",
+      "validFrom": "2021-05-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-29",
+      "buildingBlockId": "alderbrook-sbb-metabase",
+      "organizationUnitId": "alderbrook-org-platform",
+      "validFrom": "2021-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-30",
+      "buildingBlockId": "alderbrook-sbb-segment",
+      "organizationUnitId": "alderbrook-org-marketing",
+      "validFrom": "2021-02-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-31",
+      "buildingBlockId": "alderbrook-sbb-hubspot",
+      "organizationUnitId": "alderbrook-org-marketing",
+      "validFrom": "2019-05-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-32",
+      "buildingBlockId": "alderbrook-sbb-zendesk",
+      "organizationUnitId": "alderbrook-org-customer-success",
+      "validFrom": "2019-09-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-33",
+      "buildingBlockId": "alderbrook-sbb-netsuite",
+      "organizationUnitId": "alderbrook-org-finance",
+      "validFrom": "2021-04-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-34",
+      "buildingBlockId": "alderbrook-sbb-personio",
+      "organizationUnitId": "alderbrook-org-people",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-35",
+      "buildingBlockId": "alderbrook-sbb-google-workspace",
+      "organizationUnitId": "alderbrook-org-ga",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-36",
+      "buildingBlockId": "alderbrook-sbb-slack",
+      "organizationUnitId": "alderbrook-org-ga",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bborg-37",
+      "buildingBlockId": "alderbrook-sbb-onprem-installer",
+      "organizationUnitId": "alderbrook-org-squad-integrations",
+      "validFrom": "2020-06-01",
+      "validTo": "2026-12-31"
+    }
+  ],
+  "buildingBlockRealizations": [
+    {
+      "id": "alderbrook-real-01-identity-access-auth0",
+      "architectureBuildingBlockId": "alderbrook-abb-identity-access",
+      "solutionBuildingBlockId": "alderbrook-sbb-auth0",
+      "validFrom": "2019-02-01",
+      "validTo": "2024-10-01"
+    },
+    {
+      "id": "alderbrook-real-02-identity-access-keycloak",
+      "architectureBuildingBlockId": "alderbrook-abb-identity-access",
+      "solutionBuildingBlockId": "alderbrook-sbb-keycloak",
+      "validFrom": "2024-10-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-03-expense-capture-mobile-app",
+      "architectureBuildingBlockId": "alderbrook-abb-expense-capture",
+      "solutionBuildingBlockId": "alderbrook-sbb-mobile-app",
+      "validFrom": "2020-11-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-04-expense-capture-web-app",
+      "architectureBuildingBlockId": "alderbrook-abb-expense-capture",
+      "solutionBuildingBlockId": "alderbrook-sbb-web-app",
+      "validFrom": "2019-04-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-05-expense-capture-receipt-ocr",
+      "architectureBuildingBlockId": "alderbrook-abb-expense-capture",
+      "solutionBuildingBlockId": "alderbrook-sbb-receipt-ocr",
+      "validFrom": "2020-02-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-06-policy-approval-expense-monolith",
+      "architectureBuildingBlockId": "alderbrook-abb-policy-approval",
+      "solutionBuildingBlockId": "alderbrook-sbb-expense-monolith",
+      "validFrom": "2019-08-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-07-policy-approval-policy-service",
+      "architectureBuildingBlockId": "alderbrook-abb-policy-approval",
+      "solutionBuildingBlockId": "alderbrook-sbb-policy-service",
+      "validFrom": "2026-11-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-08-card-issuing-card-service",
+      "architectureBuildingBlockId": "alderbrook-abb-card-issuing",
+      "solutionBuildingBlockId": "alderbrook-sbb-card-service",
+      "validFrom": "2022-05-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-09-ledger-integration-ledger-connector",
+      "architectureBuildingBlockId": "alderbrook-abb-ledger-integration",
+      "solutionBuildingBlockId": "alderbrook-sbb-ledger-connector",
+      "validFrom": "2020-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-10-subscription-billing-billing-inhouse",
+      "architectureBuildingBlockId": "alderbrook-abb-subscription-billing",
+      "solutionBuildingBlockId": "alderbrook-sbb-billing-inhouse",
+      "validFrom": "2020-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-11-subscription-billing-stripe-billing",
+      "architectureBuildingBlockId": "alderbrook-abb-subscription-billing",
+      "solutionBuildingBlockId": "alderbrook-sbb-stripe-billing",
+      "validFrom": "2026-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-12-customer-relationship-hubspot",
+      "architectureBuildingBlockId": "alderbrook-abb-customer-relationship",
+      "solutionBuildingBlockId": "alderbrook-sbb-hubspot",
+      "validFrom": "2019-05-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-13-support-desk-zendesk",
+      "architectureBuildingBlockId": "alderbrook-abb-support-desk",
+      "solutionBuildingBlockId": "alderbrook-sbb-zendesk",
+      "validFrom": "2019-09-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-14-support-desk-status-page",
+      "architectureBuildingBlockId": "alderbrook-abb-support-desk",
+      "solutionBuildingBlockId": "alderbrook-sbb-status-page",
+      "validFrom": "2021-10-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-15-analytics-warehouse-snowflake",
+      "architectureBuildingBlockId": "alderbrook-abb-analytics-warehouse",
+      "solutionBuildingBlockId": "alderbrook-sbb-snowflake",
+      "validFrom": "2021-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-16-analytics-warehouse-dbt",
+      "architectureBuildingBlockId": "alderbrook-abb-analytics-warehouse",
+      "solutionBuildingBlockId": "alderbrook-sbb-dbt",
+      "validFrom": "2021-05-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-17-analytics-warehouse-metabase",
+      "architectureBuildingBlockId": "alderbrook-abb-analytics-warehouse",
+      "solutionBuildingBlockId": "alderbrook-sbb-metabase",
+      "validFrom": "2021-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-18-analytics-warehouse-segment",
+      "architectureBuildingBlockId": "alderbrook-abb-analytics-warehouse",
+      "solutionBuildingBlockId": "alderbrook-sbb-segment",
+      "validFrom": "2021-02-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-19-observability-datadog",
+      "architectureBuildingBlockId": "alderbrook-abb-observability",
+      "solutionBuildingBlockId": "alderbrook-sbb-datadog",
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-20-observability-pagerduty",
+      "architectureBuildingBlockId": "alderbrook-abb-observability",
+      "solutionBuildingBlockId": "alderbrook-sbb-pagerduty",
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-21-continuous-delivery-github-actions",
+      "architectureBuildingBlockId": "alderbrook-abb-continuous-delivery",
+      "solutionBuildingBlockId": "alderbrook-sbb-github-actions",
+      "validFrom": "2020-08-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-22-continuous-delivery-terraform",
+      "architectureBuildingBlockId": "alderbrook-abb-continuous-delivery",
+      "solutionBuildingBlockId": "alderbrook-sbb-terraform",
+      "validFrom": "2020-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-23-application-runtime-vm-fleet",
+      "architectureBuildingBlockId": "alderbrook-abb-application-runtime",
+      "solutionBuildingBlockId": "alderbrook-sbb-vm-fleet",
+      "validFrom": "2019-01-01",
+      "validTo": "2026-12-31"
+    },
+    {
+      "id": "alderbrook-real-24-application-runtime-kubernetes",
+      "architectureBuildingBlockId": "alderbrook-abb-application-runtime",
+      "solutionBuildingBlockId": "alderbrook-sbb-kubernetes",
+      "validFrom": "2025-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-25-relational-store-postgres-primary",
+      "architectureBuildingBlockId": "alderbrook-abb-relational-store",
+      "solutionBuildingBlockId": "alderbrook-sbb-postgres-primary",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-26-relational-store-redis",
+      "architectureBuildingBlockId": "alderbrook-abb-relational-store",
+      "solutionBuildingBlockId": "alderbrook-sbb-redis",
+      "validFrom": "2019-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-27-object-storage-s3-receipts",
+      "architectureBuildingBlockId": "alderbrook-abb-object-storage",
+      "solutionBuildingBlockId": "alderbrook-sbb-s3-receipts",
+      "validFrom": "2019-04-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-28-secrets-management-vault",
+      "architectureBuildingBlockId": "alderbrook-abb-secrets-management",
+      "solutionBuildingBlockId": "alderbrook-sbb-vault",
+      "validFrom": "2020-07-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-29-hr-information-personio",
+      "architectureBuildingBlockId": "alderbrook-abb-hr-information",
+      "solutionBuildingBlockId": "alderbrook-sbb-personio",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-30-workplace-systems-google-workspace",
+      "architectureBuildingBlockId": "alderbrook-abb-workplace-systems",
+      "solutionBuildingBlockId": "alderbrook-sbb-google-workspace",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-31-workplace-systems-slack",
+      "architectureBuildingBlockId": "alderbrook-abb-workplace-systems",
+      "solutionBuildingBlockId": "alderbrook-sbb-slack",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-32-revenue-systems-netsuite",
+      "architectureBuildingBlockId": "alderbrook-abb-revenue-systems",
+      "solutionBuildingBlockId": "alderbrook-sbb-netsuite",
+      "validFrom": "2021-04-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-33-product-platform-web-app",
+      "architectureBuildingBlockId": "alderbrook-abb-product-platform",
+      "solutionBuildingBlockId": "alderbrook-sbb-web-app",
+      "validFrom": "2019-04-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-34-product-platform-api-gateway",
+      "architectureBuildingBlockId": "alderbrook-abb-product-platform",
+      "solutionBuildingBlockId": "alderbrook-sbb-api-gateway",
+      "validFrom": "2021-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-real-35-product-platform-onprem-installer",
+      "architectureBuildingBlockId": "alderbrook-abb-product-platform",
+      "solutionBuildingBlockId": "alderbrook-sbb-onprem-installer",
+      "validFrom": "2020-06-01",
+      "validTo": "2026-12-31"
+    }
+  ],
+  "buildingBlockCapabilities": [
+    {
+      "id": "alderbrook-bbcap-01",
+      "buildingBlockId": "alderbrook-abb-expense-capture",
+      "capabilityId": "alderbrook-cap-customer-onboarding",
+      "validFrom": "2019-04-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-02",
+      "buildingBlockId": "alderbrook-abb-policy-approval",
+      "capabilityId": "alderbrook-cap-customer-onboarding",
+      "validFrom": "2019-08-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-03",
+      "buildingBlockId": "alderbrook-abb-card-issuing",
+      "capabilityId": "alderbrook-cap-customer-onboarding",
+      "validFrom": "2022-05-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-04",
+      "buildingBlockId": "alderbrook-abb-ledger-integration",
+      "capabilityId": "alderbrook-cap-customer-onboarding",
+      "validFrom": "2020-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-05",
+      "buildingBlockId": "alderbrook-abb-subscription-billing",
+      "capabilityId": "alderbrook-cap-subscription-billing",
+      "validFrom": "2020-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-06",
+      "buildingBlockId": "alderbrook-abb-subscription-billing",
+      "capabilityId": "alderbrook-cap-revenue-recognition",
+      "validFrom": "2021-04-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-07",
+      "buildingBlockId": "alderbrook-abb-revenue-systems",
+      "capabilityId": "alderbrook-cap-financial-accounting",
+      "validFrom": "2021-04-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-08",
+      "buildingBlockId": "alderbrook-abb-customer-relationship",
+      "capabilityId": "alderbrook-cap-sales-execution",
+      "validFrom": "2019-05-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-09",
+      "buildingBlockId": "alderbrook-abb-customer-relationship",
+      "capabilityId": "alderbrook-cap-demand-generation",
+      "validFrom": "2019-05-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-10",
+      "buildingBlockId": "alderbrook-abb-support-desk",
+      "capabilityId": "alderbrook-cap-customer-support",
+      "validFrom": "2019-09-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-11",
+      "buildingBlockId": "alderbrook-abb-analytics-warehouse",
+      "capabilityId": "alderbrook-cap-data-analytics",
+      "validFrom": "2021-02-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-12",
+      "buildingBlockId": "alderbrook-abb-observability",
+      "capabilityId": "alderbrook-cap-incident-management",
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-13",
+      "buildingBlockId": "alderbrook-abb-observability",
+      "capabilityId": "alderbrook-cap-platform-operations",
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-14",
+      "buildingBlockId": "alderbrook-abb-continuous-delivery",
+      "capabilityId": "alderbrook-cap-software-engineering",
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-15",
+      "buildingBlockId": "alderbrook-abb-continuous-delivery",
+      "capabilityId": "alderbrook-cap-platform-operations",
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-16",
+      "buildingBlockId": "alderbrook-abb-application-runtime",
+      "capabilityId": "alderbrook-cap-platform-operations",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-17",
+      "buildingBlockId": "alderbrook-abb-identity-access",
+      "capabilityId": "alderbrook-cap-security-compliance",
+      "validFrom": "2019-02-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-18",
+      "buildingBlockId": "alderbrook-abb-secrets-management",
+      "capabilityId": "alderbrook-cap-security-compliance",
+      "validFrom": "2020-07-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-19",
+      "buildingBlockId": "alderbrook-abb-hr-information",
+      "capabilityId": "alderbrook-cap-people-operations",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-20",
+      "buildingBlockId": "alderbrook-abb-relational-store",
+      "capabilityId": "alderbrook-cap-platform-operations",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-21",
+      "buildingBlockId": "alderbrook-abb-object-storage",
+      "capabilityId": "alderbrook-cap-security-compliance",
+      "validFrom": "2019-04-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-22",
+      "buildingBlockId": "alderbrook-abb-product-platform",
+      "capabilityId": "alderbrook-cap-product-management",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-bbcap-23",
+      "buildingBlockId": "alderbrook-sbb-onprem-installer",
+      "capabilityId": "alderbrook-cap-on-premise-delivery",
+      "validFrom": "2020-06-01",
+      "validTo": "2026-12-31"
+    }
+  ],
+  "buildingBlockRelationships": [
+    {
+      "id": "alderbrook-rel-001",
+      "sourceBuildingBlockId": "alderbrook-sbb-vm-fleet",
+      "targetBuildingBlockId": "alderbrook-sbb-aws-prod",
+      "type": "hosted_on",
+      "description": null,
+      "validFrom": "2019-01-01",
+      "validTo": "2026-12-31"
+    },
+    {
+      "id": "alderbrook-rel-002",
+      "sourceBuildingBlockId": "alderbrook-sbb-kubernetes",
+      "targetBuildingBlockId": "alderbrook-sbb-aws-prod",
+      "type": "hosted_on",
+      "description": null,
+      "validFrom": "2025-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-003",
+      "sourceBuildingBlockId": "alderbrook-sbb-web-app",
+      "targetBuildingBlockId": "alderbrook-sbb-vm-fleet",
+      "type": "hosted_on",
+      "description": null,
+      "validFrom": "2019-04-01",
+      "validTo": "2025-08-01"
+    },
+    {
+      "id": "alderbrook-rel-004",
+      "sourceBuildingBlockId": "alderbrook-sbb-web-app",
+      "targetBuildingBlockId": "alderbrook-sbb-kubernetes",
+      "type": "hosted_on",
+      "description": null,
+      "validFrom": "2025-08-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-005",
+      "sourceBuildingBlockId": "alderbrook-sbb-receipt-ocr",
+      "targetBuildingBlockId": "alderbrook-sbb-vm-fleet",
+      "type": "hosted_on",
+      "description": null,
+      "validFrom": "2020-02-01",
+      "validTo": "2025-09-15"
+    },
+    {
+      "id": "alderbrook-rel-006",
+      "sourceBuildingBlockId": "alderbrook-sbb-receipt-ocr",
+      "targetBuildingBlockId": "alderbrook-sbb-kubernetes",
+      "type": "hosted_on",
+      "description": null,
+      "validFrom": "2025-09-15",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-007",
+      "sourceBuildingBlockId": "alderbrook-sbb-ledger-connector",
+      "targetBuildingBlockId": "alderbrook-sbb-vm-fleet",
+      "type": "hosted_on",
+      "description": null,
+      "validFrom": "2020-03-01",
+      "validTo": "2025-10-01"
+    },
+    {
+      "id": "alderbrook-rel-008",
+      "sourceBuildingBlockId": "alderbrook-sbb-ledger-connector",
+      "targetBuildingBlockId": "alderbrook-sbb-kubernetes",
+      "type": "hosted_on",
+      "description": null,
+      "validFrom": "2025-10-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-009",
+      "sourceBuildingBlockId": "alderbrook-sbb-notification-service",
+      "targetBuildingBlockId": "alderbrook-sbb-vm-fleet",
+      "type": "hosted_on",
+      "description": null,
+      "validFrom": "2021-01-01",
+      "validTo": "2025-11-01"
+    },
+    {
+      "id": "alderbrook-rel-010",
+      "sourceBuildingBlockId": "alderbrook-sbb-notification-service",
+      "targetBuildingBlockId": "alderbrook-sbb-kubernetes",
+      "type": "hosted_on",
+      "description": null,
+      "validFrom": "2025-11-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-011",
+      "sourceBuildingBlockId": "alderbrook-sbb-api-gateway",
+      "targetBuildingBlockId": "alderbrook-sbb-vm-fleet",
+      "type": "hosted_on",
+      "description": null,
+      "validFrom": "2021-06-01",
+      "validTo": "2026-01-15"
+    },
+    {
+      "id": "alderbrook-rel-012",
+      "sourceBuildingBlockId": "alderbrook-sbb-api-gateway",
+      "targetBuildingBlockId": "alderbrook-sbb-kubernetes",
+      "type": "hosted_on",
+      "description": null,
+      "validFrom": "2026-01-15",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-013",
+      "sourceBuildingBlockId": "alderbrook-sbb-card-service",
+      "targetBuildingBlockId": "alderbrook-sbb-vm-fleet",
+      "type": "hosted_on",
+      "description": null,
+      "validFrom": "2022-05-01",
+      "validTo": "2026-02-01"
+    },
+    {
+      "id": "alderbrook-rel-014",
+      "sourceBuildingBlockId": "alderbrook-sbb-card-service",
+      "targetBuildingBlockId": "alderbrook-sbb-kubernetes",
+      "type": "hosted_on",
+      "description": null,
+      "validFrom": "2026-02-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-015",
+      "sourceBuildingBlockId": "alderbrook-sbb-keycloak",
+      "targetBuildingBlockId": "alderbrook-sbb-kubernetes",
+      "type": "hosted_on",
+      "description": null,
+      "validFrom": "2025-06-15",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-016",
+      "sourceBuildingBlockId": "alderbrook-sbb-vault",
+      "targetBuildingBlockId": "alderbrook-sbb-vm-fleet",
+      "type": "hosted_on",
+      "description": null,
+      "validFrom": "2020-07-01",
+      "validTo": "2026-03-01"
+    },
+    {
+      "id": "alderbrook-rel-017",
+      "sourceBuildingBlockId": "alderbrook-sbb-vault",
+      "targetBuildingBlockId": "alderbrook-sbb-kubernetes",
+      "type": "hosted_on",
+      "description": null,
+      "validFrom": "2026-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-018",
+      "sourceBuildingBlockId": "alderbrook-sbb-policy-service",
+      "targetBuildingBlockId": "alderbrook-sbb-kubernetes",
+      "type": "hosted_on",
+      "description": "Born on the new runtime — the first service that never ran on the fleet.",
+      "validFrom": "2026-11-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-019",
+      "sourceBuildingBlockId": "alderbrook-sbb-expense-monolith",
+      "targetBuildingBlockId": "alderbrook-sbb-vm-fleet",
+      "type": "hosted_on",
+      "description": "Blocked until policy evaluation moves to the Policy Service.",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-020",
+      "sourceBuildingBlockId": "alderbrook-sbb-billing-inhouse",
+      "targetBuildingBlockId": "alderbrook-sbb-vm-fleet",
+      "type": "hosted_on",
+      "description": "Blocked until the last accounts are migrated to Stripe Billing.",
+      "validFrom": "2020-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-021",
+      "sourceBuildingBlockId": "alderbrook-sbb-onprem-installer",
+      "targetBuildingBlockId": "alderbrook-sbb-vm-fleet",
+      "type": "hosted_on",
+      "description": "Build host for the packaged release. Goes away with the last on-premise contract.",
+      "validFrom": "2020-06-01",
+      "validTo": "2026-12-31"
+    },
+    {
+      "id": "alderbrook-rel-022",
+      "sourceBuildingBlockId": "alderbrook-sbb-postgres-primary",
+      "targetBuildingBlockId": "alderbrook-sbb-aws-prod",
+      "type": "hosted_on",
+      "description": null,
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-023",
+      "sourceBuildingBlockId": "alderbrook-sbb-redis",
+      "targetBuildingBlockId": "alderbrook-sbb-aws-prod",
+      "type": "hosted_on",
+      "description": null,
+      "validFrom": "2019-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-024",
+      "sourceBuildingBlockId": "alderbrook-sbb-s3-receipts",
+      "targetBuildingBlockId": "alderbrook-sbb-aws-prod",
+      "type": "hosted_on",
+      "description": null,
+      "validFrom": "2019-04-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-025",
+      "sourceBuildingBlockId": "alderbrook-sbb-web-app",
+      "targetBuildingBlockId": "alderbrook-sbb-api-gateway",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2021-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-026",
+      "sourceBuildingBlockId": "alderbrook-sbb-mobile-app",
+      "targetBuildingBlockId": "alderbrook-sbb-api-gateway",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2021-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-027",
+      "sourceBuildingBlockId": "alderbrook-sbb-api-gateway",
+      "targetBuildingBlockId": "alderbrook-sbb-expense-monolith",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2021-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-028",
+      "sourceBuildingBlockId": "alderbrook-sbb-api-gateway",
+      "targetBuildingBlockId": "alderbrook-sbb-keycloak",
+      "type": "depends_on",
+      "description": "Token validation on every request.",
+      "validFrom": "2024-10-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-029",
+      "sourceBuildingBlockId": "alderbrook-sbb-api-gateway",
+      "targetBuildingBlockId": "alderbrook-sbb-auth0",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2021-06-01",
+      "validTo": "2024-10-01"
+    },
+    {
+      "id": "alderbrook-rel-030",
+      "sourceBuildingBlockId": "alderbrook-sbb-web-app",
+      "targetBuildingBlockId": "alderbrook-sbb-keycloak",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2024-10-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-031",
+      "sourceBuildingBlockId": "alderbrook-sbb-mobile-app",
+      "targetBuildingBlockId": "alderbrook-sbb-keycloak",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2024-10-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-032",
+      "sourceBuildingBlockId": "alderbrook-sbb-expense-monolith",
+      "targetBuildingBlockId": "alderbrook-sbb-postgres-primary",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-033",
+      "sourceBuildingBlockId": "alderbrook-sbb-expense-monolith",
+      "targetBuildingBlockId": "alderbrook-sbb-redis",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2019-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-034",
+      "sourceBuildingBlockId": "alderbrook-sbb-expense-monolith",
+      "targetBuildingBlockId": "alderbrook-sbb-receipt-ocr",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2020-02-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-035",
+      "sourceBuildingBlockId": "alderbrook-sbb-expense-monolith",
+      "targetBuildingBlockId": "alderbrook-sbb-notification-service",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2021-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-036",
+      "sourceBuildingBlockId": "alderbrook-sbb-policy-service",
+      "targetBuildingBlockId": "alderbrook-sbb-postgres-primary",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2026-11-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-037",
+      "sourceBuildingBlockId": "alderbrook-sbb-receipt-ocr",
+      "targetBuildingBlockId": "alderbrook-sbb-s3-receipts",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2020-02-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-038",
+      "sourceBuildingBlockId": "alderbrook-sbb-mobile-app",
+      "targetBuildingBlockId": "alderbrook-sbb-s3-receipts",
+      "type": "data_flow",
+      "description": "Receipt images upload directly, then the service is notified.",
+      "validFrom": "2020-11-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-039",
+      "sourceBuildingBlockId": "alderbrook-sbb-card-service",
+      "targetBuildingBlockId": "alderbrook-sbb-expense-monolith",
+      "type": "depends_on",
+      "description": "Policy lookup at authorisation time.",
+      "validFrom": "2022-05-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-040",
+      "sourceBuildingBlockId": "alderbrook-sbb-card-service",
+      "targetBuildingBlockId": "alderbrook-sbb-postgres-primary",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2022-05-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-041",
+      "sourceBuildingBlockId": "alderbrook-sbb-ledger-connector",
+      "targetBuildingBlockId": "alderbrook-sbb-postgres-primary",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2020-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-042",
+      "sourceBuildingBlockId": "alderbrook-sbb-notification-service",
+      "targetBuildingBlockId": "alderbrook-sbb-postgres-primary",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2021-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-043",
+      "sourceBuildingBlockId": "alderbrook-sbb-keycloak",
+      "targetBuildingBlockId": "alderbrook-sbb-postgres-primary",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2024-10-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-044",
+      "sourceBuildingBlockId": "alderbrook-sbb-keycloak",
+      "targetBuildingBlockId": "alderbrook-sbb-vault",
+      "type": "depends_on",
+      "description": "Database credentials issued dynamically.",
+      "validFrom": "2024-10-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-045",
+      "sourceBuildingBlockId": "alderbrook-sbb-expense-monolith",
+      "targetBuildingBlockId": "alderbrook-sbb-vault",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2020-07-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-046",
+      "sourceBuildingBlockId": "alderbrook-sbb-billing-inhouse",
+      "targetBuildingBlockId": "alderbrook-sbb-postgres-primary",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2020-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-047",
+      "sourceBuildingBlockId": "alderbrook-sbb-billing-inhouse",
+      "targetBuildingBlockId": "alderbrook-sbb-netsuite",
+      "type": "data_flow",
+      "description": "Invoices and payments posted to the ledger nightly.",
+      "validFrom": "2021-04-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-048",
+      "sourceBuildingBlockId": "alderbrook-sbb-stripe-billing",
+      "targetBuildingBlockId": "alderbrook-sbb-netsuite",
+      "type": "data_flow",
+      "description": "Same posting, second source. Reconciled by hand until the migration ends.",
+      "validFrom": "2026-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-049",
+      "sourceBuildingBlockId": "alderbrook-sbb-expense-monolith",
+      "targetBuildingBlockId": "alderbrook-sbb-billing-inhouse",
+      "type": "data_flow",
+      "description": "Seat counts drive the monthly invoice.",
+      "validFrom": "2020-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-050",
+      "sourceBuildingBlockId": "alderbrook-sbb-expense-monolith",
+      "targetBuildingBlockId": "alderbrook-sbb-stripe-billing",
+      "type": "data_flow",
+      "description": null,
+      "validFrom": "2026-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-051",
+      "sourceBuildingBlockId": "alderbrook-sbb-hubspot",
+      "targetBuildingBlockId": "alderbrook-sbb-billing-inhouse",
+      "type": "data_flow",
+      "description": "Closed-won contract terms create the subscription.",
+      "validFrom": "2020-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-052",
+      "sourceBuildingBlockId": "alderbrook-sbb-hubspot",
+      "targetBuildingBlockId": "alderbrook-sbb-stripe-billing",
+      "type": "data_flow",
+      "description": null,
+      "validFrom": "2026-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-053",
+      "sourceBuildingBlockId": "alderbrook-sbb-ledger-connector",
+      "targetBuildingBlockId": "alderbrook-sbb-netsuite",
+      "type": "data_flow",
+      "description": "Alderbrook is also its own customer — company spend posts through the same connector.",
+      "validFrom": "2021-04-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-054",
+      "sourceBuildingBlockId": "alderbrook-sbb-expense-monolith",
+      "targetBuildingBlockId": "alderbrook-sbb-segment",
+      "type": "data_flow",
+      "description": "Product events.",
+      "validFrom": "2021-02-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-055",
+      "sourceBuildingBlockId": "alderbrook-sbb-web-app",
+      "targetBuildingBlockId": "alderbrook-sbb-segment",
+      "type": "data_flow",
+      "description": null,
+      "validFrom": "2021-02-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-056",
+      "sourceBuildingBlockId": "alderbrook-sbb-mobile-app",
+      "targetBuildingBlockId": "alderbrook-sbb-segment",
+      "type": "data_flow",
+      "description": null,
+      "validFrom": "2021-02-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-057",
+      "sourceBuildingBlockId": "alderbrook-sbb-segment",
+      "targetBuildingBlockId": "alderbrook-sbb-snowflake",
+      "type": "data_flow",
+      "description": null,
+      "validFrom": "2021-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-058",
+      "sourceBuildingBlockId": "alderbrook-sbb-segment",
+      "targetBuildingBlockId": "alderbrook-sbb-hubspot",
+      "type": "data_flow",
+      "description": "Product usage back into the CRM, for expansion signals.",
+      "validFrom": "2021-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-059",
+      "sourceBuildingBlockId": "alderbrook-sbb-postgres-primary",
+      "targetBuildingBlockId": "alderbrook-sbb-snowflake",
+      "type": "data_flow",
+      "description": "Nightly extract from the read replica.",
+      "validFrom": "2021-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-060",
+      "sourceBuildingBlockId": "alderbrook-sbb-hubspot",
+      "targetBuildingBlockId": "alderbrook-sbb-snowflake",
+      "type": "data_flow",
+      "description": null,
+      "validFrom": "2021-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-061",
+      "sourceBuildingBlockId": "alderbrook-sbb-netsuite",
+      "targetBuildingBlockId": "alderbrook-sbb-snowflake",
+      "type": "data_flow",
+      "description": null,
+      "validFrom": "2021-04-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-062",
+      "sourceBuildingBlockId": "alderbrook-sbb-dbt",
+      "targetBuildingBlockId": "alderbrook-sbb-snowflake",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2021-05-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-063",
+      "sourceBuildingBlockId": "alderbrook-sbb-metabase",
+      "targetBuildingBlockId": "alderbrook-sbb-snowflake",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2021-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-064",
+      "sourceBuildingBlockId": "alderbrook-sbb-github-actions",
+      "targetBuildingBlockId": "alderbrook-sbb-kubernetes",
+      "type": "depends_on",
+      "description": "Deploys on merge to main.",
+      "validFrom": "2025-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-065",
+      "sourceBuildingBlockId": "alderbrook-sbb-github-actions",
+      "targetBuildingBlockId": "alderbrook-sbb-vm-fleet",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2020-08-01",
+      "validTo": "2026-12-31"
+    },
+    {
+      "id": "alderbrook-rel-066",
+      "sourceBuildingBlockId": "alderbrook-sbb-terraform",
+      "targetBuildingBlockId": "alderbrook-sbb-aws-prod",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2020-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-067",
+      "sourceBuildingBlockId": "alderbrook-sbb-kubernetes",
+      "targetBuildingBlockId": "alderbrook-sbb-datadog",
+      "type": "data_flow",
+      "description": null,
+      "validFrom": "2025-06-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-068",
+      "sourceBuildingBlockId": "alderbrook-sbb-vm-fleet",
+      "targetBuildingBlockId": "alderbrook-sbb-datadog",
+      "type": "data_flow",
+      "description": null,
+      "validFrom": "2019-03-01",
+      "validTo": "2026-12-31"
+    },
+    {
+      "id": "alderbrook-rel-069",
+      "sourceBuildingBlockId": "alderbrook-sbb-expense-monolith",
+      "targetBuildingBlockId": "alderbrook-sbb-datadog",
+      "type": "data_flow",
+      "description": null,
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-070",
+      "sourceBuildingBlockId": "alderbrook-sbb-datadog",
+      "targetBuildingBlockId": "alderbrook-sbb-pagerduty",
+      "type": "data_flow",
+      "description": "Monitor breach pages the on-call engineer.",
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-071",
+      "sourceBuildingBlockId": "alderbrook-sbb-pagerduty",
+      "targetBuildingBlockId": "alderbrook-sbb-slack",
+      "type": "data_flow",
+      "description": "Opens the incident channel.",
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-072",
+      "sourceBuildingBlockId": "alderbrook-sbb-zendesk",
+      "targetBuildingBlockId": "alderbrook-sbb-status-page",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2021-10-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-073",
+      "sourceBuildingBlockId": "alderbrook-sbb-personio",
+      "targetBuildingBlockId": "alderbrook-sbb-keycloak",
+      "type": "data_flow",
+      "description": "Joiner-mover-leaver events provision and deprovision accounts.",
+      "validFrom": "2024-10-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-074",
+      "sourceBuildingBlockId": "alderbrook-sbb-personio",
+      "targetBuildingBlockId": "alderbrook-sbb-auth0",
+      "type": "data_flow",
+      "description": null,
+      "validFrom": "2020-01-01",
+      "validTo": "2024-10-01"
+    },
+    {
+      "id": "alderbrook-rel-075",
+      "sourceBuildingBlockId": "alderbrook-sbb-personio",
+      "targetBuildingBlockId": "alderbrook-sbb-google-workspace",
+      "type": "data_flow",
+      "description": null,
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-076",
+      "sourceBuildingBlockId": "alderbrook-sbb-hubspot",
+      "targetBuildingBlockId": "alderbrook-sbb-zendesk",
+      "type": "data_flow",
+      "description": "Account context on every ticket.",
+      "validFrom": "2019-09-01",
+      "validTo": null
+    },
+    {
+      "id": "alderbrook-rel-077",
+      "sourceBuildingBlockId": "alderbrook-sbb-onprem-installer",
+      "targetBuildingBlockId": "alderbrook-sbb-expense-monolith",
+      "type": "depends_on",
+      "description": null,
+      "validFrom": "2020-06-01",
+      "validTo": "2026-12-31"
+    }
+  ]
+}
