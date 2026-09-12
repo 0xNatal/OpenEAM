@@ -57,7 +57,7 @@ These are the reason "basic access restriction" cannot be the last thing done.
   this existing. Tool choice stays Vitest; the `test` / `test:watch` scripts and
   the CI step go in with it.
 
-- **Invariant tests** (T1.4) — turn INV-1 … INV-12 in
+- **Invariant tests** (T1.4) — turn INV-1 … INV-15 in
   [ARCHITECTURE.md](ARCHITECTURE.md) into tests. They are already written down as
   rules; this is the cheapest test anyone will ever write, and the current
   Definition of Done (lint, typecheck, build) proves only that the code compiles.
@@ -100,12 +100,12 @@ These are the reason "basic access restriction" cannot be the last thing done.
   under a different enterprise fails with a Drizzle duplicate-key stack trace
   rather than a readable error naming the offending id. Belongs with T2.6.
 
-- **No UI to add or remove information on a capability** — the GraphQL mutations
-  exist (`createInformationObject`, `linkCapabilityInformation` and their
-  counterparts), and the Information quadrant renders what is linked, but there is
-  no way to do it from the capability page. Same gap as the building block one
-  below, and worth fixing in one pass: both are "the read path is real, the write
-  path is API-only".
+- **No UI to add or remove information or actors on a capability** — the GraphQL
+  mutations all exist (`createInformationObject`, `linkCapabilityInformation`,
+  `createActor`, `linkCapabilityActor` and their counterparts), and both quadrants
+  render what is linked, but there is no way to do either from the capability page.
+  Same gap as the building block one below, and worth fixing in one pass: all three
+  are "the read path is real, the write path is API-only".
 
 - **No mutation to link a building block to a business capability** —
   `buildingBlockCapabilities` (which ABBs realize which capability) can only be set
@@ -115,14 +115,17 @@ These are the reason "basic access restriction" cannot be the last thing done.
   `linkBuildingBlockCapability` / `unlinkBuildingBlockCapability` pair plus a way to
   add and remove links from one of the two detail pages.
 
-- **The building block detail page ignores `asOf`** — it lists every relationship
-  the block ever had, oldest first, with closed and live ones visually identical
-  apart from their dates. On the Self-Managed VM Fleet in `alderbrook.json` that
-  means the three live `hosted_on` edges sit below seven historical ones. This is
-  the page that most directly answers "what is still running on this?", and it is
-  the one page that does not honour the time dimension the rest of the app is
-  built around. At minimum: separate live from closed, or respect the landscape's
-  `asOf`.
+- **The detail pages ignore `asOf`** — both the building block and the capability
+  page list every link the entity ever had, with closed and live ones visually
+  identical apart from their dates (and on the capability page, without dates at
+  all). Two examples from `alderbrook.json`: the Self-Managed VM Fleet's three
+  live `hosted_on` edges sit below seven historical ones, and Subscription
+  Billing's People quadrant shows both the Integrations Squad and the Platform
+  Team as performing it, though the first hand-off closed in June 2026. These are
+  the pages that answer "who owns this now?" and "what still runs on this?", and
+  they are the ones that do not honour the time dimension the rest of the app is
+  built around — which makes a current-looking answer quietly wrong. At minimum:
+  separate live from closed; better, respect the landscape's `asOf`.
 
 - **The landscape diagram does not fit to the viewport** — at ~58 building blocks
   the graph renders clipped at the top with dead space below, and there is no

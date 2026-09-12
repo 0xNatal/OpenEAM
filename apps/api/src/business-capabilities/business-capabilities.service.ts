@@ -1,6 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import type { Database } from '@openeam/db';
 import { eq, schema } from '@openeam/db';
+import type { ActorInvolvement, ActorKind } from '../actors/actor.model';
 import type { MappedBuildingBlock } from '../building-blocks/building-blocks.service';
 import { toBuildingBlock, withAllLinks } from '../building-blocks/building-blocks.service';
 import type { BusinessProcess } from '../business-processes/business-process.model';
@@ -8,6 +9,7 @@ import { DATABASE } from '../db.module';
 import type { InformationUsage } from '../information-objects/information-object.model';
 import type {
   BusinessCapabilityInput,
+  CapabilityActor,
   Information,
   ValueStreamStageLink,
 } from './business-capability.model';
@@ -21,6 +23,7 @@ export interface BusinessCapabilityRow {
   businessProcesses: BusinessProcess[];
   resources: MappedBuildingBlock[];
   information: Information[];
+  actors: CapabilityActor[];
   valueStreamStages: ValueStreamStageLink[];
 }
 
@@ -38,6 +41,7 @@ export class BusinessCapabilitiesService {
         buildingBlockLinks: { with: { buildingBlock: { with: withAllLinks } } },
         stageCapabilities: { with: { stage: { with: { valueStream: true } } } },
         informationLinks: { with: { informationObject: true } },
+        actorLinks: { with: { actor: true } },
       },
     });
     return rows.map(toCapabilityRow);
@@ -53,6 +57,7 @@ export class BusinessCapabilitiesService {
         buildingBlockLinks: { with: { buildingBlock: { with: withAllLinks } } },
         stageCapabilities: { with: { stage: { with: { valueStream: true } } } },
         informationLinks: { with: { informationObject: true } },
+        actorLinks: { with: { actor: true } },
       },
     });
     return row ? toCapabilityRow(row) : undefined;
@@ -125,6 +130,13 @@ function toCapabilityRow(row: {
     validTo: string | null;
     informationObject: { id: string; name: string; description: string | null };
   }>;
+  actorLinks: Array<{
+    id: string;
+    involvement: string;
+    validFrom: string | null;
+    validTo: string | null;
+    actor: { id: string; name: string; description: string | null; kind: string };
+  }>;
 }): BusinessCapabilityRow {
   return {
     id: row.id,
@@ -140,6 +152,16 @@ function toCapabilityRow(row: {
       name: link.informationObject.name,
       description: link.informationObject.description,
       usage: link.usage as InformationUsage,
+      validFrom: link.validFrom,
+      validTo: link.validTo,
+    })),
+    actors: row.actorLinks.map((link) => ({
+      id: link.actor.id,
+      linkId: link.id,
+      name: link.actor.name,
+      description: link.actor.description,
+      kind: link.actor.kind as ActorKind,
+      involvement: link.involvement as ActorInvolvement,
       validFrom: link.validFrom,
       validTo: link.validTo,
     })),

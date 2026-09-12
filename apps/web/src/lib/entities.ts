@@ -40,11 +40,19 @@ export interface BusinessCapabilityDetail {
   name: string;
   description?: string | null;
   direction?: CapabilityDirection | null;
-  people: NamedRef[];
+  actors: CapabilityActor[];
   resources: CapabilityResource[];
   information: CapabilityInformation[];
   businessProcesses: NamedRef[];
   valueStreamStages: ValueStreamStageLink[];
+}
+
+// One actor involved in a capability. The UI card is titled "People" because
+// that is the classic capability dimension; the entity is an actor, because
+// accountability usually sits with a role or a team rather than a person.
+export interface CapabilityActor extends NamedRef {
+  kind: 'role' | 'team' | 'individual' | 'external';
+  involvement: 'accountable' | 'performs' | 'consulted';
 }
 
 // One information object as seen from a capability: what it is, and how the

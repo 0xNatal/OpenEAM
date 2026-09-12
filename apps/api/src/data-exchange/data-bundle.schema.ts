@@ -93,6 +93,25 @@ const organizationUnitSchema = z.object({
   ...timestampFields,
 });
 
+const actorSchema = z.object({
+  id: z.string(),
+  enterpriseId: z.string(),
+  kind: z.enum(['role', 'team', 'individual', 'external']),
+  name: z.string(),
+  description: z.string().nullable(),
+  organizationUnitId: z.string().nullable().optional().default(null),
+  ...timestampFields,
+});
+
+const capabilityActorSchema = z.object({
+  id: z.string(),
+  capabilityId: z.string(),
+  actorId: z.string(),
+  involvement: z.enum(['accountable', 'performs', 'consulted']).default('performs'),
+  ...validityFields,
+  ...timestampFields,
+});
+
 const informationObjectSchema = z.object({
   id: z.string(),
   enterpriseId: z.string(),
@@ -185,6 +204,8 @@ export const dataBundleSchema = z.object({
   // bundles exported before information objects existed still import.
   informationObjects: z.array(informationObjectSchema).default([]),
   capabilityInformation: z.array(capabilityInformationSchema).default([]),
+  actors: z.array(actorSchema).default([]),
+  capabilityActors: z.array(capabilityActorSchema).default([]),
 });
 
 export type DataBundle = z.infer<typeof dataBundleSchema>;

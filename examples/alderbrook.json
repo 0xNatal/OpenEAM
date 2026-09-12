@@ -3163,5 +3163,393 @@
       "validFrom": "2020-06-01",
       "validTo": "2026-12-31"
     }
+  ],
+  "actors": [
+    {
+      "id": "1748901c-6a75-54ad-8f7d-1bab9dd086e4",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "kind": "role",
+      "name": "Chief Technology Officer",
+      "description": "Answers for the product and the platform together. The escalation point when the two disagree.",
+      "organizationUnitId": null
+    },
+    {
+      "id": "124ecf25-e383-5a19-8544-637c7e642d18",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "kind": "role",
+      "name": "Head of Finance",
+      "description": "Owns the close, the ledger and anything a board or auditor reads.",
+      "organizationUnitId": null
+    },
+    {
+      "id": "ec9a7b03-5a6f-56fb-a0b0-8cb972e19c5e",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "kind": "role",
+      "name": "Head of Customer Success",
+      "description": "Owns onboarding and account health from countersignature onwards.",
+      "organizationUnitId": null
+    },
+    {
+      "id": "e0adf21e-d38b-5763-8b75-14d44f6ba641",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "kind": "role",
+      "name": "Data Protection Officer",
+      "description": "Held by the security lead rather than a dedicated hire — a role, not a person, which is exactly why it is modelled as one.",
+      "organizationUnitId": null
+    },
+    {
+      "id": "403d1a91-9c1d-53af-89ff-87b88e6f6a0b",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "kind": "role",
+      "name": "Product Lead",
+      "description": "Decides what gets built and, more usefully, what does not.",
+      "organizationUnitId": null
+    },
+    {
+      "id": "58b01cb1-8594-52ed-9a88-d8b5002588b6",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "kind": "team",
+      "name": "Platform Team",
+      "description": null,
+      "organizationUnitId": "39cd1cdd-2671-5e82-82b6-27017a990126"
+    },
+    {
+      "id": "5f7a4f17-7a71-50bd-8b1d-af9fa4c247e7",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "kind": "team",
+      "name": "Core Product Squad",
+      "description": null,
+      "organizationUnitId": "cab3ae42-5f40-5907-87c4-500c9ca55001"
+    },
+    {
+      "id": "c549c9d0-24c0-5a56-b37b-bc16ad0c3251",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "kind": "team",
+      "name": "Integrations Squad",
+      "description": null,
+      "organizationUnitId": "fb5c2b1e-905e-5c15-8a2c-311bde9efceb"
+    },
+    {
+      "id": "69a57867-e1ba-556f-8322-6f6c4638851c",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "kind": "team",
+      "name": "Security & Compliance",
+      "description": null,
+      "organizationUnitId": "1f1052dd-f89c-5620-a583-10861d1ca9d1"
+    },
+    {
+      "id": "f672e0c2-e9da-5b01-9af5-2831eb34b848",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "kind": "team",
+      "name": "Finance",
+      "description": null,
+      "organizationUnitId": "8c07a4f1-9d5e-5b8f-8d87-5e3d540e29a1"
+    },
+    {
+      "id": "eb5daafe-a739-5a21-92dd-3b983ced61b4",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "kind": "team",
+      "name": "People Operations",
+      "description": null,
+      "organizationUnitId": "d3188017-ccd0-5eac-9a69-a9a8761c2db0"
+    },
+    {
+      "id": "5770ca86-0bb3-5e57-b08b-bf25bb216a95",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "kind": "team",
+      "name": "Sales",
+      "description": null,
+      "organizationUnitId": "68156490-014f-59cd-93dd-d82c48d30030"
+    },
+    {
+      "id": "58ce0008-e8b5-506c-aeb1-da94fc952260",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "kind": "team",
+      "name": "Marketing",
+      "description": null,
+      "organizationUnitId": "59b10eea-b508-560d-9efd-813481fabe30"
+    },
+    {
+      "id": "cc72a8ee-8a0c-5a5f-8e1b-6153547818b3",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "kind": "team",
+      "name": "Customer Success",
+      "description": null,
+      "organizationUnitId": "0446489c-0693-5d4c-8bd0-b80d074c9de6"
+    },
+    {
+      "id": "35d9c1e4-05a9-5ffd-962f-001e360268bb",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "kind": "individual",
+      "name": "On-call engineer (rotating)",
+      "description": "A named individual at any moment, a different one each week. Modelled to show that an individual is sometimes the honest answer — and that it is the least stable one.",
+      "organizationUnitId": null
+    },
+    {
+      "id": "a80b8c63-cdfd-54d7-a858-60913afe9c86",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "kind": "external",
+      "name": "Card Issuing Processor",
+      "description": "Issues and authorises the cards. Alderbrook cannot deliver card issuing without them, and cannot easily replace them.",
+      "organizationUnitId": null
+    },
+    {
+      "id": "805ee706-c1bd-53fb-8b29-0912e02feecc",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "kind": "external",
+      "name": "SOC 2 Audit Firm",
+      "description": "Annual Type II audit. Consulted rather than accountable — they judge the control, they do not run it.",
+      "organizationUnitId": null
+    },
+    {
+      "id": "24a300e7-04f6-51c4-98f0-e1ed5f77c523",
+      "enterpriseId": "4df9eb73-e1c4-5a90-b37d-d87b257cc50f",
+      "kind": "external",
+      "name": "Payment Service Provider",
+      "description": "Collects subscription payments.",
+      "organizationUnitId": null
+    }
+  ],
+  "capabilityActors": [
+    {
+      "id": "07e617af-7dfb-5c5d-97c5-b0e605e302a8",
+      "capabilityId": "28300039-bc5d-59af-a08e-dec84567ea47",
+      "actorId": "403d1a91-9c1d-53af-89ff-87b88e6f6a0b",
+      "involvement": "accountable",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "e723fa8d-f3c5-5ac0-85c2-330a8d76cbcb",
+      "capabilityId": "28300039-bc5d-59af-a08e-dec84567ea47",
+      "actorId": "5f7a4f17-7a71-50bd-8b1d-af9fa4c247e7",
+      "involvement": "performs",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "504805a9-268b-5144-95b8-0cd495da655f",
+      "capabilityId": "d132905e-cc3e-581c-b795-42c624ef140a",
+      "actorId": "1748901c-6a75-54ad-8f7d-1bab9dd086e4",
+      "involvement": "accountable",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "845d6b29-90bf-5deb-b913-633741091081",
+      "capabilityId": "d132905e-cc3e-581c-b795-42c624ef140a",
+      "actorId": "5f7a4f17-7a71-50bd-8b1d-af9fa4c247e7",
+      "involvement": "performs",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "5e1375df-010a-511c-bcda-dd81b9d414d8",
+      "capabilityId": "d132905e-cc3e-581c-b795-42c624ef140a",
+      "actorId": "c549c9d0-24c0-5a56-b37b-bc16ad0c3251",
+      "involvement": "performs",
+      "validFrom": "2020-03-01",
+      "validTo": null
+    },
+    {
+      "id": "13ae68ee-7f49-5569-836f-809d2f76199e",
+      "capabilityId": "00820c66-4f56-53f0-b882-5d9d647dcacd",
+      "actorId": "58b01cb1-8594-52ed-9a88-d8b5002588b6",
+      "involvement": "accountable",
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "defa09c7-e13a-5f49-9a73-97cfb193012d",
+      "capabilityId": "00820c66-4f56-53f0-b882-5d9d647dcacd",
+      "actorId": "1748901c-6a75-54ad-8f7d-1bab9dd086e4",
+      "involvement": "consulted",
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "ad8f26b9-1587-5b92-96f9-618ace2e1a8b",
+      "capabilityId": "a0974cd2-5d26-50f9-ae9b-41679241d614",
+      "actorId": "58b01cb1-8594-52ed-9a88-d8b5002588b6",
+      "involvement": "accountable",
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "b5068018-c6fb-5655-94b3-3cacbf0427b2",
+      "capabilityId": "a0974cd2-5d26-50f9-ae9b-41679241d614",
+      "actorId": "35d9c1e4-05a9-5ffd-962f-001e360268bb",
+      "involvement": "performs",
+      "validFrom": "2019-03-01",
+      "validTo": null
+    },
+    {
+      "id": "8650a3dc-68db-53b8-a444-e4b47c9a056f",
+      "capabilityId": "a0974cd2-5d26-50f9-ae9b-41679241d614",
+      "actorId": "cc72a8ee-8a0c-5a5f-8e1b-6153547818b3",
+      "involvement": "consulted",
+      "validFrom": "2021-10-01",
+      "validTo": null
+    },
+    {
+      "id": "99245b0b-de33-503a-bbad-8d35fc87e84e",
+      "capabilityId": "77b8f7eb-7ede-55e8-8ba3-b8a0690c22a6",
+      "actorId": "69a57867-e1ba-556f-8322-6f6c4638851c",
+      "involvement": "accountable",
+      "validFrom": "2020-01-01",
+      "validTo": null
+    },
+    {
+      "id": "fe503346-1b3d-597c-8b34-887f8f70f1d4",
+      "capabilityId": "77b8f7eb-7ede-55e8-8ba3-b8a0690c22a6",
+      "actorId": "e0adf21e-d38b-5763-8b75-14d44f6ba641",
+      "involvement": "accountable",
+      "validFrom": "2020-05-01",
+      "validTo": null
+    },
+    {
+      "id": "217d79e5-d08b-5a60-ab93-81d9875dd3d1",
+      "capabilityId": "77b8f7eb-7ede-55e8-8ba3-b8a0690c22a6",
+      "actorId": "805ee706-c1bd-53fb-8b29-0912e02feecc",
+      "involvement": "consulted",
+      "validFrom": "2022-01-01",
+      "validTo": null
+    },
+    {
+      "id": "e8ce6505-83ca-5784-b541-1d487a651b14",
+      "capabilityId": "f83db421-e890-5dcf-9d1c-703b0d3bef1b",
+      "actorId": "58b01cb1-8594-52ed-9a88-d8b5002588b6",
+      "involvement": "performs",
+      "validFrom": "2021-02-01",
+      "validTo": null
+    },
+    {
+      "id": "43b49977-b7c7-5d6f-aa8f-651a5757f851",
+      "capabilityId": "f83db421-e890-5dcf-9d1c-703b0d3bef1b",
+      "actorId": "403d1a91-9c1d-53af-89ff-87b88e6f6a0b",
+      "involvement": "consulted",
+      "validFrom": "2021-03-01",
+      "validTo": null
+    },
+    {
+      "id": "9d191200-267c-5916-a429-3bb9ee210e1c",
+      "capabilityId": "0c5055bf-2599-56f2-9257-b58c228887c5",
+      "actorId": "58ce0008-e8b5-506c-aeb1-da94fc952260",
+      "involvement": "accountable",
+      "validFrom": "2019-05-01",
+      "validTo": null
+    },
+    {
+      "id": "381e5fab-df00-5398-84fb-ed8fe102e2e0",
+      "capabilityId": "e9c90917-9556-5d80-8bae-e32c1a1f0ec7",
+      "actorId": "5770ca86-0bb3-5e57-b08b-bf25bb216a95",
+      "involvement": "accountable",
+      "validFrom": "2019-05-01",
+      "validTo": null
+    },
+    {
+      "id": "98bf510c-1954-51f9-bcc0-2b520cf2a07e",
+      "capabilityId": "b0608656-f338-5500-9df8-c14c15d19280",
+      "actorId": "ec9a7b03-5a6f-56fb-a0b0-8cb972e19c5e",
+      "involvement": "accountable",
+      "validFrom": "2019-04-01",
+      "validTo": null
+    },
+    {
+      "id": "efe4495d-f323-5404-b82c-dce098006cac",
+      "capabilityId": "b0608656-f338-5500-9df8-c14c15d19280",
+      "actorId": "cc72a8ee-8a0c-5a5f-8e1b-6153547818b3",
+      "involvement": "performs",
+      "validFrom": "2019-04-01",
+      "validTo": null
+    },
+    {
+      "id": "9011388a-f95a-569f-8401-1f943b1a31e4",
+      "capabilityId": "b0608656-f338-5500-9df8-c14c15d19280",
+      "actorId": "c549c9d0-24c0-5a56-b37b-bc16ad0c3251",
+      "involvement": "performs",
+      "validFrom": "2020-03-01",
+      "validTo": null
+    },
+    {
+      "id": "be540cf4-e0c7-53f1-81ef-22a548068cad",
+      "capabilityId": "5356ad97-70d2-577c-ab87-0c3f2b32e0c0",
+      "actorId": "cc72a8ee-8a0c-5a5f-8e1b-6153547818b3",
+      "involvement": "accountable",
+      "validFrom": "2019-09-01",
+      "validTo": null
+    },
+    {
+      "id": "96381f21-d745-5893-92b4-8d17ab462e20",
+      "capabilityId": "9019c240-1783-5533-9b6d-336869e673d0",
+      "actorId": "124ecf25-e383-5a19-8544-637c7e642d18",
+      "involvement": "accountable",
+      "validFrom": "2020-01-01",
+      "validTo": null
+    },
+    {
+      "id": "b39d95ad-3e4c-53a3-832e-7ce2b7a7f9be",
+      "capabilityId": "9019c240-1783-5533-9b6d-336869e673d0",
+      "actorId": "24a300e7-04f6-51c4-98f0-e1ed5f77c523",
+      "involvement": "performs",
+      "validFrom": "2026-06-01",
+      "validTo": null
+    },
+    {
+      "id": "d8374f56-b472-5a11-a1c6-b955ca790da1",
+      "capabilityId": "9019c240-1783-5533-9b6d-336869e673d0",
+      "actorId": "c549c9d0-24c0-5a56-b37b-bc16ad0c3251",
+      "involvement": "performs",
+      "validFrom": "2020-01-01",
+      "validTo": "2026-06-01"
+    },
+    {
+      "id": "49709efd-b512-57cd-9b99-b1bf66b81bab",
+      "capabilityId": "9019c240-1783-5533-9b6d-336869e673d0",
+      "actorId": "58b01cb1-8594-52ed-9a88-d8b5002588b6",
+      "involvement": "performs",
+      "validFrom": "2026-06-01",
+      "validTo": null
+    },
+    {
+      "id": "44686e8a-0739-5e9f-9ceb-0065811bbb76",
+      "capabilityId": "a54b11e2-0b78-5e69-a77f-06f4851b1c01",
+      "actorId": "124ecf25-e383-5a19-8544-637c7e642d18",
+      "involvement": "accountable",
+      "validFrom": "2021-04-01",
+      "validTo": null
+    },
+    {
+      "id": "2bd0bf7d-ce86-56ff-8065-2c6806d056ec",
+      "capabilityId": "00e6d494-839d-5420-b07a-5fe228199d57",
+      "actorId": "f672e0c2-e9da-5b01-9af5-2831eb34b848",
+      "involvement": "accountable",
+      "validFrom": "2021-04-01",
+      "validTo": null
+    },
+    {
+      "id": "b75362d6-d124-530b-94b4-c4c06ec1d66f",
+      "capabilityId": "c518c1d0-50c6-5ae0-afa8-bc9be3902889",
+      "actorId": "eb5daafe-a739-5a21-92dd-3b983ced61b4",
+      "involvement": "accountable",
+      "validFrom": "2019-01-01",
+      "validTo": null
+    },
+    {
+      "id": "15d63514-e850-56b1-8645-0f9818dc28e2",
+      "capabilityId": "77b8f7eb-7ede-55e8-8ba3-b8a0690c22a6",
+      "actorId": "a80b8c63-cdfd-54d7-a858-60913afe9c86",
+      "involvement": "consulted",
+      "validFrom": "2022-05-01",
+      "validTo": null
+    },
+    {
+      "id": "ffb41bab-f4ec-524c-8ea7-ad61b7c47a2e",
+      "capabilityId": "8db07e43-325b-5c13-9353-51be13a045b3",
+      "actorId": "c549c9d0-24c0-5a56-b37b-bc16ad0c3251",
+      "involvement": "performs",
+      "validFrom": "2020-06-01",
+      "validTo": "2026-12-31"
+    }
   ]
 }

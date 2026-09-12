@@ -3,6 +3,7 @@
 import { ApolloDriver, type ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
+import { ActorsModule } from './actors/actors.module';
 import { ArchitectureDomainsModule } from './architecture-domains/architecture-domains.module';
 import { BuildingBlocksModule } from './building-blocks/building-blocks.module';
 import { BusinessCapabilitiesModule } from './business-capabilities/business-capabilities.module';
@@ -35,6 +36,7 @@ import { ValueStreamsModule } from './value-streams/value-streams.module';
     BusinessCapabilitiesModule,
     BusinessProcessesModule,
     InformationObjectsModule,
+    ActorsModule,
     ValueStreamsModule,
     DataExchangeModule,
   ],

@@ -92,6 +92,25 @@ moves.
 `phasing_out` for two years while remaining perfectly valid; the phase is
 *intent*, the dates are *fact*.
 
+## Actors
+
+**Actor** — someone or something involved in delivering a capability: a `role`
+("Head of Finance"), a `team` ("Platform Team"), an `individual`, or an `external`
+party ("SOC 2 Audit Firm"). Not a synonym for person — most accountability sits
+with a position or a team, and positions outlive the people in them (D-14).
+
+**Involvement** — in what capacity: **`accountable`** (answers for the capability),
+**`performs`** (does the work), **`consulted`** (has a say without owning it).
+Three values rather than RACI; "informed" is noise in a model nobody updates.
+
+**Note on the quadrant's name.** The capability page calls the card **People**,
+because that is the classic capability dimension — people, process, information,
+technology. The entity inside it is an *Actor*. Both are correct at their own
+altitude; say "actor" when you mean the entity.
+
+A `team` actor points at the **organization unit** that already models it rather
+than repeating its name, so the two never drift apart (INV-13).
+
 ## Information
 
 **Information object** — something the enterprise knows about, named in business

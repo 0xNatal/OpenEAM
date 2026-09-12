@@ -56,6 +56,8 @@ export class DataExchangeService {
       buildingBlockRelationships,
       informationObjects,
       capabilityInformation,
+      actors,
+      capabilityActors,
     ] = await Promise.all([
       this.db.select().from(schema.enterprises),
       this.db.select().from(schema.businessCapabilities),
@@ -74,6 +76,8 @@ export class DataExchangeService {
       this.db.select().from(schema.buildingBlockRelationships),
       this.db.select().from(schema.informationObjects),
       this.db.select().from(schema.capabilityInformation),
+      this.db.select().from(schema.actors),
+      this.db.select().from(schema.capabilityActors),
     ]);
 
     // Child/link rows have no enterpriseId of their own; they follow their
@@ -90,6 +94,8 @@ export class DataExchangeService {
     const buildingBlockIds = new Set(scopedBuildingBlocks.map((b) => b.id));
     const scopedInformationObjects = enterpriseFilter(informationObjects);
     const informationObjectIds = new Set(scopedInformationObjects.map((i) => i.id));
+    const scopedActors = enterpriseFilter(actors);
+    const actorIds = new Set(scopedActors.map((a) => a.id));
 
     return {
       enterprises: enterpriseId ? enterprises.filter((e) => e.id === enterpriseId) : enterprises,
@@ -126,6 +132,10 @@ export class DataExchangeService {
       informationObjects: scopedInformationObjects,
       capabilityInformation: capabilityInformation.filter(
         (l) => informationObjectIds.has(l.informationObjectId) && capabilityIds.has(l.capabilityId),
+      ),
+      actors: scopedActors,
+      capabilityActors: capabilityActors.filter(
+        (l) => actorIds.has(l.actorId) && capabilityIds.has(l.capabilityId),
       ),
     };
   }
@@ -194,6 +204,12 @@ export class DataExchangeService {
       }
       if (bundle.capabilityInformation.length > 0) {
         await tx.insert(schema.capabilityInformation).values(bundle.capabilityInformation);
+      }
+      if (bundle.actors.length > 0) {
+        await tx.insert(schema.actors).values(bundle.actors);
+      }
+      if (bundle.capabilityActors.length > 0) {
+        await tx.insert(schema.capabilityActors).values(bundle.capabilityActors);
       }
     });
   }

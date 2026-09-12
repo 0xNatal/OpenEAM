@@ -233,3 +233,35 @@ practice, or if people start naming systems in the `name` field, which is the
 symptom of the missing level being needed. This is a standing question for the
 external EAM review; the smallest honest version was built first so there is
 something concrete to critique.
+
+---
+
+## D-14 · The People quadrant holds actors, not people
+
+**Decided:** the entity behind the capability page's People quadrant is an
+**Actor** with a `kind` — `role`, `team`, `individual` or `external` — not a
+person. A capability links to one with an involvement (`accountable`, `performs`,
+`consulted`) and a validity interval.
+
+**Why:** the quadrant has always promised "actors, stakeholders, business units or
+partners", which is broader than named humans, and the broader reading is the more
+useful one. Accountability normally sits with a position or a team, and positions
+outlive the people holding them — modelling only individuals would mean the model
+goes stale every time somebody changes job. `individual` remains available for when
+a named person genuinely is the honest answer.
+
+**Teams are not modelled twice.** An actor of kind `team` carries a nullable
+`organizationUnitId` pointing at the organization unit that already models it,
+rather than repeating its name. The column is meaningful only for teams, enforced
+as INV-13 — the same shape as `architectureLevel` being ABB-only (INV-3).
+
+**Three involvements, not RACI.** "Informed" is noise in a model nobody updates,
+and the split that earns its keep is between who answers for a capability and who
+does the work. Small on purpose, like every other taxonomy here (D-3).
+
+**Revisit if:** an expert says the RACI vocabulary is worth the two extra values
+for recognisability alone, or if `performs` is visibly doing two jobs.
+
+**What this unblocks:** the same entity is what building-block ownership needs
+(US-1.1) — an actor can carry ownership of a building block later without a second
+table. It was deliberately built so that link can be added rather than migrated to.

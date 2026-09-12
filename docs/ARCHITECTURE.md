@@ -22,7 +22,7 @@ containers yet — see [BACKLOG.md](BACKLOG.md).
 
 ## The metamodel (`packages/db`)
 
-17 tables and 6 enums across nine schema files, one per subject area. Read the
+19 tables and 8 enums across ten schema files, one per subject area. Read the
 comments in `packages/db/src/schema/` before changing anything there — they
 explain *why* each shape was chosen, and several of them encode decisions
 recorded in [DECISIONS.md](DECISIONS.md).
@@ -41,21 +41,21 @@ key target. `architecture_level` is meaningful only for `kind = 'architecture'`.
 changes, the existing row is closed by setting `valid_to` and a new row is
 inserted. That is what lets the landscape be reconstructed for any date. It
 applies to `building_block_organization_units`, `building_block_realizations`,
-`building_block_capabilities`, `building_block_relationships` and
-`capability_information`.
+`building_block_capabilities`, `building_block_relationships`,
+`capability_information` and `capability_actors`.
 
 **Classification is not history.** `building_block_architecture_domains`
 deliberately has no validity interval — it is a replace-all set. Whether that is
 the right call is an open question; see [DECISIONS.md](DECISIONS.md).
 
 Migrations are generated with `pnpm db:generate` and applied with
-`pnpm db:migrate`. Nine are committed. Generated files under
+`pnpm db:migrate`. Ten are committed. Generated files under
 `packages/db/drizzle/meta/` are formatted by drizzle-kit and still have to pass
 repo-wide Biome — run `pnpm lint` at the root, never a scoped check.
 
 ## The API (`apps/api`)
 
-Nine feature modules, each `*.module.ts` / `*.service.ts` / `*.resolver.ts` /
+Ten feature modules, each `*.module.ts` / `*.service.ts` / `*.resolver.ts` /
 `*.model.ts`. Services own the business rules; resolvers are thin.
 
 GraphQL is **code-first**: models carry decorators and Nest generates the SDL at
@@ -116,6 +116,9 @@ T1.4.
 | **INV-10** | Ids are globally unique. `id` is a plain primary key, *not* composite with `enterprise_id`, so two enterprises sharing a database cannot reuse an id. | Postgres primary key |
 | **INV-11** | A capability and an information object linked together belong to the same enterprise. Both ids are valid alone; the pair is what is wrong. | `information-objects.service.ts` |
 | **INV-12** | A capability has at most one *open* link to the same information object &mdash; the same close-before-you-open rule as INV-5. | `information-objects.service.ts` |
+| **INV-13** | An actor's `organizationUnitId` is set only when `kind = 'team'`, and the unit belongs to the same enterprise. Without it, teams end up modelled twice under two names. | `actors.service.ts` |
+| **INV-14** | A capability and an actor linked together belong to the same enterprise. | `actors.service.ts` |
+| **INV-15** | A capability has at most one *open* link to the same actor. | `actors.service.ts` |
 
 Two sharp edges in the current implementations, so you are not surprised by them:
 

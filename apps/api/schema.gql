@@ -2,6 +2,53 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Actor {
+  capabilities: [ActorCapabilityLink!]!
+  description: String
+  enterpriseId: String!
+  id: String!
+  kind: ActorKind!
+  name: String!
+  organizationUnitId: String
+  organizationUnitName: String
+}
+
+type ActorCapabilityLink {
+  capabilityId: String!
+  capabilityName: String!
+  involvement: ActorInvolvement!
+  linkId: String!
+  validFrom: String
+  validTo: String
+}
+
+input ActorInput {
+  description: String
+  enterpriseId: String!
+  kind: ActorKind!
+  name: String!
+  organizationUnitId: String
+}
+
+"""
+In what capacity an actor is involved in a capability: accountable (answers for it), performs (does the work), consulted (has a say without owning it).
+"""
+enum ActorInvolvement {
+  accountable
+  consulted
+  performs
+}
+
+"""
+What kind of actor this is: role (a position, which outlives whoever holds it), team (an internal group, normally pointing at an organization unit), individual (a named person), external (a party outside the enterprise).
+"""
+enum ActorKind {
+  external
+  individual
+  role
+  team
+}
+
 type ArchitectureBuildingBlock implements BuildingBlock {
   architectureDomainIds: [String!]!
   architectureLevel: ArchitectureLevel
@@ -98,6 +145,7 @@ enum BuildingBlockRelationshipType {
 }
 
 type BusinessCapability {
+  actors: [CapabilityActor!]!
   businessProcesses: [BusinessProcess!]!
   description: String
   direction: CapabilityDirection
@@ -105,7 +153,6 @@ type BusinessCapability {
   id: String!
   information: [Information!]!
   name: String!
-  people: [Person!]!
   resources: [BuildingBlock!]!
   valueStreamStages: [ValueStreamStageLink!]!
 }
@@ -135,6 +182,25 @@ input BusinessProcessInput {
   name: String!
   outcome: String
   triggerEvent: String
+}
+
+type CapabilityActor {
+  description: String
+  id: String!
+  involvement: ActorInvolvement!
+  kind: ActorKind!
+  linkId: String!
+  name: String!
+  validFrom: String
+  validTo: String
+}
+
+input CapabilityActorInput {
+  actorId: String!
+  capabilityId: String!
+  involvement: ActorInvolvement
+  validFrom: String
+  validTo: String
 }
 
 """
@@ -228,6 +294,7 @@ enum LifecyclePhase {
 }
 
 type Mutation {
+  createActor(input: ActorInput!): Actor!
   createBuildingBlock(input: BuildingBlockInput!): BuildingBlock!
   createBuildingBlockRelationship(input: BuildingBlockRelationshipInput!): BuildingBlockRelationship!
   createBusinessCapability(input: BusinessCapabilityInput!): BusinessCapability!
@@ -235,6 +302,7 @@ type Mutation {
   createEnterprise(input: EnterpriseInput!): Enterprise!
   createInformationObject(input: InformationObjectInput!): InformationObject!
   createValueStream(input: ValueStreamInput!): ValueStream!
+  deleteActor(id: String!): Boolean!
   deleteBuildingBlock(id: String!): Boolean!
   deleteBuildingBlockRelationship(id: String!): Boolean!
   deleteBusinessCapability(id: String!): Boolean!
@@ -242,8 +310,11 @@ type Mutation {
   deleteEnterprise(id: String!): Boolean!
   deleteInformationObject(id: String!): Boolean!
   deleteValueStream(id: String!): Boolean!
+  linkCapabilityActor(input: CapabilityActorInput!): Actor!
   linkCapabilityInformation(input: CapabilityInformationInput!): InformationObject!
+  unlinkCapabilityActor(linkId: String!): Boolean!
   unlinkCapabilityInformation(linkId: String!): Boolean!
+  updateActor(id: String!, input: ActorInput!): Actor!
   updateBuildingBlock(id: String!, input: BuildingBlockInput!): BuildingBlock!
   updateBusinessCapability(id: String!, input: BusinessCapabilityInput!): BusinessCapability!
   updateBusinessProcess(id: String!, input: BusinessProcessInput!): BusinessProcess!
@@ -267,17 +338,14 @@ type OrganizationUnitLink {
   validTo: String
 }
 
-type Person {
-  id: String!
-  name: String!
-}
-
 type ProcessStep {
   id: String!
   name: String!
 }
 
 type Query {
+  actor(id: String!): Actor
+  actors(enterpriseId: String!): [Actor!]!
   architectureDomain(id: String!): ArchitectureDomain
   architectureDomains(enterpriseId: String!): [ArchitectureDomain!]!
   architectureLandscape(

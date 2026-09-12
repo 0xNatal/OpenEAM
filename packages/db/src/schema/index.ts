@@ -1,3 +1,4 @@
+export * from './actors';
 export * from './architecture-domains';
 export * from './building-blocks';
 export * from './business-capabilities';

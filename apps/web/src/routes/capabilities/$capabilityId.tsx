@@ -25,9 +25,11 @@ const BUSINESS_CAPABILITY_QUERY = gql`
       name
       description
       direction
-      people {
+      actors {
         id
         name
+        kind
+        involvement
       }
       resources {
         id
@@ -162,8 +164,8 @@ function CapabilityDetail({
           title="People"
           subtitle="Actors, stakeholders, business units or partners involved in delivering this capability"
         >
-          {cap.people.length > 0 ? (
-            cap.people.map((p) => <Item key={p.id} label={p.name} />)
+          {cap.actors.length > 0 ? (
+            cap.actors.map((a) => <Item key={a.id} label={a.name} tag={a.involvement} />)
           ) : (
             <EmptyState label="No people defined yet" />
           )}

@@ -1,4 +1,5 @@
 import { Field, InputType, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { ActorInvolvement, ActorKind } from '../actors/actor.model';
 import { BuildingBlock } from '../building-blocks/building-block.model';
 import { BusinessProcess } from '../business-processes/business-process.model';
 import { InformationUsage } from '../information-objects/information-object.model';
@@ -18,10 +19,20 @@ registerEnumType(CapabilityDirection, {
     'Strategic direction for a business capability: invest (differentiating, gets budget), sustain (keep it working, no growth), commodity (buy/outsource rather than build), sunset (being wound down).',
 });
 
+// One actor as seen from a capability. `id` is the actor's id; `linkId`
+// identifies the link itself, so it can be removed. The UI card is still
+// titled "People" — that is the classic capability dimension — but the entity
+// is an Actor, because accountability is usually a role or a team.
 @ObjectType()
-export class Person {
+export class CapabilityActor {
   @Field() id!: string;
+  @Field() linkId!: string;
   @Field() name!: string;
+  @Field(() => String, { nullable: true }) description?: string | null;
+  @Field(() => ActorKind) kind!: ActorKind;
+  @Field(() => ActorInvolvement) involvement!: ActorInvolvement;
+  @Field(() => String, { nullable: true }) validFrom?: string | null;
+  @Field(() => String, { nullable: true }) validTo?: string | null;
 }
 
 // One information object as seen from a capability. `id` is the information
@@ -55,7 +66,7 @@ export class BusinessCapability {
   @Field(() => String, { nullable: true }) description?: string | null;
   @Field(() => CapabilityDirection, { nullable: true }) direction?: CapabilityDirection | null;
   @Field(() => [BusinessProcess]) businessProcesses!: BusinessProcess[];
-  @Field(() => [Person]) people!: Person[];
+  @Field(() => [CapabilityActor]) actors!: CapabilityActor[];
   // Building blocks linked to this capability (the reverse of
   // ArchitectureBuildingBlock.capabilityLinks in building-block.model.ts).
   @Field(() => [BuildingBlock]) resources!: BuildingBlock[];

@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { relations } from 'drizzle-orm';
 import { index, pgEnum, pgTable, text } from 'drizzle-orm/pg-core';
+import { capabilityActors } from './actors';
 import { buildingBlockCapabilities } from './building-blocks';
 import { businessProcesses } from './business-processes';
 import { enterprises } from './enterprises';
@@ -41,4 +42,5 @@ export const businessCapabilitiesRelations = relations(businessCapabilities, ({ 
   stageCapabilities: many(stageCapabilities),
   buildingBlockLinks: many(buildingBlockCapabilities),
   informationLinks: many(capabilityInformation),
+  actorLinks: many(capabilityActors),
 }));
